@@ -11,7 +11,7 @@
 	<groupId>com.github.giovannilamarmora.maven.repository</groupId>
 	<artifactId>utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>utils</name>
 	<description>Utils Maven Repository</description>
 	<properties>
@@ -22,7 +22,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Giovanni Lamarmora Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/giovannilamarmora/Utils</url>
+			<url>https://maven.pkg.github.com/giovannilamarmora/utils</url>
 		</repository>
 	</distributionManagement>
 
