@@ -8,7 +8,7 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.github.giovannilamarmora.maven.repository</groupId>
+	<groupId>com.giovannilamarmora.maven.repository</groupId>
 	<artifactId>utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
