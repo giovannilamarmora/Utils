@@ -20,7 +20,7 @@ public class MathService {
    * @param places Number of Decimal user want
    * @return Cut Number
    */
-  private static double round(double value, int places) throws MathException {
+  public static double round(double value, int places) throws MathException {
     if (places < 0)
       throw new MathException(
           MathException.Code.VALUE_NOT_PERMITTED,
