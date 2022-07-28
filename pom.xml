@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.github.giovannilamarmora.utils</groupId>
-	<artifactId>utils</artifactId>
+	<artifactId>utils-code</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>utils</name>
