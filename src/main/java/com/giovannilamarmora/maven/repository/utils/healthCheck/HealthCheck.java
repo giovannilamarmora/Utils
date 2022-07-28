@@ -1,4 +1,4 @@
-package com.github.giovannilamarmora.maven.repository.utils.healthCheck;
+package com.giovannilamarmora.maven.repository.utils.healthCheck;
 
 import org.springframework.stereotype.Service;
 
