@@ -11,7 +11,7 @@
 	<groupId>com.github.giovannilamarmora.utils</groupId>
 	<artifactId>utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>utils</name>
 	<description>Utils Maven Repository</description>
 	<properties>
