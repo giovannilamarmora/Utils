@@ -19,7 +19,7 @@
 	</properties>
 
 	<modules>
-		<module>health-check-util</module>
+		<module>healthCheck-utils</module>
 	</modules>
 
 	<developers>
