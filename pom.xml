@@ -8,7 +8,7 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.github.giovannilamarmora</groupId>
+	<groupId>com.github.giovannilamarmora.utils</groupId>
 	<artifactId>utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -17,6 +17,10 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
+	<modules>
+		<module>health-check-util</module>
+	</modules>
 
 	<developers>
 		<developer>
