@@ -1,4 +1,4 @@
-package com.giovannilamarmora.maven.repository.utils;
+package com.github.giovannilamarmora;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -1,4 +1,4 @@
-package com.giovannilamarmora.maven.repository.utils;
+package com.github.giovannilamarmora;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
