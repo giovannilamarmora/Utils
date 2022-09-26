@@ -1,0 +1,7 @@
+# Interceptors
+
+<hr>
+
+```
+@LogInterceptor
+```
