@@ -25,11 +25,9 @@ public class CorrelationIdInterceptor extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String correlationId = request.getHeader(CorrelationIdUtils.CORRELATION_HEADER_NAME);
-    String requestId = request.getHeader("x-request-id");
     String mdcCorrelationId = MDC.get(CorrelationIdUtils.CORRELATION_MDC_NAME);
     if (isEmpty(correlationId)
-        || !correlationId.equalsIgnoreCase(mdcCorrelationId)
-        || isEmpty(requestId)) {
+        || !correlationId.equalsIgnoreCase(mdcCorrelationId)) {
       MDC.remove(CorrelationIdUtils.CORRELATION_MDC_NAME);
       correlationId = CorrelationIdUtils.generateCorrelationId();
     }

@@ -5,92 +5,62 @@ import org.slf4j.Logger;
 import java.time.Instant;
 
 public class LogTimeTracker {
-  static String DEVMODE = "DEV";
+  // static String DEVMODE = "DEV";
   private final ActionType actionType;
   private final String methodName;
-  private final String userId;
   private final String correlationId;
-  private final String sessionId;
-  private final String logMode;
+  // private final String logMode;
   private final long start;
-  private final String action;
 
   private LogTimeTracker(
-      ActionType actionType,
-      String methodName,
-      String userId,
-      String correlationId,
-      String sessionId,
-      String logMode,
-      String action) {
+      ActionType actionType, String methodName, String correlationId) {
     super();
     this.actionType = actionType;
     this.methodName = methodName;
-    this.userId = userId;
     this.correlationId = correlationId;
-    this.sessionId = sessionId;
-    this.logMode = logMode;
-    this.action = action;
     this.start = Instant.now().toEpochMilli();
   }
 
   public static LogTimeTracker startInvocation(
-      ActionType type,
-      String methodName,
-      String userId,
-      String correlationId,
-      String sessionId,
-      String logMode,
-      String action) {
-    return new LogTimeTracker(type, methodName, userId, correlationId, sessionId, logMode, action);
+      ActionType type, String methodName, String correlationId) {
+    return new LogTimeTracker(type, methodName, correlationId);
   }
 
   public void trackFailure(Logger LOG, Exception e) {
     Throwable root_cause = getRootCause(e);
-    String stackTrace = "";
+    /*String stackTrace = "";
     for (StackTraceElement sel : e.getStackTrace()) {
       stackTrace += sel.toString() + (DEVMODE.equalsIgnoreCase(logMode) ? "\n\t" : " >> ");
-    }
+    }*/
     if (root_cause != null) {
       LOG.error(
-          "action_type={}, method={}, user={}, action={}, correlation_id={}, session_id={}, time_taken={}, status=KO, exception={}, description={}, root_exception={}, root_description={}, stacktrace={}",
+          "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=KO, EXCEPTION={}, DESCRIPTION={}, ROOT_EXCEPTION={}, ROOT_DESCRIPTION={}",
           this.actionType,
           this.methodName,
-          this.userId,
-          this.action,
           this.correlationId,
-          this.sessionId,
           getDeltaInMilli(),
           getClassName(e),
           getMessage(e),
           getClassName(root_cause),
-          root_cause.getMessage(),
-          stackTrace);
+          root_cause.getMessage());
       return;
     }
     LOG.error(
-        "action_type={}, method={}, user={}, action={}, correlation_id={}, session_id={}, time_taken={}, status=KO, exception={}, description={}, stacktrace={}",
+        "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=KO, EXCEPTION={}, DESCRIPTION={}",
         this.actionType,
         this.methodName,
-        this.userId,
-        this.action,
         this.correlationId,
-        this.sessionId,
         getDeltaInMilli(),
         getClassName(e),
-        getMessage(e),
-        stackTrace);
+        getMessage(e));
   }
 
   public void trackSuccess(Logger LOG) {
     LOG.info(
-        "action_type={}, method={}, user={}, action={}, correlation_id={}, session_id={}, time_taken={}, status=OK",
+        "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=OK",
         this.actionType,
         this.methodName,
-        this.userId,
-        this.action,
         this.correlationId,
-        this.sessionId,
         getDeltaInMilli());
   }
 
@@ -130,6 +100,7 @@ public class LogTimeTracker {
   public enum ActionType {
     APP_ENDPOINT,
     APP_LOGIC,
+    APP_MAPPER,
     APP_EXTERNAL
   }
 }

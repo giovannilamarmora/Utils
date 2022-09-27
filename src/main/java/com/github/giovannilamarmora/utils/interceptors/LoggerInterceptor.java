@@ -37,13 +37,7 @@ public class LoggerInterceptor implements Serializable {
     String methodName = className + "." + method.getName();
     LogTimeTracker tracker =
         LogTimeTracker.startInvocation(
-            annotation.type(),
-            methodName,
-            "JWTUtil.getUserId()",
-            CorrelationIdUtils.getCorrelationId(),
-            "SessionIDUtils.getSessionId()",
-            logMode,
-            null != "operation" ? "operation.description()" : "");
+            annotation.type(), methodName, CorrelationIdUtils.getCorrelationId());
     Object obj;
     try {
       obj = proceedingJoinPoint.proceed();
