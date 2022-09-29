@@ -98,8 +98,8 @@ public class LogTimeTracker {
   }
 
   public enum ActionType {
-    APP_ENDPOINT,
-    APP_LOGIC,
+    APP_CONTROLLER,
+    APP_SERVICE,
     APP_MAPPER,
     APP_EXTERNAL
   }

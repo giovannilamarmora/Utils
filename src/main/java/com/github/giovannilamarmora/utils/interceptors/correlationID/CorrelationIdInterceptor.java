@@ -1,7 +1,5 @@
 package com.github.giovannilamarmora.utils.interceptors.correlationID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,7 +12,6 @@ import java.io.IOException;
 
 @Component
 public class CorrelationIdInterceptor extends OncePerRequestFilter {
-  private static final Logger LOG = LoggerFactory.getLogger(CorrelationIdInterceptor.class);
 
   private static boolean isEmpty(String value) {
     return value == null || value.isBlank();

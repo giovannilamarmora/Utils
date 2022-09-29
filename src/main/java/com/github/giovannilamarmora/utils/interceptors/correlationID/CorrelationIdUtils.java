@@ -6,12 +6,7 @@ public class CorrelationIdUtils {
   public static final String CORRELATION_HEADER_NAME = "X-CorrelationID";
   public static final String CORRELATION_MDC_NAME = "correlationId";
   private static final ThreadLocal<String> correlationIdTL =
-      new ThreadLocal<String>() {
-        @Override
-        protected String initialValue() {
-          return null;
-        }
-      };
+          ThreadLocal.withInitial(() -> null);
 
   public static String generateCorrelationId() {
     return UUID.randomUUID().toString();
