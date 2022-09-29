@@ -4,6 +4,7 @@ import com.github.giovannilamarmora.utils.interceptors.correlationID.Correlation
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,10 @@ public class LoggerInterceptor implements Serializable {
   private static final long serialVersionUID = 5001545131635232118L;
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-  @Around("@annotation(LogInterceptor)")
+  @Pointcut("@annotation(LogInterceptor)")
+  public void annotationPointcut() {}
+
+  @Around("annotationPointcut()")
   public Object processMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
     Method method = signature.getMethod();
