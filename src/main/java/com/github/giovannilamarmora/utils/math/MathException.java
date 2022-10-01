@@ -1,33 +1,31 @@
 package com.github.giovannilamarmora.utils.math;
 
-public class MathException extends Exception {
-  private Code code;
+import com.github.giovannilamarmora.utils.exception.ExceptionCode;
+import org.springframework.http.HttpStatus;
 
-  /**
-   * Constructs a new exception with {@code null} as its detail message. The cause is not
-   * initialized, and may subsequently be initialized by a call to {@link #initCause}.
-   */
-  public MathException(Code code) {
-    this.code = code;
+public enum MathException implements ExceptionCode {
+  VALUE_NOT_PERMITTED(HttpStatus.INTERNAL_SERVER_ERROR, "The current value is not permitted");
+
+  MathException(HttpStatus status, String message) {
   }
 
   /**
-   * Constructs a new exception with the specified detail message. The cause is not initialized, and
-   * may subsequently be initialized by a call to {@link #initCause}.
+   * Return the message of the Exception
    *
-   * @param message the detail message. The detail message is saved for later retrieval by the
-   *     {@link #getMessage()} method.
+   * @return String
    */
-  public MathException(Code code, String message) {
-    super(message);
-    this.code = code;
+  @Override
+  public String getMessage() {
+    return null;
   }
 
-  public Code getCode() {
-    return code;
-  }
-
-  public static enum Code {
-    VALUE_NOT_PERMITTED
+  /**
+   * Return the HttpStatus of the Exception
+   *
+   * @return HttpStatus
+   */
+  @Override
+  public HttpStatus getStatus() {
+    return null;
   }
 }
