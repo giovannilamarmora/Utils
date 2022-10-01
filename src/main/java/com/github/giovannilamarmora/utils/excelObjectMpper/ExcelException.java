@@ -1,34 +1,32 @@
 package com.github.giovannilamarmora.utils.excelObjectMpper;
 
-public class ExcelException extends Exception {
-  private final Code code;
-  /**
-   * Constructs a new exception with {@code null} as its detail message. The cause is not
-   * initialized, and may subsequently be initialized by a call to {@link #initCause}.
-   */
-  public ExcelException(Code code) {
-    this.code = code;
-  }
+import com.github.giovannilamarmora.utils.exception.ExceptionCode;
+import org.springframework.http.HttpStatus;
+
+public enum ExcelException implements ExceptionCode {
+  UNABLE_TO_READ_THE_FILE(HttpStatus.BAD_REQUEST, null),
+  ERROR_ON_SETTING_FIELD(HttpStatus.BAD_REQUEST, null),
+  INVALID_OBJECT_FIELD(HttpStatus.BAD_REQUEST, null);
+
+  ExcelException(HttpStatus status, String message) {}
 
   /**
-   * Constructs a new exception with the specified detail message. The cause is not initialized, and
-   * may subsequently be initialized by a call to {@link #initCause}.
+   * Return the message of the Exception
    *
-   * @param message the detail message. The detail message is saved for later retrieval by the
-   *     {@link #getMessage()} method.
+   * @return String
    */
-  public ExcelException(Code code, String message) {
-    super(message);
-    this.code = code;
+  @Override
+  public String getMessage() {
+    return null;
   }
 
-  public Code getCode() {
-    return code;
-  }
-
-  public enum Code {
-    UNABLE_TO_READ_THE_FILE,
-    ERROR_ON_SETTING_FIELD,
-    INVALID_OBJECT_FIELD
+  /**
+   * Return the HttpStatus of the Exception
+   *
+   * @return HttpStatus
+   */
+  @Override
+  public HttpStatus getStatus() {
+    return null;
   }
 }

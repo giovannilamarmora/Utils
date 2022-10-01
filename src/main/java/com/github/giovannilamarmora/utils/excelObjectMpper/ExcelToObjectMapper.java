@@ -1,6 +1,7 @@
 package com.github.giovannilamarmora.utils.excelObjectMpper;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.github.giovannilamarmora.utils.exception.UtilsException;
 import com.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import com.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import com.github.giovannilamarmora.utils.interceptors.Logged;
@@ -49,7 +50,7 @@ public class ExcelToObjectMapper {
    * @throws ExcelException
    * @throws IOException
    */
-  public ExcelToObjectMapper(String filePath) throws ExcelException, IOException {
+  public ExcelToObjectMapper(String filePath) throws UtilsException, IOException {
     createWorkbook(filePath);
   }
 
@@ -60,13 +61,13 @@ public class ExcelToObjectMapper {
    * @throws IOException
    * @throws ExcelException
    */
-  public void createWorkbook(String fileUrl) throws IOException, ExcelException {
+  public void createWorkbook(String fileUrl) throws IOException, UtilsException {
     LOG.info("Creating workbook for filepath {}", fileUrl);
     try {
       workbook = createWorkBook(fileUrl);
     } catch (InvalidFormatException e) {
       LOG.error("Error on creating workbook for filepath {}", fileUrl);
-      throw new ExcelException(ExcelException.Code.UNABLE_TO_READ_THE_FILE, e.getMessage());
+      throw new UtilsException(ExcelException.UNABLE_TO_READ_THE_FILE, e.getMessage());
     }
   }
   /**
@@ -112,7 +113,7 @@ public class ExcelToObjectMapper {
    * @param cell Apache POI cell from which value needs to be retried.
    */
   private void setObjectFieldValueFromCell(Object obj, Field field, Cell cell)
-      throws ExcelException, IllegalAccessException {
+      throws UtilsException {
     Class<?> cls = field.getType();
     field.setAccessible(true);
     if (cell == null || cell.getCellType() == CellType.BLANK) {
@@ -120,7 +121,7 @@ public class ExcelToObjectMapper {
         field.set(obj, null);
       } catch (IllegalAccessException e) {
         LOG.error("Error on setting blank cell for field {}", field.getName());
-        throw new ExcelException(ExcelException.Code.ERROR_ON_SETTING_FIELD, e.getMessage());
+        throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e.getMessage());
       }
     } else if (cls == String.class) {
       try {
@@ -134,7 +135,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new ExcelException(ExcelException.Code.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
         }
       }
     } else if (cls == LocalDate.class || cls == LocalDateTime.class) {
@@ -154,7 +155,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new ExcelException(ExcelException.Code.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
         }
       }
     } else if (cls == Integer.class
@@ -189,7 +190,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new ExcelException(ExcelException.Code.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
         }
       }
     } else if (cls == Boolean.class) {
@@ -214,7 +215,7 @@ public class ExcelToObjectMapper {
             field.set(obj, null);
           } catch (IllegalAccessException e1) {
             LOG.error("Error on setting null cell for field {}", field.getName());
-            throw new ExcelException(ExcelException.Code.ERROR_ON_SETTING_FIELD, e1.getMessage());
+            throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
           }
         }
       }
@@ -248,7 +249,7 @@ public class ExcelToObjectMapper {
    */
   private int getHeaderIndex(
       String headerName, Workbook workbook, Integer sheetIndex, Integer rowIndex)
-      throws ExcelException {
+      throws UtilsException {
     String headerNameFixed = headerName.replace("_", " ");
     Sheet sheet = workbook.getSheetAt(sheetIndex);
     int totalColumns = sheet.getRow(rowIndex).getLastCellNum();
@@ -261,8 +262,8 @@ public class ExcelToObjectMapper {
       }
     }
     if (index == -1) {
-      throw new ExcelException(
-          ExcelException.Code.INVALID_OBJECT_FIELD, "Invalid object field name provided.");
+      throw new UtilsException(
+          ExcelException.INVALID_OBJECT_FIELD, "Invalid object field name provided.");
     }
     return index;
   }
