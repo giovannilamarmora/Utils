@@ -8,7 +8,7 @@
 
 The logger Interceptor is used to get the full LOG of the method called;
 
-To be used you need to add a dependency:
+To be used you need to add a dependency (Try first without it):
 ```
 <dependency>
     <groupId>org.aspectj</groupId>

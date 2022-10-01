@@ -2,6 +2,8 @@ package com.github.giovannilamarmora.utils.math;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import com.github.giovannilamarmora.utils.exception.UtilsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +22,10 @@ public class MathService {
    * @param places Number of Decimal user want
    * @return Cut Number
    */
-  public static double round(double value, int places) throws MathException {
+  public static double round(double value, int places) throws UtilsException {
     if (places < 0)
-      throw new MathException(
-          MathException.Code.VALUE_NOT_PERMITTED,
+      throw new UtilsException(
+          MathException.VALUE_NOT_PERMITTED,
           "The current places: " + places + " is not permitted by the system.");
     BigDecimal bd = new BigDecimal(Double.toString(value));
     bd = bd.setScale(places, RoundingMode.HALF_UP);

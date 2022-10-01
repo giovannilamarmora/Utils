@@ -34,7 +34,7 @@ public class LogTimeTracker {
     }*/
     if (root_cause != null) {
       LOG.error(
-          "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=KO, EXCEPTION={}, DESCRIPTION={}, ROOT_EXCEPTION={}, ROOT_DESCRIPTION={}",
+          "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=KO, [EXCEPTION]={}, [DESCRIPTION]={}, [ROOT_EXCEPTION]={}, [ROOT_DESCRIPTION]={}",
           this.actionType,
           this.methodName,
           this.correlationId,
@@ -46,7 +46,7 @@ public class LogTimeTracker {
       return;
     }
     LOG.error(
-        "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=KO, EXCEPTION={}, DESCRIPTION={}",
+        "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=KO, [EXCEPTION]={}, [DESCRIPTION]={}",
         this.actionType,
         this.methodName,
         this.correlationId,
@@ -57,7 +57,7 @@ public class LogTimeTracker {
 
   public void trackSuccess(Logger LOG) {
     LOG.info(
-        "ACTION_TYPE={}, METHOD={}, CORRELATION_ID={}, TIME_TAKEN={}, STATUS=OK",
+        "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
         this.actionType,
         this.methodName,
         this.correlationId,
