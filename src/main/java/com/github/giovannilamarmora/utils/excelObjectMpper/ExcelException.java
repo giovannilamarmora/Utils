@@ -1,13 +1,14 @@
-package com.github.giovannilamarmora.utils.math;
+package com.github.giovannilamarmora.utils.excelObjectMpper;
 
 import com.github.giovannilamarmora.utils.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 
-public enum MathException implements ExceptionCode {
-  VALUE_NOT_PERMITTED(HttpStatus.INTERNAL_SERVER_ERROR, "The current value is not permitted");
+public enum ExcelException implements ExceptionCode {
+  UNABLE_TO_READ_THE_FILE(HttpStatus.BAD_REQUEST, null),
+  ERROR_ON_SETTING_FIELD(HttpStatus.BAD_REQUEST, null),
+  INVALID_OBJECT_FIELD(HttpStatus.BAD_REQUEST, null);
 
-  MathException(HttpStatus status, String message) {
-  }
+  ExcelException(HttpStatus status, String message) {}
 
   /**
    * Return the message of the Exception

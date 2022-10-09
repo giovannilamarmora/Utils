@@ -35,7 +35,7 @@ public class LoggerInterceptor implements Serializable {
     } else if (annotation.type() == LogTimeTracker.ActionType.APP_CONTROLLER) {
       CorrelationIdUtils.generateCorrelationId();
     }
-    String className = method.getDeclaringClass().getName();
+    String className = method.getDeclaringClass().getSimpleName();
     String methodName = className + "." + method.getName();
     LogTimeTracker tracker =
         LogTimeTracker.startInvocation(
