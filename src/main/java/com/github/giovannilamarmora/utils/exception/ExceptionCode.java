@@ -5,6 +5,12 @@ import org.springframework.http.HttpStatus;
 public interface ExceptionCode {
 
   /**
+   * return the name of the Exception
+   * @return String
+   */
+  String exceptionName();
+
+  /**
    * Return the message of the Exception
    * @return String
    */
@@ -17,7 +23,7 @@ public interface ExceptionCode {
   HttpStatus getStatus();
 
   /**
-   * return the name of the Exception
+   * return the code of the Exception
    * @return String
    */
   String name();

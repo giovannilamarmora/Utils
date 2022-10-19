@@ -4,9 +4,26 @@ import com.github.giovannilamarmora.utils.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 
 public enum MathException implements ExceptionCode {
-  VALUE_NOT_PERMITTED(HttpStatus.INTERNAL_SERVER_ERROR, "The current value is not permitted");
+  ERRMATUTL001("VALUE_NOT_PERMITTED", HttpStatus.INTERNAL_SERVER_ERROR, "The current value is not permitted");
 
-  MathException(HttpStatus status, String message) {
+  private final HttpStatus status;
+  private final String message;
+  private final String exceptionName;
+
+  MathException(String exceptionName, HttpStatus status, String message) {
+    this.exceptionName = exceptionName;
+    this.status = status;
+    this.message = message;
+  }
+
+  /**
+   * return the name of the Exception
+   *
+   * @return String
+   */
+  @Override
+  public String exceptionName() {
+    return exceptionName;
   }
 
   /**
@@ -16,7 +33,7 @@ public enum MathException implements ExceptionCode {
    */
   @Override
   public String getMessage() {
-    return null;
+    return message;
   }
 
   /**
@@ -26,6 +43,6 @@ public enum MathException implements ExceptionCode {
    */
   @Override
   public HttpStatus getStatus() {
-    return null;
+    return status;
   }
 }
