@@ -8,6 +8,7 @@ import com.github.giovannilamarmora.utils.interceptors.Logged;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
  * @author Giovanni Lamarmora.
  */
 @Logged
+@Service
 public class ExcelToObjectMapper {
 
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -61,13 +63,14 @@ public class ExcelToObjectMapper {
    * @throws IOException
    * @throws ExcelException
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public void createWorkbook(String fileUrl) throws IOException, UtilsException {
     LOG.info("Creating workbook for filepath {}", fileUrl);
     try {
       workbook = createWorkBook(fileUrl);
     } catch (InvalidFormatException e) {
       LOG.error("Error on creating workbook for filepath {}", fileUrl);
-      throw new UtilsException(ExcelException.UNABLE_TO_READ_THE_FILE, e.getMessage());
+      throw new UtilsException(ExcelException.ERREXCUTL001, e.getMessage());
     }
   }
   /**
@@ -78,7 +81,7 @@ public class ExcelToObjectMapper {
    * @return List of object of type T.
    * @throws Exception if failed to generate mapping.
    */
-  @LogInterceptor(type = LogTimeTracker.ActionType.APP_MAPPER)
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public <T> ArrayList<T> mapClass(Class<T> cls, Integer sheetIndex, Integer rowIndex)
       throws Exception {
     LOG.info(
@@ -121,7 +124,7 @@ public class ExcelToObjectMapper {
         field.set(obj, null);
       } catch (IllegalAccessException e) {
         LOG.error("Error on setting blank cell for field {}", field.getName());
-        throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e.getMessage());
+        throw new UtilsException(ExcelException.ERREXCUTL002, e.getMessage());
       }
     } else if (cls == String.class) {
       try {
@@ -135,7 +138,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
         }
       }
     } else if (cls == LocalDate.class || cls == LocalDateTime.class) {
@@ -155,7 +158,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
         }
       }
     } else if (cls == Integer.class
@@ -190,7 +193,7 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
+          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
         }
       }
     } else if (cls == Boolean.class) {
@@ -215,7 +218,7 @@ public class ExcelToObjectMapper {
             field.set(obj, null);
           } catch (IllegalAccessException e1) {
             LOG.error("Error on setting null cell for field {}", field.getName());
-            throw new UtilsException(ExcelException.ERROR_ON_SETTING_FIELD, e1.getMessage());
+            throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
           }
         }
       }
@@ -262,8 +265,7 @@ public class ExcelToObjectMapper {
       }
     }
     if (index == -1) {
-      throw new UtilsException(
-          ExcelException.INVALID_OBJECT_FIELD, "Invalid object field name provided.");
+      throw new UtilsException(ExcelException.ERREXCUTL003, "Invalid object field name provided.");
     }
     return index;
   }
@@ -274,5 +276,6 @@ public class ExcelToObjectMapper {
    * @param excelData Set automatically
    * @param <T> Set automatically
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public <T> void validate(ArrayList<T> excelData) {}
 }

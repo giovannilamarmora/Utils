@@ -1,15 +1,21 @@
 package com.github.giovannilamarmora.utils.math;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.github.giovannilamarmora.utils.exception.UtilsException;
+import com.github.giovannilamarmora.utils.interceptors.LogInterceptor;
+import com.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
+import com.github.giovannilamarmora.utils.interceptors.Logged;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @author Giovanni Lamarmora
  */
+@Service
+@Logged
 public class MathService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MathService.class);
@@ -22,10 +28,11 @@ public class MathService {
    * @param places Number of Decimal user want
    * @return Cut Number
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static double round(double value, int places) throws UtilsException {
     if (places < 0)
       throw new UtilsException(
-          MathException.VALUE_NOT_PERMITTED,
+          MathException.ERRMATUTL001,
           "The current places: " + places + " is not permitted by the system.");
     BigDecimal bd = new BigDecimal(Double.toString(value));
     bd = bd.setScale(places, RoundingMode.HALF_UP);

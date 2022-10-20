@@ -10,12 +10,21 @@
     </parent>
     <groupId>com.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.5</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
     <properties>
         <java.version>11</java.version>
+        <jackson-databind.version>2.14.0-rc1</jackson-databind.version>
+        <poi.version>5.2.2</poi.version>
+        <lombok.version>1.18.24</lombok.version>
+        <tomcat.version>9.0.65</tomcat.version> <!-- Do Not Update -->
+        <slf4j.version>2.0.3</slf4j.version>
+        <spring.web.version>5.3.23</spring.web.version>
+        <spring-context.version>5.3.23</spring-context.version>
+        <spring-aop.version>5.3.23</spring-aop.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
     </properties>
 
     <developers>
@@ -44,48 +53,60 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.3.21</version>
+            <version>${spring.web.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.21</version>
+            <version>${spring-context.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>5.3.21</version>
+            <version>${spring-aop.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.7</version>
+            <version>${aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>9.0.64</version>
+            <version>${tomcat.version}</version> <!-- Do Not Update -->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.0</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.3</version>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>2.7.2</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -23,8 +23,7 @@ public class CorrelationIdInterceptor extends OncePerRequestFilter {
       throws ServletException, IOException {
     String correlationId = request.getHeader(CorrelationIdUtils.CORRELATION_HEADER_NAME);
     String mdcCorrelationId = MDC.get(CorrelationIdUtils.CORRELATION_MDC_NAME);
-    if (isEmpty(correlationId)
-        || !correlationId.equalsIgnoreCase(mdcCorrelationId)) {
+    if (isEmpty(correlationId) || !correlationId.equalsIgnoreCase(mdcCorrelationId)) {
       MDC.remove(CorrelationIdUtils.CORRELATION_MDC_NAME);
       correlationId = CorrelationIdUtils.generateCorrelationId();
     }

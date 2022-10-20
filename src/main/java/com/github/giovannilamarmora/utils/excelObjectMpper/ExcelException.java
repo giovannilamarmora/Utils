@@ -4,11 +4,29 @@ import com.github.giovannilamarmora.utils.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 
 public enum ExcelException implements ExceptionCode {
-  UNABLE_TO_READ_THE_FILE(HttpStatus.BAD_REQUEST, null),
-  ERROR_ON_SETTING_FIELD(HttpStatus.BAD_REQUEST, null),
-  INVALID_OBJECT_FIELD(HttpStatus.BAD_REQUEST, null);
+  ERREXCUTL001("UNABLE_TO_READ_THE_FILE", HttpStatus.BAD_REQUEST, "Unable to read the file"),
+  ERREXCUTL002("ERROR_ON_SETTING_FIELD", HttpStatus.BAD_REQUEST, "Error on setting field"),
+  ERREXCUTL003("INVALID_OBJECT_FIELD", HttpStatus.BAD_REQUEST, "Invalid Object field");
 
-  ExcelException(HttpStatus status, String message) {}
+  private final HttpStatus status;
+  private final String message;
+  private final String exceptionName;
+
+  ExcelException(String exceptionName, HttpStatus status, String message) {
+    this.exceptionName = exceptionName;
+    this.status = status;
+    this.message = message;
+  }
+
+  /**
+   * return the name of the Exception
+   *
+   * @return String
+   */
+  @Override
+  public String exceptionName() {
+    return exceptionName;
+  }
 
   /**
    * Return the message of the Exception
@@ -17,7 +35,7 @@ public enum ExcelException implements ExceptionCode {
    */
   @Override
   public String getMessage() {
-    return null;
+    return message;
   }
 
   /**
@@ -27,6 +45,6 @@ public enum ExcelException implements ExceptionCode {
    */
   @Override
   public HttpStatus getStatus() {
-    return null;
+    return status;
   }
 }

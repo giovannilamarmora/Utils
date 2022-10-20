@@ -101,6 +101,7 @@ public class LogTimeTracker {
     APP_CONTROLLER,
     APP_SERVICE,
     APP_MAPPER,
-    APP_EXTERNAL
+    APP_EXTERNAL,
+    UTILS_LOGGER
   }
 }
