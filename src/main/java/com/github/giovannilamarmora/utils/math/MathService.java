@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import com.github.giovannilamarmora.utils.exception.UtilsException;
+import com.github.giovannilamarmora.utils.interceptors.LogInterceptor;
+import com.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,7 @@ public class MathService {
    * @param places Number of Decimal user want
    * @return Cut Number
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static double round(double value, int places) throws UtilsException {
     if (places < 0)
       throw new UtilsException(

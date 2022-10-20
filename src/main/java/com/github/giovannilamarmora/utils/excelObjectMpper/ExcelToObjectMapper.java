@@ -61,6 +61,7 @@ public class ExcelToObjectMapper {
    * @throws IOException
    * @throws ExcelException
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public void createWorkbook(String fileUrl) throws IOException, UtilsException {
     LOG.info("Creating workbook for filepath {}", fileUrl);
     try {
@@ -78,7 +79,7 @@ public class ExcelToObjectMapper {
    * @return List of object of type T.
    * @throws Exception if failed to generate mapping.
    */
-  @LogInterceptor(type = LogTimeTracker.ActionType.APP_MAPPER)
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public <T> ArrayList<T> mapClass(Class<T> cls, Integer sheetIndex, Integer rowIndex)
       throws Exception {
     LOG.info(
@@ -274,5 +275,6 @@ public class ExcelToObjectMapper {
    * @param excelData Set automatically
    * @param <T> Set automatically
    */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public <T> void validate(ArrayList<T> excelData) {}
 }
