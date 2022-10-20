@@ -1,6 +1,22 @@
 # UtilsException
 
+_go to_ `Utils Project` 🚀 ([Readme.me](../../../../../../../../README.md) 📄)
+
 How to work with a centralized Exception
+
+First of all you need to enable it into your code, goes into the Application started and Import the UtilsException.
+
+```
+@SpringBootApplication
+@Import(UtilsException.class)
+public class ProjectApplication {
+
+  public static void main(String[] args) {
+    SpringApplication.run(TmsProjectApplication.class, args);
+  }
+}
+
+```
 
 On your code you need to map the error in an ExceptionMapper(You need to create it), it could be like this:
 
@@ -64,6 +80,7 @@ And it will return an Object like this:
 To handle a new exception the code would be like this:
 
 ```
+@ControllerAdvice
 public class ExceptionHandler extends UtilsException {
 
   @org.springframework.web.bind.annotation.ExceptionHandler(

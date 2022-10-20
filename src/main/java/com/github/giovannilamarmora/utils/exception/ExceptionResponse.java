@@ -25,9 +25,10 @@ public class ExceptionResponse implements Serializable {
   private String message;
 
   public ExceptionResponse(
-          String exceptionCode, HttpStatus status, String correlationId, String message) {
+          String exceptionCode, String exceptionName, HttpStatus status, String correlationId, String message) {
     this.dateTime = getDateTime();
     this.exceptionCode = exceptionCode;
+    this.exceptionName = exceptionName;
     this.status = status;
     this.correlationId = correlationId;
     this.message = message;
