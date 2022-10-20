@@ -4,6 +4,10 @@ _go to_ `Utils Project` 🚀 ([Readme.me](../../../../../../../../README.md) �
 
 How to work with a centralized Exception
 
+## Enable UtilsException
+
+### 1. Via Starter Application
+
 First of all you need to enable it into your code, goes into the Application started and Import the UtilsException.
 
 ```
@@ -18,6 +22,20 @@ public class ProjectApplication {
 
 ```
 
+### 2. Via AppConfig
+
+If you already enabled **Log Interceptor**
+📈 ([Readme.me](src/main/java/com/github/giovannilamarmora/utils/interceptors/README.md) 📄) and created the AppConfig (
+Or whatever name you choose for it) you already have the exception interceptor enabled on your project, if not working,
+goes to step 1, else you can create the AppConfig class like this:
+
+```
+@ComponentScan(basePackages = "com.github.giovannilamarmora.utils")
+@Configuration
+public class AppConfig {}
+```
+
+<hr>
 On your code you need to map the error in an ExceptionMapper(You need to create it), it could be like this:
 
 ```
