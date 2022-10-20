@@ -8,6 +8,7 @@ import com.github.giovannilamarmora.utils.interceptors.Logged;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
  * @author Giovanni Lamarmora.
  */
 @Logged
+@Service
 public class ExcelToObjectMapper {
 
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -263,8 +265,7 @@ public class ExcelToObjectMapper {
       }
     }
     if (index == -1) {
-      throw new UtilsException(
-          ExcelException.ERREXCUTL003, "Invalid object field name provided.");
+      throw new UtilsException(ExcelException.ERREXCUTL003, "Invalid object field name provided.");
     }
     return index;
   }

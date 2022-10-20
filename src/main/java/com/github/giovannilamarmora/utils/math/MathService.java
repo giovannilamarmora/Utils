@@ -1,17 +1,21 @@
 package com.github.giovannilamarmora.utils.math;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.github.giovannilamarmora.utils.exception.UtilsException;
 import com.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import com.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
+import com.github.giovannilamarmora.utils.interceptors.Logged;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @author Giovanni Lamarmora
  */
+@Service
+@Logged
 public class MathService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MathService.class);
