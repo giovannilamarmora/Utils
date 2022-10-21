@@ -1,10 +1,9 @@
-package com.github.giovannilamarmora.utils.exception;
+package com.github.giovannilamarmora.utils.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,20 +17,13 @@ public class ExceptionResponse implements Serializable {
 
   private LocalDateTime dateTime;
   private String url;
-  private String exceptionCode;
-  private String exceptionName;
-  private HttpStatus status;
   private String correlationId;
-  private String message;
+  private Error error;
 
-  public ExceptionResponse(
-          String exceptionCode, String exceptionName, HttpStatus status, String correlationId, String message) {
+  public ExceptionResponse(Error error, String correlationId) {
     this.dateTime = getDateTime();
-    this.exceptionCode = exceptionCode;
-    this.exceptionName = exceptionName;
-    this.status = status;
+    this.error = error;
     this.correlationId = correlationId;
-    this.message = message;
   }
 
   public LocalDateTime getDateTime() {

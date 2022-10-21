@@ -1,5 +1,6 @@
 package com.github.giovannilamarmora.utils.exception;
 
+import com.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import com.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,32 +50,42 @@ public class UtilsException extends Exception {
 
   @PostConstruct
   void setupResponse() {
-    error.setExceptionCode(INTERNAL_SERVER_ERROR);
-    error.setStatus(DEFAULT_STATUS);
+    error.getError().setExceptionCode(INTERNAL_SERVER_ERROR);
+    error.getError().setStatus(DEFAULT_STATUS);
     error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
-    error.setMessage("Test Message");
+    error.getError().setMessage("An error is occurred");
   }
 
   @ExceptionHandler(value = UtilsException.class)
   private ResponseEntity<ExceptionResponse> handleUtilsException(
-          UtilsException e, HttpServletRequest request) {
+      UtilsException e, HttpServletRequest request) {
 
     LOG.error(
-            "An error happened while calling {} Downstream API: {}",
-            request.getRequestURI(),
-            e.getMessage());
+        "An error happened while calling {} Downstream API: {}",
+        request.getRequestURI(),
+        e.getMessage());
     if (e.exceptionCode != null) {
-      error.setExceptionCode(
-              !e.exceptionCode.name().isBlank() ? e.exceptionCode.name() : error.getExceptionCode());
-      error.setStatus(
+      error
+          .getError()
+          .setExceptionCode(
+              !e.exceptionCode.name().isBlank()
+                  ? e.exceptionCode.name()
+                  : error.getError().getExceptionCode());
+      error
+          .getError()
+          .setStatus(
               e.exceptionCode.getStatus() != null ? e.exceptionCode.getStatus() : DEFAULT_STATUS);
       error.setUrl(request.getRequestURI().isBlank() ? null : request.getRequestURI());
       if (!e.exceptionCode.getMessage().isBlank() && !e.getMessage().isBlank()) {
-        error.setMessage(e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());
+        error
+            .getError()
+            .setMessage(e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());
       } else if (!e.exceptionCode.getMessage().isBlank()) {
-        error.setMessage(e.exceptionCode.getMessage());
-      } else error.setMessage(e.getMessage());
-      error.setExceptionName(
+        error.getError().setMessage(e.exceptionCode.getMessage());
+      } else error.getError().setMessage(e.getMessage());
+      error
+          .getError()
+          .setExceptionName(
               e.exceptionCode.exceptionName().isBlank() ? null : e.exceptionCode.exceptionName());
       error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
       return new ResponseEntity<>(error, e.exceptionCode.getStatus());
@@ -85,11 +96,11 @@ public class UtilsException extends Exception {
 
   @ExceptionHandler(value = Exception.class)
   private ResponseEntity<ExceptionResponse> handleException(
-          Exception e, HttpServletRequest request) {
+      Exception e, HttpServletRequest request) {
     LOG.error(
-            "An error happened while calling {} Downstream API: {}",
-            request.getRequestURI(),
-            e.getMessage());
+        "An error happened while calling {} Downstream API: {}",
+        request.getRequestURI(),
+        e.getMessage());
     if (e != null) {
       HttpStatus status = HttpStatus.BAD_REQUEST;
       error = getExceptionResponse(e, request, GenericException.ERRDEFUTL001, status);
@@ -100,23 +111,26 @@ public class UtilsException extends Exception {
   }
 
   public static ExceptionResponse getExceptionResponse(
-          Exception e, HttpServletRequest request, ExceptionCode exceptionCode, HttpStatus status) {
+      Exception e, HttpServletRequest request, ExceptionCode exceptionCode, HttpStatus status) {
     ExceptionResponse exceptionResponse = new ExceptionResponse();
     HttpStatus defaultStatus = HttpStatus.BAD_REQUEST;
-    exceptionResponse.setExceptionName(
-            e.getClass().getName().isBlank() ? null : e.getClass().getSimpleName());
-    exceptionResponse.setExceptionCode(
+    exceptionResponse
+        .getError()
+        .setExceptionName(e.getClass().getName().isBlank() ? null : e.getClass().getSimpleName());
+    exceptionResponse
+        .getError()
+        .setExceptionCode(
             exceptionCode != null && exceptionCode.name() != null && !exceptionCode.name().isBlank()
-                    ? exceptionCode.name()
-                    : GenericException.ERRDEFUTL001.name());
-    exceptionResponse.setStatus(status != null ? status : defaultStatus);
+                ? exceptionCode.name()
+                : GenericException.ERRDEFUTL001.name());
+    exceptionResponse.getError().setStatus(status != null ? status : defaultStatus);
     if (e.getMessage() != null && !e.getMessage().isBlank()) {
-      exceptionResponse.setMessage("Exception Message: " + e.getMessage());
-    } else exceptionResponse.setMessage(null);
+      exceptionResponse.getError().setMessage("Exception Message: " + e.getMessage());
+    } else exceptionResponse.getError().setMessage(null);
     exceptionResponse.setUrl(
-            request.getRequestURI() == null || request.getRequestURI().isBlank()
-                    ? null
-                    : request.getRequestURI());
+        request.getRequestURI() == null || request.getRequestURI().isBlank()
+            ? null
+            : request.getRequestURI());
     exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
     return exceptionResponse;
   }
