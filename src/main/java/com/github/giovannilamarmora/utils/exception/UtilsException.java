@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
@@ -44,22 +43,10 @@ public class UtilsException extends Exception {
 
   public final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-  private final ErrorInfo errorInfo = new ErrorInfo();
-  public ExceptionResponse error = new ExceptionResponse(errorInfo);
-
-  @PostConstruct
-  void setupResponse() {
-    errorInfo.setExceptionCode(GenericException.ERRDEFUTL001.name());
-    error.getError().setStatus(GenericException.ERRDEFUTL001.getStatus());
-    error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
-    errorInfo.setMessage(GenericException.ERRDEFUTL001.getMessage());
-    errorInfo.setExceptionName(GenericException.ERRDEFUTL001.exceptionName());
-  }
-
   @ExceptionHandler(value = UtilsException.class)
   private ResponseEntity<ExceptionResponse> handleUtilsException(
       UtilsException e, HttpServletRequest request) {
-
+    ExceptionResponse error = defaultResponse();
     LOG.error(
         "An error happened while calling {} Downstream API: {}",
         request.getRequestURI(),
@@ -100,6 +87,7 @@ public class UtilsException extends Exception {
   @ExceptionHandler(value = Exception.class)
   private ResponseEntity<ExceptionResponse> handleException(
       Exception e, HttpServletRequest request) {
+    ExceptionResponse error = defaultResponse();
     LOG.error(
         "An error happened while calling {} Downstream API: {}",
         request.getRequestURI(),
@@ -133,6 +121,18 @@ public class UtilsException extends Exception {
             ? null
             : request.getRequestURI());
     exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+    exceptionResponse.setError(errorMes);
+    return exceptionResponse;
+  }
+
+  private ExceptionResponse defaultResponse() {
+    ExceptionResponse exceptionResponse = new ExceptionResponse();
+    ErrorInfo errorMes = new ErrorInfo();
+    errorMes.setExceptionCode(GenericException.ERRDEFUTL001.name());
+    errorMes.setStatus(GenericException.ERRDEFUTL001.getStatus());
+    exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+    errorMes.setMessage(GenericException.ERRDEFUTL001.getMessage());
+    errorMes.setExceptionName(GenericException.ERRDEFUTL001.exceptionName());
     exceptionResponse.setError(errorMes);
     return exceptionResponse;
   }
