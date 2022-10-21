@@ -11,6 +11,7 @@ _go to_ `Utils Project` ðŸš€ ([Readme.me](../../../../../../../../README.md) ðŸ“
 The logger Interceptor is used to get the full LOG of the method called;
 
 To be used you need to add a dependency (Try first without it):
+
 ```
 <dependency>
     <groupId>org.aspectj</groupId>
@@ -22,7 +23,7 @@ To be used you need to add a dependency (Try first without it):
 And then create a class named AppConfig
 
 ```
-@ComponentScan(basePackages = "com.github.giovannilamarmora.utils.interceptors")
+@ComponentScan(basePackages = "com.github.giovannilamarmora.utils")
 @Configuration
 @EnableAspectJAutoProxy
 public class AppConfig {}
