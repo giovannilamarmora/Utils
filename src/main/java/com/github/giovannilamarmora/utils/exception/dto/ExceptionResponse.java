@@ -18,12 +18,11 @@ public class ExceptionResponse implements Serializable {
   private LocalDateTime dateTime;
   private String url;
   private String correlationId;
-  private Error error;
+  private ErrorInfo error;
 
-  public ExceptionResponse(Error error, String correlationId) {
+  public ExceptionResponse(ErrorInfo error) {
     this.dateTime = getDateTime();
     this.error = error;
-    this.correlationId = correlationId;
   }
 
   public LocalDateTime getDateTime() {

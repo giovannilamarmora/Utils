@@ -1,5 +1,6 @@
 package com.github.giovannilamarmora.utils.exception;
 
+import com.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import com.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import com.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
 import org.slf4j.Logger;
@@ -41,19 +42,18 @@ public class UtilsException extends Exception {
     this.exceptionCode = exceptionCode;
   }
 
-  public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-  public static final HttpStatus DEFAULT_STATUS = HttpStatus.INTERNAL_SERVER_ERROR;
-
   public final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-  public ExceptionResponse error = new ExceptionResponse();
+  private final ErrorInfo errorInfo = new ErrorInfo();
+  public ExceptionResponse error = new ExceptionResponse(errorInfo);
 
   @PostConstruct
   void setupResponse() {
-    error.getError().setExceptionCode(INTERNAL_SERVER_ERROR);
-    error.getError().setStatus(DEFAULT_STATUS);
+    errorInfo.setExceptionCode(GenericException.ERRDEFUTL001.name());
+    error.getError().setStatus(GenericException.ERRDEFUTL001.getStatus());
     error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
-    error.getError().setMessage("An error is occurred");
+    errorInfo.setMessage(GenericException.ERRDEFUTL001.getMessage());
+    errorInfo.setExceptionName(GenericException.ERRDEFUTL001.exceptionName());
   }
 
   @ExceptionHandler(value = UtilsException.class)
@@ -65,32 +65,35 @@ public class UtilsException extends Exception {
         request.getRequestURI(),
         e.getMessage());
     if (e.exceptionCode != null) {
-      error
-          .getError()
-          .setExceptionCode(
-              !e.exceptionCode.name().isBlank()
-                  ? e.exceptionCode.name()
-                  : error.getError().getExceptionCode());
-      error
-          .getError()
-          .setStatus(
-              e.exceptionCode.getStatus() != null ? e.exceptionCode.getStatus() : DEFAULT_STATUS);
+      ErrorInfo errorMes = new ErrorInfo();
+      errorMes.setExceptionCode(
+          !e.exceptionCode.name().isBlank()
+              ? e.exceptionCode.name()
+              : GenericException.ERRDEFUTL001.name());
+      errorMes.setStatus(
+          e.exceptionCode.getStatus() != null
+              ? e.exceptionCode.getStatus()
+              : GenericException.ERRDEFUTL001.getStatus());
       error.setUrl(request.getRequestURI().isBlank() ? null : request.getRequestURI());
-      if (!e.exceptionCode.getMessage().isBlank() && !e.getMessage().isBlank()) {
-        error
-            .getError()
-            .setMessage(e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());
-      } else if (!e.exceptionCode.getMessage().isBlank()) {
-        error.getError().setMessage(e.exceptionCode.getMessage());
-      } else error.getError().setMessage(e.getMessage());
-      error
-          .getError()
-          .setExceptionName(
-              e.exceptionCode.exceptionName().isBlank() ? null : e.exceptionCode.exceptionName());
+      if (e.exceptionCode.getMessage() != null
+          && e.getMessage() != null
+          && !e.exceptionCode.getMessage().isBlank()
+          && !e.getMessage().isBlank()) {
+        errorMes.setMessage(
+            "Message: " + e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());
+      } else if (e.exceptionCode.getMessage() != null
+              && !e.exceptionCode.getMessage().isBlank()
+              && e.getMessage() == null
+          || e.getMessage().isBlank()) {
+        errorMes.setMessage(e.exceptionCode.getMessage());
+      } else errorMes.setMessage(e.getMessage());
+      errorMes.setExceptionName(
+          e.exceptionCode.exceptionName().isBlank() ? null : e.exceptionCode.exceptionName());
       error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+      error.setError(errorMes);
       return new ResponseEntity<>(error, e.exceptionCode.getStatus());
     } else {
-      return new ResponseEntity<>(error, DEFAULT_STATUS);
+      return new ResponseEntity<>(error, GenericException.ERRDEFUTL001.getStatus());
     }
   }
 
@@ -106,32 +109,31 @@ public class UtilsException extends Exception {
       error = getExceptionResponse(e, request, GenericException.ERRDEFUTL001, status);
       return new ResponseEntity<>(error, status);
     } else {
-      return new ResponseEntity<>(error, DEFAULT_STATUS);
+      return new ResponseEntity<>(error, GenericException.ERRDEFUTL001.getStatus());
     }
   }
 
   public static ExceptionResponse getExceptionResponse(
       Exception e, HttpServletRequest request, ExceptionCode exceptionCode, HttpStatus status) {
     ExceptionResponse exceptionResponse = new ExceptionResponse();
+    ErrorInfo errorMes = new ErrorInfo();
     HttpStatus defaultStatus = HttpStatus.BAD_REQUEST;
-    exceptionResponse
-        .getError()
-        .setExceptionName(e.getClass().getName().isBlank() ? null : e.getClass().getSimpleName());
-    exceptionResponse
-        .getError()
-        .setExceptionCode(
-            exceptionCode != null && exceptionCode.name() != null && !exceptionCode.name().isBlank()
-                ? exceptionCode.name()
-                : GenericException.ERRDEFUTL001.name());
-    exceptionResponse.getError().setStatus(status != null ? status : defaultStatus);
+    errorMes.setExceptionName(
+        e.getClass().getName().isBlank() ? null : e.getClass().getSimpleName());
+    errorMes.setExceptionCode(
+        exceptionCode != null && exceptionCode.name() != null && !exceptionCode.name().isBlank()
+            ? exceptionCode.name()
+            : GenericException.ERRDEFUTL001.name());
+    errorMes.setStatus(status != null ? status : defaultStatus);
     if (e.getMessage() != null && !e.getMessage().isBlank()) {
-      exceptionResponse.getError().setMessage("Exception Message: " + e.getMessage());
-    } else exceptionResponse.getError().setMessage(null);
+      errorMes.setMessage("Exception Message: " + e.getMessage());
+    } else errorMes.setMessage(null);
     exceptionResponse.setUrl(
         request.getRequestURI() == null || request.getRequestURI().isBlank()
             ? null
             : request.getRequestURI());
     exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+    exceptionResponse.setError(errorMes);
     return exceptionResponse;
   }
 }
