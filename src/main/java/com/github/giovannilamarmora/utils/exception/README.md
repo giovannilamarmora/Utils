@@ -111,12 +111,8 @@ public class ExceptionHandler extends UtilsException {
         "An error happened while calling {} Downstream API: {}",
         request.getRequestURI(),
         e.getMessage());
-    if (e != null) {
-      HttpStatus status = HttpStatus.BAD_REQUEST;
-      return new ResponseEntity<>(getExceptionResponse(e, request, null, status), status);
-    } else {
-      return new ResponseEntity<>(error, DEFAULT_STATUS);
-    }
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    return new ResponseEntity<>(getExceptionResponse(e, request, null, status), status);
   }
 }
 ```
