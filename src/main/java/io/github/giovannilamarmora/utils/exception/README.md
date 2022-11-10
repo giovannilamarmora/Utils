@@ -36,6 +36,8 @@ public class AppConfig {}
 ```
 
 <hr>
+
+## Use UtilsException
 On your code you need to map the error in an ExceptionMapper(You need to create it), it could be like this:
 
 ```
