@@ -6,12 +6,13 @@ This page will be refreshed every time an utils will be added.
 
 # Documentations
 
-1. Math Service ➕ ([Readme.me](src/main/java/com/github/giovannilamarmora/utils/math/README.md) 📄)
-2. Log Interceptor 📈 ([Readme.me](src/main/java/com/github/giovannilamarmora/utils/interceptors/README.md) 📄)
-3. Excel To Object ♻️ ([Readme.me](src/main/java/com/github/giovannilamarmora/utils/excelObjectMpper/README.md) 📄)
-4. UtilsException 🚨 ([Readme.me](src/main/java/com/github/giovannilamarmora/utils/exception/README.md) 📄)
+1. Math Service ➕ ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/math/README.md) 📄)
+2. Log Interceptor 📈 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/interceptors/README.md) 📄)
+3. Excel To Object ♻️ ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/excelObjectMpper/README.md) 📄)
+4. UtilsException 🚨 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/exception/README.md) 📄)
 
 ## How to use it
+
 Copy this dependency into your maven project.
 
 ```
