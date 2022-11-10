@@ -8,9 +8,9 @@
         <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.github.giovannilamarmora.utils</groupId>
+    <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
