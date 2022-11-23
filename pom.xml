@@ -16,17 +16,17 @@
     <description>Utils Maven Repository</description>
     <properties>
         <java.version>11</java.version>
-        <jackson-databind.version>2.14.0</jackson-databind.version>
+        <jackson-databind.version>2.14.0-rc1</jackson-databind.version>
         <poi.version>5.2.2</poi.version>
         <lombok.version>1.18.24</lombok.version>
         <tomcat.version>9.0.65</tomcat.version> <!-- Do Not Update -->
-        <slf4j.version>2.0.4</slf4j.version>
-        <spring.web.version>6.0.0</spring.web.version>
-        <spring-context.version>6.0.0</spring-context.version>
-        <spring-aop.version>6.0.0</spring-aop.version>
+        <slf4j.version>2.0.3</slf4j.version>
+        <spring.web.version>5.3.23</spring.web.version>
+        <spring-context.version>5.3.23</spring-context.version>
+        <spring-aop.version>5.3.23</spring-aop.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <spring.test.version>2.7.5</spring.test.version>
-        <junit.version>5.9.0</junit.version>
+        <spring.test.version>2.7.2</spring.test.version>
+        <junit.version>5.8.1</junit.version>
     </properties>
 
     <developers>
@@ -78,11 +78,11 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat.version}</version> &lt;!&ndash; Do Not Update &ndash;&gt;
-        </dependency>-->
+            <version>${tomcat.version}</version> <!-- Do Not Update -->
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
