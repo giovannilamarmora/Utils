@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.3</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
@@ -25,11 +25,14 @@
         <spring-context.version>5.3.23</spring-context.version>
         <spring-aop.version>5.3.23</spring-aop.version>
         <aspectj.version>1.9.9.1</aspectj.version>
+        <spring.test.version>2.7.2</spring.test.version>
+        <junit.version>5.8.1</junit.version>
     </properties>
 
     <developers>
         <developer>
             <id>GiovanniLamarmora</id>
+            <name>GiovanniLamarmora</name>
         </developer>
     </developers>
 
@@ -47,6 +50,11 @@
             <name>GitHub Giovanni Lamarmora Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/giovannilamarmora/utils</url>
         </repository>
+
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
@@ -99,13 +107,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.1</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>2.7.2</version>
+            <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -166,6 +174,17 @@
                             <version>5.3.21</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
