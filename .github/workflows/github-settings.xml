@@ -7,15 +7,15 @@
     </activeProfiles>
     <profiles>
         <profile>
-            <id>ossrh</id>
+            <id>github</id>
             <repositories>
                 <repository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2</url>
                 </repository>
                 <repository>
-                    <id>ossrh</id>
-                    <url>https://s01.oss.sonatype.org/</url>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/giovannilamarmora/utils</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -29,9 +29,9 @@
 
     <servers>
         <server>
-            <id>ossrh</id>
-            <username>${env.MAVEN_USER_NAME}</username>
-            <password>${env.MAVEN_ACCESS_TOKEN}</password>
+            <id>github</id>
+            <username>${env.USER_NAME}</username>
+            <password>${env.ACCESS_TOKEN}</password>
         </server>
     </servers>
 
