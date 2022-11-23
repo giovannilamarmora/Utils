@@ -120,6 +120,7 @@ jobs:
         name: Install gpg secret key
         run: |
           cat <(echo -e "$") | gpg --batch --import
+          gpg --gen-key
           gpg --list-secret-keys --keyid-format LONG
       - id: publish-to-central
         name: Publish to Central Repository
