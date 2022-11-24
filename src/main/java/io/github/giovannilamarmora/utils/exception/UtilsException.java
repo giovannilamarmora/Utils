@@ -68,6 +68,8 @@ public class UtilsException extends Exception {
           && !e.getMessage().isBlank()) {
         errorMes.setMessage(
             "Message: " + e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());
+        /*errorMes.setMessage(e.exceptionCode.getMessage());
+        errorMes.setExceptionMessage(e.getMessage());*/
       } else if (e.exceptionCode.getMessage() != null
               && !e.exceptionCode.getMessage().isBlank()
               && e.getMessage() == null
