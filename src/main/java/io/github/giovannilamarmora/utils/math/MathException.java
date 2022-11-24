@@ -4,7 +4,7 @@ import io.github.giovannilamarmora.utils.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 
 public enum MathException implements ExceptionCode {
-  ERRMATUTL001(
+  ERR_MAT_UTL_001(
       "VALUE_NOT_PERMITTED",
       HttpStatus.INTERNAL_SERVER_ERROR,
       "The current value is not permitted");

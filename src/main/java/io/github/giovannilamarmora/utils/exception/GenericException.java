@@ -3,7 +3,7 @@ package io.github.giovannilamarmora.utils.exception;
 import org.springframework.http.HttpStatus;
 
 enum GenericException implements ExceptionCode {
-  ERRDEFUTL001("EXCEPTION_HANDLER", HttpStatus.BAD_REQUEST, "Caught Exception with handler");
+  ERR_DEF_UTL_001("EXCEPTION_HANDLER", HttpStatus.BAD_REQUEST, "Caught Exception with handler");
 
   private final HttpStatus status;
   private final String message;

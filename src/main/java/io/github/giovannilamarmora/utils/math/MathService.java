@@ -32,7 +32,7 @@ public class MathService {
   public static double round(double value, int places) throws UtilsException {
     if (places < 0)
       throw new UtilsException(
-          MathException.ERRMATUTL001,
+          MathException.ERR_MAT_UTL_001,
           "The current places: " + places + " is not permitted by the system.");
     BigDecimal bd = new BigDecimal(Double.toString(value));
     bd = bd.setScale(places, RoundingMode.HALF_UP);
