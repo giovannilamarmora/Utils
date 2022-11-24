@@ -70,7 +70,10 @@ public class ExcelToObjectMapper {
       workbook = createWorkBook(fileUrl);
     } catch (InvalidFormatException e) {
       LOG.error("Error on creating workbook for filepath {}", fileUrl);
-      throw new UtilsException(ExcelException.ERREXCUTL001, e.getMessage());
+      throw new UtilsException(
+          ExcelException.ERR_EXC_UTL_001,
+          "Error during create workbook for file: " + fileUrl,
+          e.getMessage());
     }
   }
   /**
@@ -124,7 +127,10 @@ public class ExcelToObjectMapper {
         field.set(obj, null);
       } catch (IllegalAccessException e) {
         LOG.error("Error on setting blank cell for field {}", field.getName());
-        throw new UtilsException(ExcelException.ERREXCUTL002, e.getMessage());
+        throw new UtilsException(
+            ExcelException.ERR_EXC_UTL_002,
+            "Error on setting blank cell for field: " + field.getName(),
+            e.getMessage());
       }
     } else if (cls == String.class) {
       try {
@@ -138,7 +144,10 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
+          throw new UtilsException(
+              ExcelException.ERR_EXC_UTL_002,
+              "Error on setting blank cell for field: " + field.getName(),
+              e1.getMessage());
         }
       }
     } else if (cls == LocalDate.class || cls == LocalDateTime.class) {
@@ -158,7 +167,10 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
+          throw new UtilsException(
+              ExcelException.ERR_EXC_UTL_002,
+              "Error on setting blank cell for field: " + field.getName(),
+              e1.getMessage());
         }
       }
     } else if (cls == Integer.class
@@ -193,7 +205,10 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
+          throw new UtilsException(
+              ExcelException.ERR_EXC_UTL_002,
+              "Error on setting blank cell for field: " + field.getName(),
+              e1.getMessage());
         }
       }
     } else if (cls == Boolean.class) {
@@ -218,7 +233,10 @@ public class ExcelToObjectMapper {
             field.set(obj, null);
           } catch (IllegalAccessException e1) {
             LOG.error("Error on setting null cell for field {}", field.getName());
-            throw new UtilsException(ExcelException.ERREXCUTL002, e1.getMessage());
+            throw new UtilsException(
+                ExcelException.ERR_EXC_UTL_002,
+                "Error on setting blank cell for field: " + field.getName(),
+                e1.getMessage());
           }
         }
       }
@@ -265,7 +283,8 @@ public class ExcelToObjectMapper {
       }
     }
     if (index == -1) {
-      throw new UtilsException(ExcelException.ERREXCUTL003, "Invalid object field name provided.");
+      throw new UtilsException(
+          ExcelException.ERR_EXC_UTL_003, "Invalid object field name provided.");
     }
     return index;
   }
