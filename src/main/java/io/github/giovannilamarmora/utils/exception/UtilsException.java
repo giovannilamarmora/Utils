@@ -72,11 +72,11 @@ public class UtilsException extends Exception {
       errorMes.setExceptionCode(
           !e.exceptionCode.name().isBlank()
               ? e.exceptionCode.name()
-              : GenericException.ERRDEFUTL001.name());
+              : GenericException.ERR_DEF_UTL_001.name());
       errorMes.setStatus(
           e.exceptionCode.getStatus() != null
               ? e.exceptionCode.getStatus()
-              : GenericException.ERRDEFUTL001.getStatus());
+              : GenericException.ERR_DEF_UTL_001.getStatus());
       error.setUrl(request.getRequestURI().isBlank() ? null : request.getRequestURI());
 
       if (e.getMessage() != null && !e.getMessage().isBlank()) {
@@ -108,7 +108,7 @@ public class UtilsException extends Exception {
       error.setError(errorMes);
       return new ResponseEntity<>(error, e.exceptionCode.getStatus());
     } else {
-      return new ResponseEntity<>(error, GenericException.ERRDEFUTL001.getStatus());
+      return new ResponseEntity<>(error, GenericException.ERR_DEF_UTL_001.getStatus());
     }
   }
 
@@ -123,10 +123,10 @@ public class UtilsException extends Exception {
           e.getMessage());
 
       HttpStatus status = HttpStatus.BAD_REQUEST;
-      error = getExceptionResponse(e, request, GenericException.ERRDEFUTL001, status);
+      error = getExceptionResponse(e, request, GenericException.ERR_DEF_UTL_001, status);
       return new ResponseEntity<>(error, status);
     } else {
-      return new ResponseEntity<>(error, GenericException.ERRDEFUTL001.getStatus());
+      return new ResponseEntity<>(error, GenericException.ERR_DEF_UTL_001.getStatus());
     }
   }
 
@@ -140,7 +140,7 @@ public class UtilsException extends Exception {
     errorMes.setExceptionCode(
         exceptionCode != null && exceptionCode.name() != null && !exceptionCode.name().isBlank()
             ? exceptionCode.name()
-            : GenericException.ERRDEFUTL001.name());
+            : GenericException.ERR_DEF_UTL_001.name());
     errorMes.setStatus(status != null ? status : defaultStatus);
     if (e.getMessage() != null && !e.getMessage().isBlank()) {
       errorMes.setExceptionMessage(e.getMessage());
@@ -157,11 +157,11 @@ public class UtilsException extends Exception {
   private ExceptionResponse defaultResponse() {
     ExceptionResponse exceptionResponse = new ExceptionResponse();
     ErrorInfo errorMes = new ErrorInfo();
-    errorMes.setExceptionCode(GenericException.ERRDEFUTL001.name());
-    errorMes.setStatus(GenericException.ERRDEFUTL001.getStatus());
+    errorMes.setExceptionCode(GenericException.ERR_DEF_UTL_001.name());
+    errorMes.setStatus(GenericException.ERR_DEF_UTL_001.getStatus());
     exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
-    errorMes.setExceptionMessage(GenericException.ERRDEFUTL001.getMessage());
-    errorMes.setExceptionName(GenericException.ERRDEFUTL001.exceptionName());
+    errorMes.setExceptionMessage(GenericException.ERR_DEF_UTL_001.getMessage());
+    errorMes.setExceptionName(GenericException.ERR_DEF_UTL_001.exceptionName());
     exceptionResponse.setError(errorMes);
     return exceptionResponse;
   }
