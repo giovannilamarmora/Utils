@@ -116,11 +116,12 @@ public class UtilsException extends Exception {
   private ResponseEntity<ExceptionResponse> handleException(
       Exception e, HttpServletRequest request) {
     ExceptionResponse error = defaultResponse();
-    LOG.error(
-        "An error happened while calling {} Downstream API: {}",
-        request.getRequestURI(),
-        e.getMessage());
     if (e != null) {
+      LOG.error(
+          "An error happened while calling {} Downstream API: {}",
+          request.getRequestURI(),
+          e.getMessage());
+
       HttpStatus status = HttpStatus.BAD_REQUEST;
       error = getExceptionResponse(e, request, GenericException.ERRDEFUTL001, status);
       return new ResponseEntity<>(error, status);
@@ -143,7 +144,7 @@ public class UtilsException extends Exception {
     errorMes.setStatus(status != null ? status : defaultStatus);
     if (e.getMessage() != null && !e.getMessage().isBlank()) {
       errorMes.setExceptionMessage(e.getMessage());
-    } else errorMes.setExceptionMessage(null);
+    }
     exceptionResponse.setUrl(
         request.getRequestURI() == null || request.getRequestURI().isBlank()
             ? null
