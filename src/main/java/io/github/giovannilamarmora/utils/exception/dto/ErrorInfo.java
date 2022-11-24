@@ -14,5 +14,6 @@ public class ErrorInfo {
   private String exceptionCode;
   private String exceptionName;
   private HttpStatus status;
+  private String exceptionMessage;
   private String message;
 }
