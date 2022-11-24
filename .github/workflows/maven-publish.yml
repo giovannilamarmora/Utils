@@ -116,8 +116,9 @@ jobs:
           distribution: 'adopt'
           server-id: ossrh
           settings-path: ${{ github.workspace }} # location for the settings.xml file
-      - id: publish-to-central
-        name: 🚀 Publish to Central Repository
+          server-username: ${env.MAVEN_USERNAME}
+          server-password: ${env.MAVEN_PASSWORD}
+      - name: 🚀 Publish to Central Repository
         run: mvn --batch-mode deploy -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -Possrh
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USER_NAME }}
