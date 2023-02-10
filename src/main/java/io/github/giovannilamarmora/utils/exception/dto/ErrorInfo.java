@@ -16,4 +16,6 @@ public class ErrorInfo {
   private HttpStatus status;
   private String exceptionMessage;
   private String message;
+
+  private StackTraceElement[] stackTrace;
 }
