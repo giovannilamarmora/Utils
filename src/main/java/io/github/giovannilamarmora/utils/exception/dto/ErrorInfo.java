@@ -17,5 +17,5 @@ public class ErrorInfo {
   private String exceptionMessage;
   private String message;
 
-  private StackTraceElement[] stackTrace;
+  private String stackTrace;
 }
