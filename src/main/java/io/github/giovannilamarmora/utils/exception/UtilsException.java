@@ -20,7 +20,7 @@ public class UtilsException extends Exception {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
 
-  private String stackTrace;
+  private String errorStackTrace;
   /**
    * Constructs a new exception with {@code null} as its detail message. The cause is not
    * initialized, and may subsequently be initialized by a call to {@link #initCause}.
@@ -68,11 +68,14 @@ public class UtilsException extends Exception {
    *     {@link #getMessage()} method.
    */
   public UtilsException(
-      ExceptionCode exceptionCode, String message, String exceptionMessage, String stackTrace) {
+      ExceptionCode exceptionCode,
+      String message,
+      String exceptionMessage,
+      String errorStackTrace) {
     super(message);
     this.exceptionCode = exceptionCode;
     this.exceptionMessage = exceptionMessage;
-    this.stackTrace = stackTrace;
+    this.errorStackTrace = errorStackTrace;
   }
 
   public final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -104,8 +107,8 @@ public class UtilsException extends Exception {
       if (e.getExceptionMessage() != null && !e.getExceptionMessage().isBlank())
         errorMes.setExceptionMessage(e.getExceptionMessage());
 
-      if (e.getStackTrace() != null && !e.getStackTrace().isBlank())
-        errorMes.setStackTrace(e.getStackTrace());
+      if (e.getStackTrace() != null && e.getStackTrace().length != 0)
+        errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
 
       /*if (e.exceptionCode.getMessage() != null
         && e.getMessage() != null
