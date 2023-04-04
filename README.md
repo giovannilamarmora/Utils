@@ -10,6 +10,7 @@ This page will be refreshed every time an utils will be added.
 2. Log Interceptor 📈 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/interceptors/README.md) 📄)
 3. Excel To Object ♻️ ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/excelObjectMpper/README.md) 📄)
 4. UtilsException 🚨 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/exception/README.md) 📄)
+5. JSON Serialize 🚨 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/jsonSerialize/README.md) 📄)
 
 ## How to use it
 
