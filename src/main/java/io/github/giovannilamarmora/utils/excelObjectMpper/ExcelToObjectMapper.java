@@ -1,15 +1,11 @@
 package io.github.giovannilamarmora.utils.excelObjectMpper;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import io.github.giovannilamarmora.utils.exception.GenericException;
 import io.github.giovannilamarmora.utils.exception.UtilsException;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
-import org.apache.poi.ss.usermodel.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +14,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * A simple Excel to Object mapper utility using Apache POI. This class provides utility methods, to
@@ -70,8 +70,7 @@ public class ExcelToObjectMapper {
       workbook = createWorkBook(fileUrl);
     } catch (InvalidFormatException e) {
       LOG.error("Error on creating workbook for filepath {}", fileUrl);
-      throw new UtilsException(
-          ExcelException.ERR_EXC_UTL_001,
+      throw new ExcelException(
           "Error during create workbook for file: " + fileUrl,
           e.getMessage());
     }
@@ -127,8 +126,8 @@ public class ExcelToObjectMapper {
         field.set(obj, null);
       } catch (IllegalAccessException e) {
         LOG.error("Error on setting blank cell for field {}", field.getName());
-        throw new UtilsException(
-            ExcelException.ERR_EXC_UTL_002,
+        throw new ExcelException(
+            GenericException.ERR_EXC_UTL_002,
             "Error on setting blank cell for field: " + field.getName(),
             e.getMessage());
       }
@@ -144,8 +143,8 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(
-              ExcelException.ERR_EXC_UTL_002,
+          throw new ExcelException(
+              GenericException.ERR_EXC_UTL_002,
               "Error on setting blank cell for field: " + field.getName(),
               e1.getMessage());
         }
@@ -167,8 +166,8 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(
-              ExcelException.ERR_EXC_UTL_002,
+          throw new ExcelException(
+              GenericException.ERR_EXC_UTL_002,
               "Error on setting blank cell for field: " + field.getName(),
               e1.getMessage());
         }
@@ -205,8 +204,8 @@ public class ExcelToObjectMapper {
           field.set(obj, null);
         } catch (IllegalAccessException e1) {
           LOG.error("Error on setting null cell for field {}", field.getName());
-          throw new UtilsException(
-              ExcelException.ERR_EXC_UTL_002,
+          throw new ExcelException(
+              GenericException.ERR_EXC_UTL_002,
               "Error on setting blank cell for field: " + field.getName(),
               e1.getMessage());
         }
@@ -233,8 +232,8 @@ public class ExcelToObjectMapper {
             field.set(obj, null);
           } catch (IllegalAccessException e1) {
             LOG.error("Error on setting null cell for field {}", field.getName());
-            throw new UtilsException(
-                ExcelException.ERR_EXC_UTL_002,
+            throw new ExcelException(
+                GenericException.ERR_EXC_UTL_002,
                 "Error on setting blank cell for field: " + field.getName(),
                 e1.getMessage());
           }
@@ -283,8 +282,8 @@ public class ExcelToObjectMapper {
       }
     }
     if (index == -1) {
-      throw new UtilsException(
-          ExcelException.ERR_EXC_UTL_003, "Invalid object field name provided.");
+      throw new ExcelException(
+          GenericException.ERR_EXC_UTL_003, "Invalid object field name provided.");
     }
     return index;
   }
