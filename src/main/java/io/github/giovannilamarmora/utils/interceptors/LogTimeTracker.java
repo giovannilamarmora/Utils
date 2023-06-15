@@ -1,15 +1,12 @@
 package io.github.giovannilamarmora.utils.interceptors;
 
+import java.time.Instant;
 import org.slf4j.Logger;
 
-import java.time.Instant;
-
 public class LogTimeTracker {
-  // static String DEVMODE = "DEV";
   private final ActionType actionType;
   private final String methodName;
   private final String correlationId;
-  // private final String logMode;
   private final long start;
 
   private LogTimeTracker(ActionType actionType, String methodName, String correlationId) {
@@ -101,6 +98,8 @@ public class LogTimeTracker {
     APP_SERVICE,
     APP_MAPPER,
     APP_EXTERNAL,
+    APP_CACHE,
+    APP_SCHEDULER,
     UTILS_LOGGER
   }
 }
