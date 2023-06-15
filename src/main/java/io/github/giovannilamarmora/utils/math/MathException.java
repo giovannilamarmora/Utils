@@ -1,51 +1,20 @@
 package io.github.giovannilamarmora.utils.math;
 
 import io.github.giovannilamarmora.utils.exception.ExceptionCode;
-import org.springframework.http.HttpStatus;
+import io.github.giovannilamarmora.utils.exception.GenericException;
+import io.github.giovannilamarmora.utils.exception.UtilsException;
 
-public enum MathException implements ExceptionCode {
-  ERR_MAT_UTL_001(
-      "VALUE_NOT_PERMITTED",
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      "The current value is not permitted");
-
-  private final HttpStatus status;
-  private final String message;
-  private final String exceptionName;
-
-  MathException(String exceptionName, HttpStatus status, String message) {
-    this.exceptionName = exceptionName;
-    this.status = status;
-    this.message = message;
-  }
+public class MathException extends UtilsException {
+  private static final ExceptionCode DEFAULT_ERROR = GenericException.ERR_MAT_UTL_001;
 
   /**
-   * return the name of the Exception
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and
+   * may subsequently be initialized by a call to {@link #initCause}.
    *
-   * @return String
+   * @param message       the detail message. The detail message is saved for later retrieval by the
+   *                      {@link #getMessage()} method.
    */
-  @Override
-  public String exceptionName() {
-    return exceptionName;
-  }
-
-  /**
-   * Return the message of the Exception
-   *
-   * @return String
-   */
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  /**
-   * Return the HttpStatus of the Exception
-   *
-   * @return HttpStatus
-   */
-  @Override
-  public HttpStatus getStatus() {
-    return status;
+  public MathException(String message) {
+    super(DEFAULT_ERROR, message);
   }
 }

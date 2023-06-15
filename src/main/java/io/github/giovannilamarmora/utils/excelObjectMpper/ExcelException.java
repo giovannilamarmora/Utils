@@ -1,50 +1,47 @@
 package io.github.giovannilamarmora.utils.excelObjectMpper;
 
 import io.github.giovannilamarmora.utils.exception.ExceptionCode;
-import org.springframework.http.HttpStatus;
+import io.github.giovannilamarmora.utils.exception.GenericException;
+import io.github.giovannilamarmora.utils.exception.UtilsException;
 
-public enum ExcelException implements ExceptionCode {
-  ERR_EXC_UTL_001("UNABLE_TO_READ_THE_FILE", HttpStatus.BAD_REQUEST, "Unable to read the file"),
-  ERR_EXC_UTL_002("ERROR_ON_SETTING_FIELD", HttpStatus.BAD_REQUEST, "Error on setting field"),
-  ERR_EXC_UTL_003("INVALID_OBJECT_FIELD", HttpStatus.BAD_REQUEST, "Invalid Object field");
+public class ExcelException extends UtilsException {
 
-  private final HttpStatus status;
-  private final String message;
-  private final String exceptionName;
+  private static final ExceptionCode DEFAULT_ERROR = GenericException.ERR_EXC_UTL_001;
 
-  ExcelException(String exceptionName, HttpStatus status, String message) {
-    this.exceptionName = exceptionName;
-    this.status = status;
-    this.message = message;
+  /**
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and
+   * may subsequently be initialized by a call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
+   * @param exceptionMessage
+   */
+  public ExcelException(String message, String exceptionMessage) {
+    super(DEFAULT_ERROR, message, exceptionMessage);
   }
 
   /**
-   * return the name of the Exception
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and
+   * may subsequently be initialized by a call to {@link #initCause}.
    *
-   * @return String
+   * @param exceptionCode
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
+   * @param exceptionMessage
    */
-  @Override
-  public String exceptionName() {
-    return exceptionName;
+  public ExcelException(ExceptionCode exceptionCode, String message, String exceptionMessage) {
+    super(exceptionCode, message, exceptionMessage);
   }
 
   /**
-   * Return the message of the Exception
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and
+   * may subsequently be initialized by a call to {@link #initCause}.
    *
-   * @return String
+   * @param exceptionCode
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
    */
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  /**
-   * Return the HttpStatus of the Exception
-   *
-   * @return HttpStatus
-   */
-  @Override
-  public HttpStatus getStatus() {
-    return status;
+  public ExcelException(ExceptionCode exceptionCode, String message) {
+    super(exceptionCode, message);
   }
 }

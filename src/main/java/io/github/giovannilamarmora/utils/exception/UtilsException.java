@@ -3,6 +3,8 @@ package io.github.giovannilamarmora.utils.exception;
 import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
+import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-
 @Getter
 @ControllerAdvice
-public class UtilsException extends Exception {
+public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
 
@@ -85,20 +84,17 @@ public class UtilsException extends Exception {
       UtilsException e, HttpServletRequest request) {
     ExceptionResponse error = defaultResponse();
     LOG.error(
-        "An error happened while calling {} Downstream API: {}",
+        "[UtilsException Handler] An error happened while calling {} Downstream API: {}",
         request.getRequestURI(),
         e.getMessage());
     if (e.exceptionCode != null) {
       ErrorInfo errorMes = new ErrorInfo();
-      errorMes.setExceptionCode(
-          !e.exceptionCode.name().isBlank()
-              ? e.exceptionCode.name()
-              : GenericException.ERR_DEF_UTL_001.name());
+      errorMes.setExceptionCode(e.exceptionCode.name());
       errorMes.setStatus(
           e.exceptionCode.getStatus() != null
               ? e.exceptionCode.getStatus()
               : GenericException.ERR_DEF_UTL_001.getStatus());
-      error.setUrl(request.getRequestURI().isBlank() ? null : request.getRequestURI());
+      error.setUrl(request.getRequestURI());
 
       if (e.getMessage() != null && !e.getMessage().isBlank()) {
         errorMes.setMessage(e.getMessage());
@@ -107,31 +103,19 @@ public class UtilsException extends Exception {
       if (e.getExceptionMessage() != null && !e.getExceptionMessage().isBlank())
         errorMes.setExceptionMessage(e.getExceptionMessage());
 
-      if (e.getStackTrace() != null && e.getStackTrace().length != 0)
+      if (e.getStackTrace() != null && e.getStackTrace().length != 0) {
         errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
+        LOG.error(Arrays.toString(e.getStackTrace()));
+      }
 
-      /*if (e.exceptionCode.getMessage() != null
-        && e.getMessage() != null
-        && !e.exceptionCode.getMessage().isBlank()
-        && !e.getMessage().isBlank()) {
-      */
-      /*errorMes.setMessage(
-      "Message: " + e.exceptionCode.getMessage() + " | Exception Message: " + e.getMessage());*/
-      /*
-        errorMes.setMessage(e.exceptionCode.getMessage());
-        errorMes.setExceptionMessage(e.getMessage());
-      } else if (e.exceptionCode.getMessage() != null
-              && !e.exceptionCode.getMessage().isBlank()
-              && e.getMessage() == null
-          || e.getMessage().isBlank()) {
-        errorMes.setMessage(e.exceptionCode.getMessage());
-      } else errorMes.setMessage(e.getMessage());*/
       errorMes.setExceptionName(
           e.exceptionCode.exceptionName().isBlank() ? null : e.exceptionCode.exceptionName());
       error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
       error.setError(errorMes);
+
       return new ResponseEntity<>(error, e.exceptionCode.getStatus());
     } else {
+      LOG.error(Arrays.toString(e.getStackTrace()));
       return new ResponseEntity<>(error, GenericException.ERR_DEF_UTL_001.getStatus());
     }
   }
@@ -142,7 +126,7 @@ public class UtilsException extends Exception {
     ExceptionResponse error = defaultResponse();
     if (e != null) {
       LOG.error(
-          "An error happened while calling {} Downstream API: {}",
+          "[Exception Handler] An error happened while calling {} Downstream API: {}",
           request.getRequestURI(),
           e.getMessage());
 
@@ -150,6 +134,7 @@ public class UtilsException extends Exception {
       error = getExceptionResponse(e, request, GenericException.ERR_DEF_UTL_001, status);
       if (e.getStackTrace().length != 0) {
         error.getError().setStackTrace(Arrays.toString(e.getStackTrace()));
+        LOG.error(Arrays.toString(e.getStackTrace()));
       }
       return new ResponseEntity<>(error, status);
     } else {
