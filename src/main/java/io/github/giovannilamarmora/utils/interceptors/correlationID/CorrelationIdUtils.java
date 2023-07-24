@@ -5,7 +5,8 @@ import java.util.UUID;
 public class CorrelationIdUtils {
   public static final String CORRELATION_HEADER_NAME = "X-CorrelationID";
   public static final String CORRELATION_MDC_NAME = "correlationId";
-  private static final ThreadLocal<String> correlationIdTL = ThreadLocal.withInitial(() -> null);
+  private static final ThreadLocal<String> correlationIdTL =
+      ThreadLocal.withInitial(CorrelationIdUtils::generateCorrelationId);
 
   public static String generateCorrelationId() {
     return UUID.randomUUID().toString();
