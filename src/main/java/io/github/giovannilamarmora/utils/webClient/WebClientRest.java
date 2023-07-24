@@ -1,19 +1,28 @@
 package io.github.giovannilamarmora.utils.webClient;
 
+import static org.springframework.http.MediaType.TEXT_HTML;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.http.codec.ClientCodecConfigurer;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Component
 public class WebClientRest {
   private static final String END_STRING = "\n";
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
   private WebClient webClient;
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
   private String baseUrl;
@@ -35,7 +44,10 @@ public class WebClientRest {
           HttpHeaders.CONTENT_TYPE,
           MediaType.APPLICATION_JSON_VALUE);
     }
-    webClient = builder.build();
+    webClient =
+        builder
+            .exchangeStrategies(ExchangeStrategies.builder().codecs(this::acceptedCodecs).build())
+            .build();
   }
 
   public <T> Mono<ResponseEntity<T>> perform(
@@ -210,5 +222,20 @@ public class WebClientRest {
 
   public void setDefaultHeaders(HttpHeaders defaultHeaders) {
     this.defaultHeaders = defaultHeaders;
+  }
+
+  private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
+    clientCodecConfigurer
+        .customCodecs()
+        .encoder(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_HTML));
+    clientCodecConfigurer
+        .customCodecs()
+        .decoder(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_HTML));
+    clientCodecConfigurer
+        .customCodecs()
+        .encoder(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_PLAIN));
+    clientCodecConfigurer
+        .customCodecs()
+        .decoder(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_PLAIN));
   }
 }
