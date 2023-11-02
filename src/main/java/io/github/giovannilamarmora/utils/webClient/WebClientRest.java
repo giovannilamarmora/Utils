@@ -1,10 +1,10 @@
 package io.github.giovannilamarmora.utils.webClient;
 
-import static org.springframework.http.MediaType.TEXT_HTML;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.http.MediaType.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,55 +81,17 @@ public class WebClientRest {
       case PUT:
       case PATCH:
       case POST:
-        return buildCall
-            .retrieve()
-            .onStatus(
-                HttpStatus::isError,
-                clientResponse -> handleException(clientResponse, url.getStringUri()))
-            .toEntity(returnType)
-            .map(
-                x -> {
-                  try {
-                    logReturnSome(
-                        x.getStatusCode(),
-                        x.getHeaders().toString(),
-                        mapper.writeValueAsString(x.getBody()));
-                    return x;
-                  } catch (JsonProcessingException e) {
-                    LOG.error(
-                        "An error occurred during deserialize Object, message is {}",
-                        e.getMessage(),
-                        e);
-                    throw new WebClientException(e.getMessage());
-                  }
-                });
       case DELETE:
       case HEAD:
       case OPTIONS:
       case GET:
-        logBuilder.append("Header: ").append(headers).append(END_STRING);
         return buildCall
             .retrieve()
             .onStatus(
                 HttpStatus::isError,
-                clientResponse -> handleException(clientResponse, url.getStringUri()))
+                clientResponse -> handleException(clientResponse, url.getStringUri(), headers))
             .toEntity(returnType)
-            .map(
-                x -> {
-                  try {
-                    logReturnSome(
-                        x.getStatusCode(),
-                        x.getHeaders().toString(),
-                        mapper.writeValueAsString(x.getBody()));
-                    return x;
-                  } catch (JsonProcessingException e) {
-                    LOG.error(
-                        "An error occurred during deserialize Object, message is {}",
-                        e.getMessage(),
-                        e);
-                    throw new WebClientException(e.getMessage());
-                  }
-                });
+            .map(x -> mapResponseEntity(x, returnType, headers));
       default:
         {
           return Mono.just(ResponseEntity.ok(null));
@@ -192,28 +154,46 @@ public class WebClientRest {
             + jsonBody);
   }
 
-  private Mono<? extends Throwable> handleException(ClientResponse response, String uri) {
-    return response
-        .toEntity(Object.class)
-        .flatMap(
-            w -> {
-              try {
-                logReturnSome(
-                    w.getStatusCode(),
-                    w.getHeaders().toString(),
-                    mapper.writeValueAsString(w.getBody()));
-                String message =
-                    "An error happened while calling the API: "
-                        + baseUrl
-                        + uri
-                        + ", Status Code: "
-                        + w.getStatusCode()
-                        + " and body ";
-                throw new WebClientException(message + mapper.writeValueAsString(w.getBody()));
-              } catch (JsonProcessingException e) {
-                throw new WebClientException(e.getMessage());
-              }
-            });
+  private <T> ResponseEntity<T> mapResponseEntity(
+      ResponseEntity<T> x, Class<T> returnType, HttpHeaders headers) {
+    try {
+      logReturnSome(
+          x.getStatusCode(), x.getHeaders().toString(), mapper.writeValueAsString(x.getBody()));
+      return x;
+    } catch (JsonProcessingException e) {
+      LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
+      throw new WebClientException(e.getMessage());
+    }
+  }
+
+  private Mono<? extends Throwable> handleException(
+      ClientResponse response, String uri, HttpHeaders headers) {
+    List<String> getHeaders = headers.get(HttpHeaders.CONTENT_TYPE);
+    if (getHeaders != null
+        && !getHeaders.isEmpty()
+        && (getHeaders.contains(TEXT_XML_VALUE)
+            || getHeaders.contains(TEXT_PLAIN_VALUE)
+            || getHeaders.contains(APPLICATION_FORM_URLENCODED_VALUE)))
+      return response.toEntity(String.class).flatMap(w -> flatMapResponse(w, uri));
+    else return response.toEntity(Object.class).flatMap(w -> flatMapResponse(w, uri));
+  }
+
+  private <R> Mono<R> flatMapResponse(ResponseEntity w, String uri) {
+    try {
+      logReturnSome(
+          w.getStatusCode(), w.getHeaders().toString(), mapper.writeValueAsString(w.getBody()));
+      StringBuilder message =
+          new StringBuilder("An error happened while calling the API: ")
+              .append(baseUrl != null ? baseUrl : "")
+              .append(uri)
+              .append(", Status Code: ")
+              .append(w.getStatusCode())
+              .append(", and body message ")
+              .append(w.getBody());
+      throw new WebClientException(message.toString());
+    } catch (JsonProcessingException e) {
+      throw new WebClientException(e.getMessage());
+    }
   }
 
   public void setBaseUrl(String baseUrl) {
@@ -227,15 +207,15 @@ public class WebClientRest {
   private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
     clientCodecConfigurer
         .customCodecs()
-        .encoder(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_HTML));
+        .register(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_HTML));
     clientCodecConfigurer
         .customCodecs()
-        .decoder(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_HTML));
+        .register(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_HTML));
     clientCodecConfigurer
         .customCodecs()
-        .encoder(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_PLAIN));
+        .register(new Jackson2JsonEncoder(new ObjectMapper(), TEXT_PLAIN));
     clientCodecConfigurer
         .customCodecs()
-        .decoder(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_PLAIN));
+        .register(new Jackson2JsonDecoder(new ObjectMapper(), TEXT_PLAIN));
   }
 }
