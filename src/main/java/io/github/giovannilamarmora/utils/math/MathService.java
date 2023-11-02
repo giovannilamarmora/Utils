@@ -33,7 +33,6 @@ public class MathService {
       throw new MathException("The current places: " + places + " is not permitted by the system.");
     BigDecimal bd = new BigDecimal(Double.toString(value));
     bd = bd.setScale(places, RoundingMode.HALF_UP);
-    LOG.info("The new number is {}", bd.doubleValue());
     return bd.doubleValue();
   }
 }
