@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -18,6 +19,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 @Component
 public class WebClientRest {
@@ -44,9 +46,13 @@ public class WebClientRest {
           HttpHeaders.CONTENT_TYPE,
           MediaType.APPLICATION_JSON_VALUE);
     }
+    HttpClient httpClient =
+        HttpClient.create().httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024));
+
     webClient =
         builder
             .exchangeStrategies(ExchangeStrategies.builder().codecs(this::acceptedCodecs).build())
+            .clientConnector(new ReactorClientHttpConnector(httpClient))
             .build();
   }
 
