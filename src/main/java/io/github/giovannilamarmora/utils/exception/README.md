@@ -38,6 +38,7 @@ public class AppConfig {}
 <hr>
 
 ## Use UtilsException
+
 On your code you need to map the error in an ExceptionMapper(You need to create it), it could be like this:
 
 ```
@@ -50,14 +51,14 @@ public enum TestException implements ExceptionCode {
   private final String exceptionName;
 
   TestException(String exceptionName, HttpStatus status, String message) {
-    this.exceptionName = exceptionName;
+    this.exceptionName = exception;
     this.status = status;
     this.message = message;
   }
 
   @Override
-  public String exceptionName() {
-    return exceptionName;
+  public String exception() {
+    return exception;
   }
 
   @Override
@@ -85,14 +86,26 @@ And it will return an Object like this:
 
 ```
 {
-    "dateTime": "2022-10-19T16:34:14",
-    "url": "/import/current_account",
-    "exceptionCode": "ERRDEFUTL001",
-    "exceptionName": "MissingServletRequestParameterException",
-    "status": "BAD_REQUEST",
-    "correlationId": "0ed170ee-a78c-40e4-b456-f17aa7ec7db9",
-    "message": "Exception Message: Required request parameter 'test' for method parameter type String is not present"
+    "dateTime": "2024-01-10T22:49:03",
+    "url": "/v1/exception",
+    "correlationId": "ce7ee35d-a4cc-4806-a570-e7bb20328a04",
+    "error": {
+        "errorCode": "ERR_CODE_UTL_001",
+        "exception": "GENERIC_EXCEPTION",
+        "status": "UNAUTHORIZED",
+        "exceptionMessage": "message",
+        "stackTrace": "[stacktrace]"
+    }
 }
+```
+
+To remove the stacktrace from the UtilsException add this on your application.yml
+
+```
+app:
+  exception:
+    stacktrace:
+      utilsException: false
 ```
 
 ## Handle New Exception
