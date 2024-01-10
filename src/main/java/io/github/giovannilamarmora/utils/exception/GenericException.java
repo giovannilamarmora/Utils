@@ -3,7 +3,9 @@ package io.github.giovannilamarmora.utils.exception;
 import org.springframework.http.HttpStatus;
 
 public enum GenericException implements ExceptionCode {
-  ERR_DEF_UTL_001("EXCEPTION_HANDLER", HttpStatus.BAD_REQUEST, "Caught Exception with handler"),
+  ERR_EXC_HAN_001("EXCEPTION_HANDLER", HttpStatus.BAD_REQUEST, "Caught Exception with handler"),
+  ERR_DEF_UTL_001(
+      "UTILS_EXCEPTION_HANDLER", HttpStatus.BAD_REQUEST, "Caught UtilsException with handler"),
   ERR_EXC_UTL_001("UNABLE_TO_READ_THE_FILE", HttpStatus.BAD_REQUEST, "Unable to read the file"),
   ERR_EXC_UTL_002("ERROR_ON_SETTING_FIELD", HttpStatus.BAD_REQUEST, "Error on setting field"),
   ERR_EXC_UTL_003("INVALID_OBJECT_FIELD", HttpStatus.BAD_REQUEST, "Invalid Object field"),
@@ -18,10 +20,10 @@ public enum GenericException implements ExceptionCode {
 
   private final HttpStatus status;
   private final String message;
-  private final String exceptionName;
+  private final String exception;
 
-  GenericException(String exceptionName, HttpStatus status, String message) {
-    this.exceptionName = exceptionName;
+  GenericException(String exception, HttpStatus status, String message) {
+    this.exception = exception;
     this.status = status;
     this.message = message;
   }
@@ -32,8 +34,8 @@ public enum GenericException implements ExceptionCode {
    * @return String
    */
   @Override
-  public String exceptionName() {
-    return exceptionName;
+  public String exception() {
+    return exception;
   }
 
   /**

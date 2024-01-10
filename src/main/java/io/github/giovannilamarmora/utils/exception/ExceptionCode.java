@@ -9,7 +9,7 @@ public interface ExceptionCode {
    *
    * @return String
    */
-  String exceptionName();
+  String exception();
 
   /**
    * Return the message of the Exception

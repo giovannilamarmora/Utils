@@ -11,11 +11,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorInfo {
-  private String exceptionCode;
-  private String exceptionName;
+  private String errorCode;
+  private String exception;
   private HttpStatus status;
-  private String exceptionMessage;
   private String message;
-
+  private String exceptionMessage;
   private String stackTrace;
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.function.Consumer;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -27,7 +28,8 @@ public class WebClientRest {
   private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
   private WebClient webClient;
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-  private String baseUrl;
+
+  @Setter private String baseUrl;
   private HttpHeaders defaultHeaders;
 
   public void init(WebClient.Builder builder) {
@@ -117,7 +119,7 @@ public class WebClientRest {
         logBuilder.append("Body: ").append(mapper.writeValueAsString(body)).append(END_STRING);
       } catch (JsonProcessingException e) {
         LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
-        throw new WebClientException(e.getMessage());
+        throw new WebClientException(e.getMessage(), e);
       }
       return webClient
           .method(method)
@@ -168,7 +170,7 @@ public class WebClientRest {
       return x;
     } catch (JsonProcessingException e) {
       LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
-      throw new WebClientException(e.getMessage());
+      throw new WebClientException(e.getMessage(), e);
     }
   }
 
@@ -198,16 +200,8 @@ public class WebClientRest {
               .append(w.getBody());
       throw new WebClientException(message.toString());
     } catch (JsonProcessingException e) {
-      throw new WebClientException(e.getMessage());
+      throw new WebClientException(e.getMessage(), e);
     }
-  }
-
-  public void setBaseUrl(String baseUrl) {
-    this.baseUrl = baseUrl;
-  }
-
-  public void setDefaultHeaders(HttpHeaders defaultHeaders) {
-    this.defaultHeaders = defaultHeaders;
   }
 
   private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
