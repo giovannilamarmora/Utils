@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
+
+  @Value(value = "new Boolean(${app.exception.stacktrace.utilsException})")
+  private Boolean isUtilsStackTraceActive;
 
   public static final Logger LOG = LoggerFactory.getLogger(UtilsException.class);
 
@@ -43,7 +47,9 @@ public class UtilsException extends RuntimeException {
       if (!ObjectUtils.isEmpty(e.getExceptionMessage()))
         errorMes.setExceptionMessage(e.getExceptionMessage());
 
-      if (e.getStackTrace() != null && e.getStackTrace().length != 0) {
+      if (isUtilsStackTraceActive
+          && !ObjectUtils.isEmpty(e.getStackTrace())
+          && e.getStackTrace().length != 0) {
         errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
         LOG.error("Stacktrace error: ", e);
       }

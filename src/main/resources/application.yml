@@ -1,4 +1,7 @@
 app:
+  exception:
+    stacktrace:
+      utilsException: true
   # Cors status
   cors:
     enabled: false
