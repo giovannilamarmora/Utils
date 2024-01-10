@@ -19,19 +19,17 @@ public class CorsConfig implements Filter {
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
 
-    if (!isCorsEnabled) {
-      return;
+    if (isCorsEnabled) {
+      HttpServletResponse response = (HttpServletResponse) res;
+      response.setHeader("Access-Control-Allow-Origin", "*");
+      response.setHeader("Access-Control-Allow-Methods", "POST, PATCH, PUT, GET, OPTIONS, DELETE");
+      response.setHeader("Access-Control-Max-Age", "3600");
+      response.setHeader("Access-Control-Expose-Headers", "*");
+      response.setHeader(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      LOG.info("Setting Up CORS Policy for mainstream: {}", response);
+      chain.doFilter(req, res);
     }
-
-    HttpServletResponse response = (HttpServletResponse) res;
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, PATCH, PUT, GET, OPTIONS, DELETE");
-    response.setHeader("Access-Control-Max-Age", "3600");
-    response.setHeader("Access-Control-Expose-Headers", "*");
-    response.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    LOG.info("Setting Up CORS Policy for mainstream: {}", response);
-    chain.doFilter(req, res);
   }
 }
