@@ -6,3 +6,9 @@ folderPath="C:/Users/giola/Documents/Personal Project/Local Repository/io/github
 mkdir -p "${folderPath}"
 
 cp "target/${jarName}.jar" "${folderPath}"
+
+cd "${folderPath}"
+
+ls
+
+sha256sum "${jarName}.jar" > "${jarName}.jar.sha256"
