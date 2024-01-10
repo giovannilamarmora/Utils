@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>0.2.27</version>
+    <version>0.2.28</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
@@ -78,6 +78,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
@@ -124,35 +128,6 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>2.2.3</version>
-        </dependency>
-        <!-- Swagger API -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${spring.doc.version}</version>
-        </dependency>
-        <!-- END Swagger API -->
-        <!-- LogTail Logs -->
-        <dependency>
-            <groupId>com.logtail</groupId>
-            <artifactId>logback-logtail</artifactId>
-            <version>${logtail.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <!-- END LogTail Logs -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-            <version>5.3.23</version>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty-http</artifactId>
-            <version>1.0.24</version>
         </dependency>
     </dependencies>
 
