@@ -1,13 +1,12 @@
 package io.github.giovannilamarmora.utils.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +21,13 @@ public class ExceptionResponse implements Serializable {
 
   public ExceptionResponse(ErrorInfo error) {
     this.dateTime = getDateTime();
+    this.error = error;
+  }
+
+  public ExceptionResponse(String url, String correlationId, ErrorInfo error) {
+    this.dateTime = getDateTime();
+    this.url = url;
+    this.correlationId = correlationId;
     this.error = error;
   }
 

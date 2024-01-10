@@ -1,0 +1,7 @@
+app:
+  # Cors status
+  cors:
+    enabled: false
+  # Logging on LogTail
+  logTail:
+    active: false
