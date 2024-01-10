@@ -20,7 +20,7 @@ public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
 
-  @Value(value = "new Boolean(${app.exception.stacktrace.utilsException})")
+  @Value(value = "#{new Boolean(${app.exception.stacktrace.utilsException})}")
   private Boolean isUtilsStackTraceActive;
 
   public static final Logger LOG = LoggerFactory.getLogger(UtilsException.class);
