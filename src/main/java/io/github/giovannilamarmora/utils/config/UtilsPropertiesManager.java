@@ -1,12 +1,10 @@
 package io.github.giovannilamarmora.utils.config;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Data
-@NoArgsConstructor
+@Getter
 @Component
 public class UtilsPropertiesManager {
 
