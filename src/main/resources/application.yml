@@ -1,8 +1,4 @@
 app:
-  interceptors:
-    actionType:
-      success:
-        debug: true # All trackSuccess will be as level DEBUG, only Controllers at level INFO
   exception:
     stacktrace:
       utilsException: # All Activated

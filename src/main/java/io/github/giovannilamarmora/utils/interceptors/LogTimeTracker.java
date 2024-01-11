@@ -1,6 +1,5 @@
 package io.github.giovannilamarmora.utils.interceptors;
 
-import io.github.giovannilamarmora.utils.config.UtilsPropertiesManager;
 import java.time.Instant;
 import org.slf4j.Logger;
 
@@ -9,7 +8,6 @@ public class LogTimeTracker {
   private final String methodName;
   private final String correlationId;
   private final long start;
-  private final UtilsPropertiesManager propertiesManager = new UtilsPropertiesManager();
 
   private LogTimeTracker(ActionType actionType, String methodName, String correlationId) {
     super();
@@ -103,8 +101,7 @@ public class LogTimeTracker {
     return !this.actionType.equals(ActionType.APP_CONTROLLER)
         && !this.actionType.equals(ActionType.CONTROLLER)
         && !this.actionType.equals(ActionType.APP_SCHEDULER)
-        && !this.actionType.equals(ActionType.SCHEDULER)
-        && propertiesManager.getIsLevelDebugActive();
+        && !this.actionType.equals(ActionType.SCHEDULER);
   }
 
   public enum ActionType {
