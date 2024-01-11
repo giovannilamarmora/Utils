@@ -1,39 +1,53 @@
 package io.github.giovannilamarmora.utils.config;
 
-import io.github.giovannilamarmora.utils.interceptors.Logged;
+import javax.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-@Logged
 @NoArgsConstructor
 public class UtilsPropertiesManager {
 
+  private static final Logger LOG = LoggerFactory.getLogger(UtilsPropertiesManager.class);
+
   /** WeBClient Prop */
-  @Value(value = "#{new Integer(${rest.webClient.timeout.read:15000})}")
+  @Value("#{new Integer(${rest.webClient.timeout.read:15000})}")
   private Integer readTimeout;
 
-  @Value(value = "#{new Integer(${rest.webClient.timeout.write:15000})}")
+  @Value("#{new Integer(${rest.webClient.timeout.write:15000})}")
   private Integer writeTimeout;
 
-  @Value(value = "#{new Integer(${rest.webClient.timeout.connection:10000})}")
+  @Value("#{new Integer(${rest.webClient.timeout.connection:10000})}")
   private Integer connectionTimeout;
 
   /** Cors Prop */
-  @Value(value = "#{new Boolean(${app.cors.enabled:false})}")
+  @Value("#{new Boolean(${app.cors.enabled:false})}")
   private Boolean isCorsEnabled;
 
   /** UtilsException */
-  @Value(value = "#{new Boolean(${app.exception.stacktrace.utilsException.active:true})}")
+  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.active:true})}")
   private Boolean isUtilsStackTraceActive;
 
-  @Value(value = "#{new Boolean(${app.exception.stacktrace.utilsException.debug:true})}")
+  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.debug:true})}")
   private Boolean isDebugUtilsStackTraceActive;
 
   /** LogTimeTracker */
-  @Value(value = "#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
+  @Value("#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
   private Boolean isLevelDebugActive;
+
+  @PostConstruct
+  private void init() {
+    LOG.info("readTimeout: {}", readTimeout);
+    LOG.info("writeTimeout: {}", writeTimeout);
+    LOG.info("connectionTimeout: {}", connectionTimeout);
+    LOG.info("isCorsEnabled: {}", isCorsEnabled);
+    LOG.info("isUtilsStackTraceActive: {}", isUtilsStackTraceActive);
+    LOG.info("isDebugUtilsStackTraceActive: {}", isDebugUtilsStackTraceActive);
+    LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
+  }
 }
