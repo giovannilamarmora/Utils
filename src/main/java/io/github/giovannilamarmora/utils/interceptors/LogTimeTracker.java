@@ -3,6 +3,7 @@ package io.github.giovannilamarmora.utils.interceptors;
 import io.github.giovannilamarmora.utils.config.UtilsPropertiesManager;
 import java.time.Instant;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LogTimeTracker {
   private final ActionType actionType;
@@ -10,7 +11,7 @@ public class LogTimeTracker {
   private final String correlationId;
   private final long start;
 
-  private UtilsPropertiesManager propertiesManager;
+  @Autowired private UtilsPropertiesManager propertiesManager;
 
   private LogTimeTracker(ActionType actionType, String methodName, String correlationId) {
     super();
