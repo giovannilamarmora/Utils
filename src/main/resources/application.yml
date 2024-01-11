@@ -1,10 +1,48 @@
 app:
+  interceptors:
+    actionType:
+      success:
+        debug: true # All trackSuccess will be as level DEBUG, only Controllers at level INFO
   exception:
     stacktrace:
-      utilsException: true
+      utilsException: # All Activated
+        active: true # Active StackTrace in Response
+        debug: false # If active: true and debug: false activate the  StackTrace in LOGS
   # Cors status
-  cors:
+  cors: # Disabled
     enabled: false
   # Logging on LogTail
-  logTail:
+  logTail: # Disabled
     active: false
+    level: INFO # Keep as INFO and work on logging instead (testa in caso rimuovi)
+
+# Level of LOG
+logging:
+  level:
+    io.github.giovannilamarmora.utils: INFO
+    web: ERROR
+    root: INFO
+    org:
+      springframework:
+        web: ERROR
+      hibernate: ERROR
+
+rest:
+  webClient:
+    timeout:
+      read: 15000
+      write: 15000
+      connection: 10000
+
+management:
+  info:
+    enabled: true
+  env:
+    enable: true
+  health:
+    probes:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,beans,loggers

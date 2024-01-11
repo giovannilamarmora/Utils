@@ -16,7 +16,12 @@ public enum GenericException implements ExceptionCode {
   ERR_WEB_CLI_001(
       "WEB_CLIENT_EXCEPTION",
       HttpStatus.INTERNAL_SERVER_ERROR,
-      "An error occurred during webClient call, body is ");
+      "An error occurred during webClient call, body is "),
+  /** WebException * */
+  ERR_EXC_WEB_001(
+      "GENERIC_WEB_EXCEPTION", HttpStatus.BAD_REQUEST, "An error occurred on Web process"),
+  ERR_EXC_WEB_002(
+      "THREAD_SLEEP_EXCEPTION", HttpStatus.BAD_REQUEST, "An error occurred during thread sleep");
 
   private final HttpStatus status;
   private final String message;

@@ -11,22 +11,26 @@ This page will be refreshed every time an utils will be added.
 3. Excel To Object ♻️ ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/excelObjectMpper/README.md) 📄)
 4. UtilsException 🚨 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/exception/README.md) 📄)
 5. JSON Serialize 🚨 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/jsonSerialize/README.md) 📄)
+6. Web Utils 🌐 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/web/README.md) 📄)
+7. Utilities 🔃 ([Readme.me](src/main/java/io/github/giovannilamarmora/utils/utilities/README.md) 📄)
+8. Application.yml Configuration 🛠️ ([Readme.me](src/main/resources/README.md) 📄)
 
 ## How to use it
 
 Copy this dependency into your maven project.
 
-```
+```xml
+
 <dependency>
-  <groupId>com.github.giovannilamarmora.utils</groupId>
-  <artifactId>utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+    <groupId>io.github.giovannilamarmora.utils</groupId>
+    <artifactId>utils-code</artifactId>
+    <version>0.2.33</version>
 </dependency>
 ```
 
 Then you need to set your settings.xml file to be able to read the dependency from GitHub.
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
