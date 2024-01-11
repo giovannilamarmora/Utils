@@ -16,7 +16,7 @@ public class ThreadManager {
   private static final Logger LOG = LoggerFactory.getLogger(MathService.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  private static void threadSeep(Integer millisecond) {
+  public static void threadSeep(Integer millisecond) {
     LOG.debug("Starting process for {}", millisecond);
     try {
       LOG.info("Thread is sleeping for {} millisecond", millisecond);

@@ -18,7 +18,7 @@ public class CookieManager {
   private static final Logger LOG = LoggerFactory.getLogger(MathService.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  private static void setCookieInResponse(
+  public static void setCookieInResponse(
       String cookieName, String cookieValue, HttpServletResponse response) {
     LOG.info("Setting Cookie {}, with value {}", cookieName, cookieValue);
     ResponseCookie cookie =
