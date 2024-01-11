@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LogTimeTracker {
-  private final ActionType actionType;
+  @Autowired private final ActionType actionType;
   private final String methodName;
   private final String correlationId;
   private final long start;
