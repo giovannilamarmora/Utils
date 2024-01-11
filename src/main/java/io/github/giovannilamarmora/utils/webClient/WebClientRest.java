@@ -4,11 +4,17 @@ import static org.springframework.http.MediaType.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.giovannilamarmora.utils.config.UtilsPropertiesManager;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ClientCodecConfigurer;
@@ -31,6 +37,7 @@ public class WebClientRest {
 
   @Setter private String baseUrl;
   private HttpHeaders defaultHeaders;
+  @Autowired private UtilsPropertiesManager propertyManager;
 
   public void init(WebClient.Builder builder) {
     LOG.info("Initializing WebClient with:");
@@ -49,7 +56,18 @@ public class WebClientRest {
           MediaType.APPLICATION_JSON_VALUE);
     }
     HttpClient httpClient =
-        HttpClient.create().httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024));
+        HttpClient.create()
+            .doOnConnected(
+                connection ->
+                    connection
+                        .addHandlerFirst(
+                            new ReadTimeoutHandler(
+                                propertyManager.getReadTimeout(), TimeUnit.MILLISECONDS))
+                        .addHandlerFirst(
+                            new WriteTimeoutHandler(
+                                propertyManager.getWriteTimeout(), TimeUnit.MILLISECONDS)))
+            .httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024))
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, propertyManager.getConnectionTimeout());
 
     webClient =
         builder

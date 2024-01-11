@@ -1,13 +1,12 @@
 package io.github.giovannilamarmora.utils.jsonSerialize;
 
 import com.fasterxml.jackson.databind.util.StdConverter;
+import org.springframework.util.ObjectUtils;
 
 public class UpperCamelCaseConverter extends StdConverter<String, String> {
   @Override
   public String convert(String value) {
-    if (value == null) {
-      return null;
-    }
+    if (ObjectUtils.isEmpty(value)) return null;
     String[] words = value.split("[\\W_]+");
     StringBuilder builder = new StringBuilder();
     for (int i = 0; i < words.length; i++) {

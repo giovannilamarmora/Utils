@@ -12,7 +12,8 @@ The logger Interceptor is used to get the full LOG of the method called;
 
 To be used you need to add a dependency (Try first without it):
 
-```
+```xml
+
 <dependency>
     <groupId>org.aspectj</groupId>
     <artifactId>aspectjweaver</artifactId>
@@ -22,9 +23,11 @@ To be used you need to add a dependency (Try first without it):
 
 And then create a class named AppConfig
 
-```
+```java
+
 @ComponentScan(basePackages = "com.github.giovannilamarmora.utils")
 @Configuration
 @EnableAspectJAutoProxy
-public class AppConfig {}
+public class AppConfig {
+}
 ```
