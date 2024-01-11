@@ -1,8 +1,10 @@
 package io.github.giovannilamarmora.utils.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import javax.annotation.PostConstruct;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-@NoArgsConstructor
 public class UtilsPropertiesManager {
 
   private static final Logger LOG = LoggerFactory.getLogger(UtilsPropertiesManager.class);
+  private final Properties properties = new Properties();
 
   /** WeBClient Prop */
   @Value("#{new Integer(${rest.webClient.timeout.read:15000})}")
@@ -38,7 +40,20 @@ public class UtilsPropertiesManager {
 
   /** LogTimeTracker */
   @Value("#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
-  public Boolean isLevelDebugActive;
+  private Boolean isLevelDebugActive;
+
+  public UtilsPropertiesManager() {
+    loadProperties();
+  }
+
+  private void loadProperties() {
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.yml"); ) {
+      properties.load(input);
+    } catch (IOException e) {
+      LOG.error("File not found");
+      e.printStackTrace();
+    }
+  }
 
   @PostConstruct
   private void init() {
@@ -51,8 +66,10 @@ public class UtilsPropertiesManager {
     LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
   }
 
-  public Boolean getLevelDebugActive() {
-    LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
-    return isLevelDebugActive;
+  public Boolean getIsLevelDebugActive() {
+    return isLevelDebugActive != null
+        ? isLevelDebugActive
+        : Boolean.parseBoolean(
+            properties.getProperty("app.interceptors.actionType.success.debug", "true"));
   }
 }

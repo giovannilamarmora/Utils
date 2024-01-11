@@ -3,16 +3,13 @@ package io.github.giovannilamarmora.utils.interceptors;
 import io.github.giovannilamarmora.utils.config.UtilsPropertiesManager;
 import java.time.Instant;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class LogTimeTracker {
-  @Autowired private final ActionType actionType;
+  private final ActionType actionType;
   private final String methodName;
   private final String correlationId;
   private final long start;
-  @Autowired private UtilsPropertiesManager propertiesManager;
+  private final UtilsPropertiesManager propertiesManager = new UtilsPropertiesManager();
 
   private LogTimeTracker(ActionType actionType, String methodName, String correlationId) {
     super();
@@ -57,10 +54,7 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
-    LOG.info(
-        "Test {}, {}",
-        propertiesManager.isLevelDebugActive,
-        propertiesManager.getIsLevelDebugActive());
+    LOG.info("Test {}", propertiesManager.getIsLevelDebugActive());
     if (this.actionType.equals(ActionType.DEBUG_MAPPER) || isDebugLevel()) {
       LOG.debug(
           "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
