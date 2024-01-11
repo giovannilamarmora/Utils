@@ -21,7 +21,11 @@ public enum GenericException implements ExceptionCode {
   ERR_EXC_WEB_001(
       "GENERIC_WEB_EXCEPTION", HttpStatus.BAD_REQUEST, "An error occurred on Web process"),
   ERR_EXC_WEB_002(
-      "THREAD_SLEEP_EXCEPTION", HttpStatus.BAD_REQUEST, "An error occurred during thread sleep");
+      "THREAD_SLEEP_EXCEPTION", HttpStatus.BAD_REQUEST, "An error occurred during thread sleep"),
+  ERR_CONF_PRO_001(
+      "ERROR_READING_CONFIG",
+      HttpStatus.BAD_REQUEST,
+      "An error occurred during reading proprieties");
 
   private final HttpStatus status;
   private final String message;
