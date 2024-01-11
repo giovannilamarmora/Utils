@@ -1,7 +1,5 @@
 package io.github.giovannilamarmora.utils.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -36,28 +34,4 @@ public class UtilsPropertiesManager {
 
   @Value("#{new Boolean(${app.exception.stacktrace.utilsException.debug:true})}")
   private Boolean isDebugUtilsStackTraceActive;
-
-  /** LogTimeTracker */
-  @Value("#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
-  private Boolean isLevelDebugActive;
-
-  public UtilsPropertiesManager() {
-    loadProperties();
-  }
-
-  private void loadProperties() {
-    try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.yml"); ) {
-      properties.load(input);
-    } catch (IOException e) {
-      LOG.error("File not found");
-      throw new ConfigException(e.getMessage());
-    }
-  }
-
-  public Boolean getIsLevelDebugActive() {
-    return isLevelDebugActive != null
-        ? isLevelDebugActive
-        : Boolean.parseBoolean(
-            properties.getProperty("app.interceptors.actionType.success.debug", "true"));
-  }
 }

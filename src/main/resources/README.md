@@ -5,10 +5,6 @@ usage within the application.
 
 ```yml
 app:
-  interceptors:
-    actionType:
-      success:
-        debug: true # All trackSuccess will be as level DEBUG, only Controllers at level INFO
   exception:
     stacktrace:
       utilsException:
@@ -24,15 +20,6 @@ app:
 ```
 
 ## `app` Section
-
-### `interceptors` Subsection
-
-#### `actionType` Sub-Subsection
-
-- `success` Sub-Sub-Subsection:
-
-    - `debug`: Controls whether the `trackSuccess` interceptor logs should be at the DEBUG level. If set to `true`,
-      the `trackSuccess` interceptor logs will be DEBUG, and only Controller logs will be at the INFO level.
 
 ### `exception` Subsection
 
