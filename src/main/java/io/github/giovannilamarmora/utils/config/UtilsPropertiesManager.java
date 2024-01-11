@@ -50,9 +50,4 @@ public class UtilsPropertiesManager {
     LOG.info("isDebugUtilsStackTraceActive: {}", isDebugUtilsStackTraceActive);
     LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
   }
-
-  public Boolean getLevelDebugActive() {
-    LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
-    return isLevelDebugActive;
-  }
 }
