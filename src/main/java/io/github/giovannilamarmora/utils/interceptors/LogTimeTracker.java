@@ -9,7 +9,7 @@ public class LogTimeTracker {
   private final String methodName;
   private final String correlationId;
   private final long start;
-  private UtilsPropertiesManager propertiesManager;
+  private final UtilsPropertiesManager propertiesManager = new UtilsPropertiesManager();
 
   private LogTimeTracker(ActionType actionType, String methodName, String correlationId) {
     super();
@@ -54,10 +54,7 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
-    LOG.info(
-        "Test {}, {}",
-        propertiesManager.isLevelDebugActive,
-        propertiesManager.getIsLevelDebugActive());
+    LOG.info("Test {}", propertiesManager.getIsLevelDebugActive());
     if (this.actionType.equals(ActionType.DEBUG_MAPPER) || isDebugLevel()) {
       LOG.debug(
           "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
