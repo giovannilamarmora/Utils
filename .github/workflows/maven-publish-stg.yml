@@ -50,7 +50,7 @@ jobs:
     name: 🚀 Deploy To Maven Central Snapshot
     runs-on: ubuntu-latest
     environment:
-      name: maven-central
+      name: maven-central-staging
     needs: [ install-test-and-build ]
     steps:
       - uses: actions/checkout@v3
