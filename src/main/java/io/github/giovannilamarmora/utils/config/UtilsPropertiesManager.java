@@ -38,7 +38,7 @@ public class UtilsPropertiesManager {
 
   /** LogTimeTracker */
   @Value("#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
-  private Boolean isLevelDebugActive;
+  public Boolean isLevelDebugActive;
 
   @PostConstruct
   private void init() {
