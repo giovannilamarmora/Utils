@@ -57,17 +57,17 @@ public class WebClientRest {
     }
     HttpClient httpClient =
         HttpClient.create()
-            .doOnConnected(
-                connection ->
-                    connection
-                        .addHandlerFirst(
-                            new ReadTimeoutHandler(
-                                propertyManager.getReadTimeout(), TimeUnit.MILLISECONDS))
-                        .addHandlerFirst(
-                            new WriteTimeoutHandler(
-                                propertyManager.getWriteTimeout(), TimeUnit.MILLISECONDS)))
-            .httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024))
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, propertyManager.getConnectionTimeout());
+            // .doOnConnected(
+            //    connection ->
+            //        connection
+            //            .addHandlerFirst(
+            //                new ReadTimeoutHandler(
+            //                    propertyManager.getReadTimeout(), TimeUnit.MILLISECONDS))
+            //            .addHandlerFirst(
+            //                new WriteTimeoutHandler(
+            //                    propertyManager.getWriteTimeout(), TimeUnit.MILLISECONDS)))
+            .httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024));
+    // .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, propertyManager.getConnectionTimeout());
 
     webClient =
         builder
