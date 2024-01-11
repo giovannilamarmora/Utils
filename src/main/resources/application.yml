@@ -15,7 +15,7 @@ app:
 # Level of LOG
 logging:
   level:
-    io.github.giovannilamarmora.utils: INFO
+    io.github.giovannilamarmora.utils: INFO # Use DEBUG for access to LogTimeTracker LOGS
     web: ERROR
     root: INFO
     org:
