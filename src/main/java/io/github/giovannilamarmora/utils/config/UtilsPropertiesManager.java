@@ -32,6 +32,6 @@ public class UtilsPropertiesManager {
   private Boolean isDebugUtilsStackTraceActive;
 
   /** LogTimeTracker */
-  @Value(value = "#{new Boolean(${app.interceptors.actionType.success.debug:false})}")
+  @Value(value = "#{new Boolean(${app.interceptors.actionType.success.debug:true})}")
   private Boolean isLevelDebugActive;
 }

@@ -55,6 +55,7 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
+    LOG.info("Action Type {}", this.actionType);
     if (this.actionType.equals(ActionType.DEBUG_MAPPER) || isDebugLevel(this.actionType)) {
       LOG.debug(
           "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",

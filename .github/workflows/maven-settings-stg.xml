@@ -16,9 +16,9 @@
                 <repository>
                     <id>ossrh</id>
                     <url>https://s01.oss.sonatype.org/content/repositories/releases</url>
-                    <releases>
+                    <snapshots>
                         <enabled>true</enabled>
-                    </releases>
+                    </snapshots>
                 </repository>
             </repositories>
         </profile>
