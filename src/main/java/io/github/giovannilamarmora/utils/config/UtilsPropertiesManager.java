@@ -3,7 +3,6 @@ package io.github.giovannilamarmora.utils.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import javax.annotation.PostConstruct;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,19 +50,8 @@ public class UtilsPropertiesManager {
       properties.load(input);
     } catch (IOException e) {
       LOG.error("File not found");
-      e.printStackTrace();
+      throw new ConfigException(e.getMessage());
     }
-  }
-
-  @PostConstruct
-  private void init() {
-    LOG.info("readTimeout: {}", readTimeout);
-    LOG.info("writeTimeout: {}", writeTimeout);
-    LOG.info("connectionTimeout: {}", connectionTimeout);
-    LOG.info("isCorsEnabled: {}", isCorsEnabled);
-    LOG.info("isUtilsStackTraceActive: {}", isUtilsStackTraceActive);
-    LOG.info("isDebugUtilsStackTraceActive: {}", isDebugUtilsStackTraceActive);
-    LOG.info("isLevelDebugActive: {}", isLevelDebugActive);
   }
 
   public Boolean getIsLevelDebugActive() {

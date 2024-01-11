@@ -24,7 +24,7 @@ public class ThreadManager {
     } catch (InterruptedException e) {
       LOG.error("An error occurred during sleeping thread, message is {}", e.getMessage());
       throw new WebException(
-          GenericException.ERR_EXC_WEB_001,
+          GenericException.ERR_EXC_WEB_002,
           "An error occurred during sleeping thread, message is " + e.getMessage());
     }
   }

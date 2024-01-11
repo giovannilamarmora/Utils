@@ -54,7 +54,6 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
-    LOG.info("Test {}", propertiesManager.getIsLevelDebugActive());
     if (this.actionType.equals(ActionType.DEBUG_MAPPER) || isDebugLevel()) {
       LOG.debug(
           "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
@@ -103,6 +102,8 @@ public class LogTimeTracker {
   private boolean isDebugLevel() {
     return !this.actionType.equals(ActionType.APP_CONTROLLER)
         && !this.actionType.equals(ActionType.CONTROLLER)
+        && !this.actionType.equals(ActionType.APP_SCHEDULER)
+        && !this.actionType.equals(ActionType.SCHEDULER)
         && propertiesManager.getIsLevelDebugActive();
   }
 
