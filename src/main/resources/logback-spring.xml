@@ -9,8 +9,10 @@
         </encoder>
         <appName>${LOGTAIL_APP_NAME}</appName>
         <ingestKey>${LOGTAIL_LOGS}</ingestKey>
+        <sourceToken>${LOGTAIL_LOGS}</sourceToken>
         <mdcFields>requestId,requestTime</mdcFields>
         <mdcTypes>string,int</mdcTypes>
+        <objectMapperModule>com.fasterxml.jackson.datatype.jsr310.JavaTimeModule</objectMapperModule>
     </appender>
 
     <appender name="Logtail" class="ch.qos.logback.classic.AsyncAppender">
@@ -31,7 +33,7 @@
     <if condition='property("logTailActive").equalsIgnoreCase("true")'>
         <then>
             <root level="${level}">
-                <appender-ref ref="Logtail"/>
+                <appender-ref ref="LogtailHttp"/>
                 <appender-ref ref="Console"/>
             </root>
         </then>
