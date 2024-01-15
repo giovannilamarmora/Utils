@@ -1,4 +1,4 @@
-package io.github.giovannilamarmora.utils.config;
+/*package io.github.giovannilamarmora.utils.config;
 
 import java.io.IOException;
 import javax.servlet.*;
@@ -36,4 +36,4 @@ public class CorsConfig implements Filter {
     }
     chain.doFilter(req, res);
   }
-}
+}*/
