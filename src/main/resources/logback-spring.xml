@@ -33,7 +33,7 @@
     <if condition='property("logTailActive").equalsIgnoreCase("true")'>
         <then>
             <root level="${level}">
-                <appender-ref ref="LogtailHttp"/>
+                <appender-ref ref="Logtail"/>
                 <appender-ref ref="Console"/>
             </root>
         </then>
