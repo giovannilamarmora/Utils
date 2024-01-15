@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,12 +14,16 @@ public class CorsConfig implements Filter {
 
   @Autowired private UtilsPropertiesManager propertyManager;
 
+  @Value("#{new Boolean(${app.cors.enabled:false})}")
+  private Boolean isCorsEnabled;
+
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
 
-    if (propertyManager.getIsCorsEnabled()) {
+    // if (propertyManager.getIsCorsEnabled()) {
+    if (isCorsEnabled) {
       HttpServletResponse response = (HttpServletResponse) res;
       response.setHeader("Access-Control-Allow-Origin", "*");
       response.setHeader("Access-Control-Allow-Methods", "POST, PATCH, PUT, GET, OPTIONS, DELETE");
