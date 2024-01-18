@@ -1,6 +1,5 @@
 package io.github.giovannilamarmora.utils.exception;
 
-import io.github.giovannilamarmora.utils.config.UtilsPropertiesManager;
 import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
@@ -9,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,7 +20,11 @@ public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
 
-  @Autowired private UtilsPropertiesManager propertiesManager;
+  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.active:true})}")
+  private Boolean isUtilsStackTraceActive;
+
+  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.debug:true})}")
+  private Boolean isDebugUtilsStackTraceActive;
 
   public static final Logger LOG = LoggerFactory.getLogger(UtilsException.class);
 
@@ -47,13 +50,13 @@ public class UtilsException extends RuntimeException {
       if (!ObjectUtils.isEmpty(e.getExceptionMessage()))
         errorMes.setExceptionMessage(e.getExceptionMessage());
 
-      if (propertiesManager.getIsUtilsStackTraceActive()
+      if (isUtilsStackTraceActive
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) {
         errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
-        if (propertiesManager.getIsDebugUtilsStackTraceActive()) LOG.debug("Stacktrace error: ", e);
+        if (isDebugUtilsStackTraceActive) LOG.debug("Stacktrace error: ", e);
         else LOG.error("Stacktrace error: ", e);
-      } else if (!propertiesManager.getIsUtilsStackTraceActive()
+      } else if (!isUtilsStackTraceActive
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) LOG.debug("Stacktrace error: ", e);
 

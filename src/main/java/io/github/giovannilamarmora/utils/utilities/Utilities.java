@@ -62,6 +62,7 @@ public class Utilities {
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getByteArrayFromImageURL(String url) {
     LOG.debug("Converting URL {}", url);
+    if (ObjectUtils.isEmpty(url)) return null;
     if (url.contains("https://")) {
       try {
         URL imageUrl = new URL(url);
