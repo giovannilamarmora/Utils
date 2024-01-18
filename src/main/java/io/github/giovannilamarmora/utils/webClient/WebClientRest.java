@@ -4,11 +4,7 @@ import static org.springframework.http.MediaType.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -64,14 +60,14 @@ public class WebClientRest {
     }
     HttpClient httpClient =
         HttpClient.create()
-            .doOnConnected(
-                connection ->
-                    connection
-                        .addHandlerFirst(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
-                        .addHandlerFirst(
-                            new WriteTimeoutHandler(writeTimeout, TimeUnit.MILLISECONDS)))
-            .httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024))
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout);
+            //.doOnConnected(
+            //    connection ->
+            //        connection
+            //            .addHandlerFirst(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
+            //            .addHandlerFirst(
+            //                new WriteTimeoutHandler(writeTimeout, TimeUnit.MILLISECONDS)))
+            .httpResponseDecoder(spec -> spec.maxHeaderSize(32 * 1024));
+            //.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout);
 
     webClient =
         builder
