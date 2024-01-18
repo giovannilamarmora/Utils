@@ -3,7 +3,6 @@ package io.github.giovannilamarmora.utils.web;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
-import io.github.giovannilamarmora.utils.math.MathService;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Logged
 public class CookieManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MathService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CookieManager.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static void setCookieInResponse(
