@@ -61,7 +61,7 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getByteArrayFromImageURL(String url) {
-    LOG.debug("Converting URL {}", url);
+    LOG.debug("Converting Image URL");
     if (ObjectUtils.isEmpty(url)) return null;
     if (url.contains("https://")) {
       try {
@@ -78,14 +78,14 @@ public class Utilities {
         String encoded =
             // Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT).replaceAll("\n", "");
             Base64.getEncoder().encodeToString(baos.toByteArray()).replaceAll("\n", "");
-        LOG.debug("Returning URL data:image/png;base64{}", encoded);
+        LOG.debug("Returning URL data:image/png;base64");
         return "data:image/png;base64," + encoded;
       } catch (Exception e) {
         LOG.debug("An Exception occurred during the conversation, url returned is {}", url);
         return url;
       }
     } else {
-      LOG.debug("Not contains https://, returning {}", url);
+      LOG.debug("Not contains https://, returning data:image/png;base64,");
       return url;
     }
   }
