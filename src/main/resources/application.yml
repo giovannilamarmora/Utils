@@ -1,4 +1,5 @@
 app:
+  version: @project.version@
   exception:
     stacktrace:
       utilsException: # All Activated

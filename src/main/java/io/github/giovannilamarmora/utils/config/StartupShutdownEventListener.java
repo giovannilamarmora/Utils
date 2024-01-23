@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
@@ -23,7 +24,10 @@ public class StartupShutdownEventListener {
   private static final String SERVER_PORT = "server.port";
   private static final String SERVER_CONTEXT_PATH = "server.servlet.context-path";
 
-  private static void logApplicationStartup(Environment env) {
+  @Value("${app.version:unknown}")
+  private String appVersion;
+
+  private static void logApplicationStartup(Environment env, String appVersion) {
     String protocol =
         Optional.ofNullable(env.getProperty(SERVER_SSL_KEY)).map(key -> "https").orElse("http");
     String serverPort = Optional.ofNullable(env.getProperty(SERVER_PORT)).orElse("8080");
@@ -31,27 +35,32 @@ public class StartupShutdownEventListener {
         Optional.ofNullable(env.getProperty(SERVER_CONTEXT_PATH))
             .filter(StringUtils::isNotBlank)
             .orElse("/");
+    String localAddress = "localhost";
     String hostAddress = "localhost";
     try {
       hostAddress = InetAddress.getLocalHost().getHostAddress();
+      localAddress = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
       LOG.warn("The host name could not be determined, using `localhost` as fallback", e);
     }
     LOG.info(
         "\n--------------------------------------------------------------------\n\t"
             + "Application '{}' is running! Access URLs:\n\t"
-            + "Local: \t\t{}://localhost:{}{}\n\t"
+            + "Local: \t\t{}://{}:{}{}\n\t"
             + "External: \t{}://{}:{}{}\n\t"
-            + "Profile(s): \t{}\n--------------------------------------------------------------------",
+            + "Profile(s): \t{}\n\t"
+            + "App Version: \t[{}]\n--------------------------------------------------------------------",
         env.getProperty(APPLICATION_NAME, APPLICATION_NAME_DEFAULT),
         protocol,
+        localAddress,
         serverPort,
         contextPath,
         protocol,
         hostAddress,
         serverPort,
         contextPath,
-        env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles());
+        env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles(),
+        appVersion);
   }
 
   @EventListener
@@ -67,6 +76,6 @@ public class StartupShutdownEventListener {
           STARTUP_LOG_ACTIVE);
       return;
     }
-    logApplicationStartup(environment);
+    logApplicationStartup(environment, appVersion);
   }
 }
