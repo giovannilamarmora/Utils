@@ -20,11 +20,8 @@ public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
   private String exceptionMessage;
 
-  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.active:true})}")
+  @Value("#{new Boolean(${app.exception.stacktrace:true})}")
   private Boolean isUtilsStackTraceActive;
-
-  @Value("#{new Boolean(${app.exception.stacktrace.utilsException.debug:true})}")
-  private Boolean isDebugUtilsStackTraceActive;
 
   public static final Logger LOG = LoggerFactory.getLogger(UtilsException.class);
 
@@ -54,8 +51,7 @@ public class UtilsException extends RuntimeException {
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) {
         errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
-        if (isDebugUtilsStackTraceActive) LOG.debug("Stacktrace error: ", e);
-        else LOG.error("Stacktrace error: ", e);
+        LOG.error("Stacktrace error: ", e);
       } else if (!isUtilsStackTraceActive
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) LOG.debug("Stacktrace error: ", e);
