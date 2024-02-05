@@ -8,14 +8,17 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ObjectUtils;
 
 @Configuration
 public class OpenAPIConfig {
 
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+  @Autowired private ResourceLoader resourceLoader;
 
   @Bean
   public OpenApiCustomiser applyStandardOpenAPIModifications() {
@@ -62,7 +65,8 @@ public class OpenAPIConfig {
                             try {
                               String fileName = getExampleFileName(content.getExample().toString());
                               LOG.debug("FileName is {}", fileName);
-                              String jsonContent = FilesUtils.searchFileFromResources(fileName);
+                              String jsonContent =
+                                  FilesUtils.searchFileFromResources(fileName, resourceLoader);
                               if (jsonContent != null) {
                                 content.setExample(jsonContent);
                               }

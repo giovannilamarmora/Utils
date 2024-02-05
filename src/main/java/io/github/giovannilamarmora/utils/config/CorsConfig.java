@@ -1,18 +1,15 @@
-/*package io.github.giovannilamarmora.utils.config;
+package io.github.giovannilamarmora.utils.config;
 
 import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CorsConfig implements Filter {
-
-  @Autowired private UtilsPropertiesManager propertyManager;
 
   @Value("#{new Boolean(${app.cors.enabled:false})}")
   private Boolean isCorsEnabled;
@@ -22,7 +19,6 @@ public class CorsConfig implements Filter {
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
 
-    // if (propertyManager.getIsCorsEnabled()) {
     if (isCorsEnabled) {
       HttpServletResponse response = (HttpServletResponse) res;
       response.setHeader("Access-Control-Allow-Origin", "*");
@@ -36,4 +32,4 @@ public class CorsConfig implements Filter {
     }
     chain.doFilter(req, res);
   }
-}*/
+}

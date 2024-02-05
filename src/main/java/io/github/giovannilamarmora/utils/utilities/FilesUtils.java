@@ -14,7 +14,6 @@ import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -22,18 +21,18 @@ import org.springframework.stereotype.Service;
 @Service
 @Logged
 public class FilesUtils {
-
-  @Autowired private static ResourceLoader resourceLoader;
   private static final Logger LOG = LoggerFactory.getLogger(FilesUtils.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String searchFileFromResources(String fileName) throws IOException {
-    Path path = getResourcePath(fileName);
+  public static String searchFileFromResources(String fileName, ResourceLoader resourceLoader)
+      throws IOException {
+    Path path = getResourcePath(fileName, resourceLoader);
     return path != null ? new String(java.nio.file.Files.readAllBytes(path)) : null;
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static Path getResourcePath(String fileName) throws IOException {
+  public static Path getResourcePath(String fileName, ResourceLoader resourceLoader)
+      throws IOException {
     Resource resource = resourceLoader.getResource("classpath:/");
 
     LOG.debug("The Resource URI is {}", resource.getURI());

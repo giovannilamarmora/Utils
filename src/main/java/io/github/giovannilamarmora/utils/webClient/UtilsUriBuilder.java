@@ -3,15 +3,13 @@ package io.github.giovannilamarmora.utils.webClient;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
+import lombok.Getter;
 import org.springframework.web.util.UriBuilder;
 
 public class UtilsUriBuilder {
   private Function<UriBuilder, URI> uri;
+  @Getter
   private String stringUri;
-
-  public String getStringUri() {
-    return stringUri;
-  }
 
   public Function<UriBuilder, URI> get() {
     return uri;

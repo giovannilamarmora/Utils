@@ -1,10 +1,7 @@
 app:
   version: @project.version@
   exception:
-    stacktrace:
-      utilsException: # All Activated
-        active: true # Active StackTrace in Response
-        debug: false # If active: true and debug: false activate the  StackTrace in LOGS
+    stacktrace: true # Active StackTrace in Response
   # Cors status
   cors: # Disabled
     enabled: false
