@@ -24,6 +24,23 @@ public class FilesUtils {
   private static final Logger LOG = LoggerFactory.getLogger(FilesUtils.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static boolean matchPath(String requestPath, String endpoint) {
+    String[] requestPathSegments = requestPath.split("/");
+    String[] endpointSegments = endpoint.split("/");
+
+    if (requestPathSegments.length != endpointSegments.length) {
+      return false;
+    }
+    for (int i = 0; i < endpointSegments.length; i++) {
+      if (!endpointSegments[i].equals("**")
+          && !endpointSegments[i].equals(requestPathSegments[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String searchFileFromResources(String fileName, ResourceLoader resourceLoader)
       throws IOException {
     Path path = getResourcePath(fileName, resourceLoader);
