@@ -3,66 +3,49 @@ package io.github.giovannilamarmora.utils.config;
 import io.github.giovannilamarmora.utils.utilities.FilesUtils;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ObjectUtils;
 
-@Configuration
 public class OpenAPIConfig {
 
-  private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-  @Autowired private ResourceLoader resourceLoader;
+  private static final Logger LOG = LoggerFactory.getLogger(OpenAPIConfig.class);
 
-  @Bean
-  public OpenApiCustomiser applyStandardOpenAPIModifications() {
-    return openApi -> {
-      Paths paths = new Paths();
-      openApi.getPaths().entrySet().stream()
-          .sorted(Map.Entry.comparingByKey())
-          .forEach(entry -> paths.addPathItem(entry.getKey(), addExamples(entry.getValue())));
-      openApi.setPaths(paths);
-    };
-  }
-
-  private PathItem addExamples(PathItem pathItem) {
+  public static PathItem addExamples(PathItem pathItem, ResourceLoader resourceLoader) {
     if (!ObjectUtils.isEmpty(pathItem.getGet())) {
-      addOperations(pathItem.getGet());
+      addOperations(pathItem.getGet(), resourceLoader);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPost())) {
-      addOperations(pathItem.getPost());
+      addOperations(pathItem.getPost(), resourceLoader);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPatch())) {
-      addOperations(pathItem.getPatch());
+      addOperations(pathItem.getPatch(), resourceLoader);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPut())) {
-      addOperations(pathItem.getPut());
+      addOperations(pathItem.getPut(), resourceLoader);
     }
     if (!ObjectUtils.isEmpty(pathItem.getDelete())) {
-      addOperations(pathItem.getDelete());
+      addOperations(pathItem.getDelete(), resourceLoader);
     }
     return pathItem;
   }
 
-  private void addOperations(Operation operation) {
+  private static void addOperations(Operation operation, ResourceLoader resourceLoader) {
     if (!ObjectUtils.isEmpty(operation) && !ObjectUtils.isEmpty(operation.getResponses())) {
       operation
           .getResponses()
           .forEach(
               (statusCode, apiResponse) -> {
-                if (!ObjectUtils.isEmpty(apiResponse.getContent())) {
+                if (!ObjectUtils.isEmpty(apiResponse.getContent())
+                    && !ObjectUtils.isEmpty(apiResponse.getContent().values())) {
                   apiResponse
                       .getContent()
                       .values()
                       .forEach(
                           content -> {
                             try {
+                              if (!content.getExampleSetFlag()) return;
                               String fileName = getExampleFileName(content.getExample().toString());
                               LOG.debug("FileName is {}", fileName);
                               String jsonContent =
@@ -80,7 +63,7 @@ public class OpenAPIConfig {
     }
   }
 
-  private String getExampleFileName(String fileName) {
+  private static String getExampleFileName(String fileName) {
     return fileName.replaceFirst("@", "");
   }
 }
