@@ -5,7 +5,6 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ObjectUtils;
 
 public class OpenAPIConfig {
@@ -13,26 +12,26 @@ public class OpenAPIConfig {
   private static final Logger LOG = LoggerFactory.getLogger(OpenAPIConfig.class);
 
   public static PathItem addJSONExamplesOnResource(
-      PathItem pathItem, ResourceLoader resourceLoader) {
+      PathItem pathItem) {
     if (!ObjectUtils.isEmpty(pathItem.getGet())) {
-      addOperations(pathItem.getGet(), resourceLoader);
+      addOperations(pathItem.getGet());
     }
     if (!ObjectUtils.isEmpty(pathItem.getPost())) {
-      addOperations(pathItem.getPost(), resourceLoader);
+      addOperations(pathItem.getPost());
     }
     if (!ObjectUtils.isEmpty(pathItem.getPatch())) {
-      addOperations(pathItem.getPatch(), resourceLoader);
+      addOperations(pathItem.getPatch());
     }
     if (!ObjectUtils.isEmpty(pathItem.getPut())) {
-      addOperations(pathItem.getPut(), resourceLoader);
+      addOperations(pathItem.getPut());
     }
     if (!ObjectUtils.isEmpty(pathItem.getDelete())) {
-      addOperations(pathItem.getDelete(), resourceLoader);
+      addOperations(pathItem.getDelete());
     }
     return pathItem;
   }
 
-  private static void addOperations(Operation operation, ResourceLoader resourceLoader) {
+  private static void addOperations(Operation operation) {
     if (!ObjectUtils.isEmpty(operation) && !ObjectUtils.isEmpty(operation.getResponses())) {
       operation
           .getResponses()
@@ -49,8 +48,7 @@ public class OpenAPIConfig {
                               if (!content.getExampleSetFlag()) return;
                               String fileName = getExampleFileName(content.getExample().toString());
                               LOG.debug("FileName is {}", fileName);
-                              String jsonContent =
-                                  FilesUtils.searchFileFromResources(fileName, resourceLoader);
+                              String jsonContent = FilesUtils.searchFileFromResources(fileName);
                               if (jsonContent != null) {
                                 content.setExample(jsonContent);
                               }
