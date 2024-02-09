@@ -12,7 +12,8 @@ public class OpenAPIConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(OpenAPIConfig.class);
 
-  public static PathItem addExamples(PathItem pathItem, ResourceLoader resourceLoader) {
+  public static PathItem addJSONExamplesOnResource(
+      PathItem pathItem, ResourceLoader resourceLoader) {
     if (!ObjectUtils.isEmpty(pathItem.getGet())) {
       addOperations(pathItem.getGet(), resourceLoader);
     }
