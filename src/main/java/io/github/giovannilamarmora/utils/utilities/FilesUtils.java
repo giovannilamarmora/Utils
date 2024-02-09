@@ -57,6 +57,7 @@ public class FilesUtils {
     Path resourcesPath = null;
 
     if (resource.getURI().getScheme().equals("jar")) {
+      //URL resourceUrl = FilesUtils.class.getProtectionDomain().getCodeSource().getLocation();
       String path = resource.getURI().getPath();
       if (path.endsWith("/")) path = path.substring(0, path.length() - 1);
       String jarPath = path.substring(5, path.indexOf("!"));
