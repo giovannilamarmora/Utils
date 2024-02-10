@@ -42,16 +42,20 @@ public class FilesUtils {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String searchFileFromResources(String fileName)
+  public static String searchFileFromResources(String fileName, Class<?>... optionalClass)
       throws IOException, URISyntaxException {
-    Path path = getResourcePath(fileName);
+    Path path = getResourcePath(fileName, optionalClass);
     return path != null ? new String(Files.readAllBytes(path)) : null;
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static Path getResourcePath(String fileName) throws IOException, URISyntaxException {
+  public static Path getResourcePath(String fileName, Class<?>... optionalClass)
+      throws IOException, URISyntaxException {
     // Resource resource = resourceLoader.getResource("classpath:/");
-    URL resourceUrl = FilesUtils.class.getProtectionDomain().getCodeSource().getLocation();
+    URL resourceUrl =
+        optionalClass.length > 0
+            ? optionalClass[0].getProtectionDomain().getCodeSource().getLocation()
+            : FilesUtils.class.getProtectionDomain().getCodeSource().getLocation();
 
     LOG.debug("The Resource URI is {}", resourceUrl);
 

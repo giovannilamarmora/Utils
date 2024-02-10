@@ -11,27 +11,26 @@ public class OpenAPIConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(OpenAPIConfig.class);
 
-  public static PathItem addJSONExamplesOnResource(
-      PathItem pathItem) {
+  public static PathItem addJSONExamplesOnResource(PathItem pathItem, Class<?>... optionalClass) {
     if (!ObjectUtils.isEmpty(pathItem.getGet())) {
-      addOperations(pathItem.getGet());
+      addOperations(pathItem.getGet(), optionalClass);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPost())) {
-      addOperations(pathItem.getPost());
+      addOperations(pathItem.getPost(), optionalClass);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPatch())) {
-      addOperations(pathItem.getPatch());
+      addOperations(pathItem.getPatch(), optionalClass);
     }
     if (!ObjectUtils.isEmpty(pathItem.getPut())) {
-      addOperations(pathItem.getPut());
+      addOperations(pathItem.getPut(), optionalClass);
     }
     if (!ObjectUtils.isEmpty(pathItem.getDelete())) {
-      addOperations(pathItem.getDelete());
+      addOperations(pathItem.getDelete(), optionalClass);
     }
     return pathItem;
   }
 
-  private static void addOperations(Operation operation) {
+  private static void addOperations(Operation operation, Class<?>... optionalClass) {
     if (!ObjectUtils.isEmpty(operation) && !ObjectUtils.isEmpty(operation.getResponses())) {
       operation
           .getResponses()
@@ -48,7 +47,8 @@ public class OpenAPIConfig {
                               if (!content.getExampleSetFlag()) return;
                               String fileName = getExampleFileName(content.getExample().toString());
                               LOG.debug("FileName is {}", fileName);
-                              String jsonContent = FilesUtils.searchFileFromResources(fileName);
+                              String jsonContent =
+                                  FilesUtils.searchFileFromResources(fileName, optionalClass);
                               if (jsonContent != null) {
                                 content.setExample(jsonContent);
                               }
