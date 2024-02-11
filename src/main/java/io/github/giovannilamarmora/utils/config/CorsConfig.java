@@ -41,6 +41,10 @@ public class CorsConfig implements Filter {
   private boolean shouldNotFilter(ServletRequest req) {
     HttpServletRequest request = (HttpServletRequest) req;
     String path = request.getRequestURI();
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return true;
+    }
     return shouldNotFilter.stream().anyMatch(endpoint -> FilesUtils.matchPath(path, endpoint));
   }
 }
