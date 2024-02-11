@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class CorsConfig implements Filter {
+public class CorsConfig extends OncePerRequestFilter {
   private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
   @Value(value = "#{new Boolean(${app.cors.enabled:false})}")
@@ -21,11 +23,11 @@ public class CorsConfig implements Filter {
   @Value(value = "${app.shouldNotFilter}")
   private List<String> shouldNotFilter;
 
-  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-      throws IOException, ServletException {
-
-    if (isCorsEnabled && !shouldNotFilter(req)) {
-      HttpServletResponse response = (HttpServletResponse) res;
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    if (isCorsEnabled && !shouldNotFilter(request)) {
       response.setHeader("Access-Control-Allow-Origin", "*");
       response.setHeader("Access-Control-Allow-Methods", "POST, PATCH, PUT, GET, OPTIONS, DELETE");
       response.setHeader("Access-Control-Max-Age", "3600");
@@ -35,14 +37,14 @@ public class CorsConfig implements Filter {
           "Origin, X-Requested-With, Content-Type, Accept, Authorization");
       LOG.info("Setting Up CORS Policy for mainstream: {}", response);
     }
-    chain.doFilter(req, res);
+    filterChain.doFilter(request, response);
   }
 
-  private boolean shouldNotFilter(ServletRequest req) {
+  protected boolean shouldNotFilter(ServletRequest req) {
     HttpServletRequest request = (HttpServletRequest) req;
     String path = request.getRequestURI();
     String method = request.getMethod();
-    if ("OPTIONS".equals(method)) {
+    if (HttpMethod.OPTIONS.name().equals(method)) {
       return true;
     }
     return shouldNotFilter.stream().anyMatch(endpoint -> FilesUtils.matchPath(path, endpoint));
