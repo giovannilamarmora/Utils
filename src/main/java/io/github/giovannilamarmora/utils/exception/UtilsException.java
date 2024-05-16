@@ -4,12 +4,12 @@ import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,11 +27,11 @@ public class UtilsException extends RuntimeException {
 
   @ExceptionHandler(value = UtilsException.class)
   private ResponseEntity<ExceptionResponse> handleUtilsException(
-      UtilsException e, HttpServletRequest request) {
+      UtilsException e, ServerHttpRequest request) {
     ExceptionResponse error = defaultResponse();
     LOG.error(
         "[UtilsException Handler] An error happened while calling {} Downstream API: {}",
-        request.getRequestURI(),
+        request.getPath().value(),
         e.getMessage());
     if (e.exceptionCode != null) {
       ErrorInfo errorMes = new ErrorInfo();
@@ -40,7 +40,7 @@ public class UtilsException extends RuntimeException {
 
       if (!ObjectUtils.isEmpty(e.exceptionCode.getStatus()))
         errorMes.setStatus(e.exceptionCode.getStatus());
-      error.setUrl(request.getRequestURI());
+      error.setUrl(request.getPath().value());
 
       if (!ObjectUtils.isEmpty(e.getMessage())) errorMes.setMessage(e.getMessage());
 
@@ -70,12 +70,12 @@ public class UtilsException extends RuntimeException {
 
   @ExceptionHandler(value = Exception.class)
   private ResponseEntity<ExceptionResponse> handleException(
-      Exception e, HttpServletRequest request) {
+      Exception e, ServerHttpRequest request) {
     ExceptionResponse error = defaultResponse();
     if (!ObjectUtils.isEmpty(e)) {
       LOG.error(
           "[Exception Handler] An error happened while calling {} Downstream API: {}",
-          request.getRequestURI(),
+          request.getPath().value(),
           e.getMessage());
 
       error = getExceptionResponse(e, request, GenericException.ERR_EXC_HAN_001);
@@ -84,7 +84,7 @@ public class UtilsException extends RuntimeException {
   }
 
   public static ExceptionResponse getExceptionResponse(
-      Exception e, HttpServletRequest request, ExceptionCode exceptionCode) {
+      Exception e, ServerHttpRequest request, ExceptionCode exceptionCode) {
     ExceptionResponse exceptionResponse = new ExceptionResponse();
     ErrorInfo errorMes = new ErrorInfo();
 
@@ -99,8 +99,8 @@ public class UtilsException extends RuntimeException {
       errorMes.setExceptionMessage(e.getMessage());
     }
 
-    if (!ObjectUtils.isEmpty(request.getRequestURI())) {
-      exceptionResponse.setUrl(request.getRequestURI());
+    if (!ObjectUtils.isEmpty(request.getPath().value())) {
+      exceptionResponse.setUrl(request.getPath().value());
     }
 
     if (!ObjectUtils.isEmpty(e.getStackTrace())) {

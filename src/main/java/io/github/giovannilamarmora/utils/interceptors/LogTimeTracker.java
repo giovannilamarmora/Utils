@@ -52,15 +52,6 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
-    if (this.actionType.equals(ActionType.DEBUG_MAPPER) || isDebugLevel()) {
-      LOG.debug(
-          "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
-          this.actionType,
-          this.methodName,
-          this.correlationId,
-          getDeltaInMilli());
-      return;
-    }
     LOG.info(
         "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
         this.actionType,
@@ -98,28 +89,11 @@ public class LogTimeTracker {
   }
 
   private boolean isDebugLevel() {
-    return !this.actionType.equals(ActionType.APP_CONTROLLER)
-        && !this.actionType.equals(ActionType.CONTROLLER)
-        && !this.actionType.equals(ActionType.APP_SCHEDULER)
+    return !this.actionType.equals(ActionType.CONTROLLER)
         && !this.actionType.equals(ActionType.SCHEDULER);
   }
 
   public enum ActionType {
-    @Deprecated
-    APP_CONTROLLER,
-    @Deprecated
-    APP_SERVICE,
-    @Deprecated
-    APP_MAPPER,
-    DEBUG_MAPPER,
-    @Deprecated
-    APP_EXTERNAL,
-    @Deprecated
-    APP_CACHE,
-    @Deprecated
-    APP_SCHEDULER,
-    @Deprecated
-    APP_INTERCEPTOR,
     CONTROLLER,
     SERVICE,
     MAPPER,
@@ -127,6 +101,8 @@ public class LogTimeTracker {
     CACHE,
     SCHEDULER,
     INTERCEPTOR,
+    GRPC,
+    VALIDATOR,
     UTILS_LOGGER
   }
 }

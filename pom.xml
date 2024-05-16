@@ -5,17 +5,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>0.2.80</version>
+    <version>1.0.0.39</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>22</java.version>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
     </properties>
 
     <developers>
@@ -50,13 +52,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.3.23</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.23</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,57 +65,55 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>2.7.2</version>
+            <version>3.2.5</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.0-M2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>5.3.23</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.9.1</version>
+            <version>1.9.22</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
+            <version>1.18.32</version>
         </dependency>
         <!-- Excel Library -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.5</version>
         </dependency>
         <!-- END Excel Library -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.15.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.1</version>
+            <version>5.11.0-M1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
         </dependency>
         <!-- Swagger API -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.15</version>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>2.5.0</version>
         </dependency>
         <!-- END Swagger API -->
         <!-- LogTail Logs -->
@@ -127,57 +125,56 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.15.1</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.13</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.15.1</version>
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.1.10</version>
+            <version>3.1.12</version>
         </dependency>
         <!-- END LogTail Logs -->
-        <!-- Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- END Test -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>2.2.3</version>
+            <version>3.2.0-B02</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.0</version>
         </dependency>
+
+        <!-- Google Cloud LOG -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gcp-starter-logging</artifactId>
+            <version>1.2.8.RELEASE</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.grpc/grpc-googleapis -->
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-googleapis</artifactId>
+            <version>1.62.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- END Google Cloud LOG -->
     </dependencies>
 
     <profiles>
@@ -256,17 +253,24 @@
                         <dependency>
                             <groupId>org.aspectj</groupId>
                             <artifactId>aspectjweaver</artifactId>
-                            <version>1.9.7</version>
+                            <version>1.9.9.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.springframework</groupId>
                             <artifactId>spring-aop</artifactId>
-                            <version>5.3.21</version>
+                            <version>6.1.6</version>
                         </dependency>
                     </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
+    <repositories>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+    </repositories>
 
 </project>
