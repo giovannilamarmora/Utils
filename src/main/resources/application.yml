@@ -27,6 +27,13 @@ logging:
         web: ERROR
       hibernate: ERROR
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    
 rest:
   webClient:
     timeout:
