@@ -1,27 +1,25 @@
 package io.github.giovannilamarmora.utils.interceptors.correlationID;
 
 import org.slf4j.MDC;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 @Component
-public class CorrelationIdInterceptor extends OncePerRequestFilter {
+public class CorrelationIdInterceptor implements WebFilter {
 
   private static boolean isEmpty(String value) {
     return value == null || value.isBlank();
   }
 
   @Override
-  protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    String correlationId = request.getHeader(CorrelationIdUtils.CORRELATION_HEADER_NAME);
+  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    if (shouldNotFilter(exchange.getRequest())) return chain.filter(exchange);
+    String correlationId =
+        exchange.getRequest().getHeaders().getFirst(CorrelationIdUtils.CORRELATION_HEADER_NAME);
     String mdcCorrelationId = MDC.get(CorrelationIdUtils.CORRELATION_MDC_NAME);
     if (isEmpty(correlationId) || !correlationId.equalsIgnoreCase(mdcCorrelationId)) {
       MDC.remove(CorrelationIdUtils.CORRELATION_MDC_NAME);
@@ -29,14 +27,15 @@ public class CorrelationIdInterceptor extends OncePerRequestFilter {
     }
     CorrelationIdUtils.setCorrelationId(correlationId);
     MDC.put(CorrelationIdUtils.CORRELATION_MDC_NAME, CorrelationIdUtils.getCorrelationId());
-    response.addHeader(
-        CorrelationIdUtils.CORRELATION_HEADER_NAME, CorrelationIdUtils.getCorrelationId());
-    filterChain.doFilter(request, response);
+    exchange
+        .getResponse()
+        .getHeaders()
+        .add(CorrelationIdUtils.CORRELATION_HEADER_NAME, CorrelationIdUtils.getCorrelationId());
+    return chain.filter(exchange);
   }
 
-  @Override
-  protected boolean shouldNotFilter(HttpServletRequest request) {
-    String path = request.getRequestURI();
+  protected boolean shouldNotFilter(ServerHttpRequest request) {
+    String path = request.getPath().value();
     return "/actuator/health".equals(path);
   }
 }

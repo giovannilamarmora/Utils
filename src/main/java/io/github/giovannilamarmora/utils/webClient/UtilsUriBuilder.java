@@ -8,8 +8,7 @@ import org.springframework.web.util.UriBuilder;
 
 public class UtilsUriBuilder {
   private Function<UriBuilder, URI> uri;
-  @Getter
-  private String stringUri;
+  @Getter private String stringUri;
 
   public Function<UriBuilder, URI> get() {
     return uri;
@@ -19,41 +18,44 @@ public class UtilsUriBuilder {
     return new UtilsUriBuilder();
   }
 
-  public UtilsUriBuilder set(String path, Map<String, Object> queryParams, Object... objs) {
-    StringBuilder sb = new StringBuilder();
-    if (objs != null && objs.length != 0) {
-      String tmp = path;
-      for (Object obj : objs) {
-        int endIndex = tmp.indexOf('{');
-        String start = tmp.substring(0, endIndex);
-        int beginIndex = tmp.indexOf('}') + 1;
-        String end = tmp.substring(beginIndex);
-        tmp = start + obj + end;
-      }
-      sb.append(tmp);
-    } else sb.append(path);
+  public UtilsUriBuilder set(String path, Map<String, Object> queryParams) {
+    StringBuilder pathBuilder = new StringBuilder(path);
 
     if (queryParams != null) {
-      sb.append("?");
-      for (Map.Entry<String, Object> e : queryParams.entrySet()) {
-        sb.append(e.getKey()).append("=").append(e.getValue()).append("&");
+      for (String key : queryParams.keySet()) {
+        if (pathBuilder.toString().contains("{" + key + "}")) {
+          pathBuilder =
+              new StringBuilder(
+                  pathBuilder.toString().replace("{" + key + "}", queryParams.get(key).toString()));
+        } else if (pathBuilder.toString().contains(":" + key)) {
+          pathBuilder =
+              new StringBuilder(
+                  pathBuilder.toString().replace(":" + key, queryParams.get(key).toString()));
+        } else {
+          if (!pathBuilder.toString().contains("?")) {
+            pathBuilder.append("?");
+          } else {
+            pathBuilder.append("&");
+          }
+          pathBuilder.append(key).append("=").append(queryParams.get(key));
+        }
       }
-      sb.deleteCharAt(sb.length() - 1);
     }
 
-    uri = buildWithPath(path, queryParams, objs);
-    stringUri = sb.toString();
+    stringUri = pathBuilder.toString();
+
     return this;
   }
 
-  private Function<UriBuilder, URI> buildWithPath(
-      String path, Map<String, Object> queryParams, Object... objs) {
-    return utilsUriBuilder -> {
-      utilsUriBuilder.path(path);
-      if (queryParams != null)
-        queryParams.entrySet().stream()
-            .map(e -> utilsUriBuilder.queryParam(e.getKey(), e.getValue()));
-      return utilsUriBuilder.build(objs);
+  public static Function<UriBuilder, URI> buildUri(String url, Map<String, Object> param) {
+    return uriBuilder -> {
+      UriBuilder builder = uriBuilder.path(url);
+      if (param != null && !param.isEmpty()) {
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+          builder.queryParam(entry.getKey(), entry.getValue());
+        }
+      }
+      return builder.build();
     };
   }
 }

@@ -172,8 +172,6 @@ for Java applications.
 
 - **`logTailActive`**: A property that determines whether logging to LogTail is active.
 
-- **`level`**: A property that specifies the logging level for LogTail.
-
 ### Appenders 📤
 
 - **`LogtailHttp`**: A Logtail appender responsible for sending logs to LogTail. It includes a specific pattern for log
@@ -192,13 +190,79 @@ for Java applications.
     - If `logTailActive` is `true`, the root logger includes both the `Logtail` and `Console` appenders, with the
       logging level specified by the `level` property.
 
-    - If `logTailActive` is `false`, the root logger includes only the `Console` appender, with the logging level
-      specified by the `level` property.
-
 ### Notes 📝
 
 - Adjust the configuration based on the specific logging requirements of your application.
 - Be cautious with sensitive information in logs, especially when using external log services like LogTail.
 - The provided configuration uses properties to make it more dynamic and customizable.
 
-Feel free to modify this configuration according to your application's logging needs.
+---
+
+# Google Cloud Logging Configuration
+
+## Introduction📝
+
+Google Cloud Logging allows you to store, search, analyze, and monitor your logs generated from your applications and
+infrastructure on Google Cloud Platform. This document provides guidance on configuring and using Google Cloud Logging
+with Logback in a Java application.
+
+## Prerequisites📤
+
+Before you begin, ensure you have the following:
+
+A Google Cloud Platform (GCP) account.
+A Java application using Logback for logging.
+Basic familiarity with Google Cloud Platform and Java.
+Configuration
+
+1. Set Up Google Cloud Project <br>
+   Log in to the Google Cloud Console. <br>
+   Create a new project or select an existing project. <br>
+   Enable the Cloud Logging API for your project.
+2. Add Dependencies <br>
+   Ensure your Java project includes the necessary dependencies:
+    ```xml
+    <!-- Google Cloud Logging -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-gcp-starter-logging</artifactId>
+        <version>1.2.8.RELEASE</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.api-client</groupId>
+        <artifactId>google-api-client</artifactId>
+        <version>2.4.1</version>
+    </dependency>
+    ```
+3. Configure Logback <br>
+   Modify your Logback configuration file (e.g., logback.xml) to include an appender for Google Cloud Logging:
+
+    ```xml
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+    <!-- Add configuration for Google Cloud Logging appender -->
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="CLOUD"/>
+    </root>
+    ```
+4. Enhance Logging Events <br>
+   Optionally, enhance your logging events with additional information before they are sent to Google Cloud Logging. You
+   can implement a LoggingEventEnhancer class:
+
+    ```java
+    public class GoogleLogConfig implements LoggingEventEnhancer {
+    // Implement the enhanceLogEntry method to add custom fields
+    }
+    ```
+
+### Usage
+
+Once configured, your application will start logging to Google Cloud Logging automatically. You can view and analyze
+your logs using the Google Cloud Console.
+
+### Troubleshooting
+
+Verify that the Cloud Logging API is enabled for your project.
+Ensure that the necessary dependencies are added to your project.
+Check your Logback configuration for any errors or misconfigurations.
