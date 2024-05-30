@@ -64,6 +64,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up JDK and Maven
+        id: setup
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '22'
+          distribution: 'corretto'
+
       - name: 🚀 Publish to GitHub Packages Apache Maven
         run: mvn --batch-mode deploy -s $GITHUB_WORKSPACE/.github/workflows/github-settings.xml -Pgithub
         env:
@@ -78,6 +85,13 @@ jobs:
     needs: [ install-test-and-build ]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up JDK and Maven
+        id: setup
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '22'
+          distribution: 'corretto'
 
       - name: 🚀 Publish to Central Repository
         run: mvn --batch-mode deploy -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -Possrh
