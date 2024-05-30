@@ -72,15 +72,27 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
-            <version>3.2.5</version>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+            <version>2.2.224</version>
+        </dependency>
+
+        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.1.0-M2</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -106,7 +118,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.0-M1</version>
+            <version>5.11.0-M2</version>
             <scope>test</scope>
         </dependency>
         <!-- Swagger API -->
@@ -120,7 +132,7 @@
         <dependency>
             <groupId>com.logtail</groupId>
             <artifactId>logback-logtail</artifactId>
-            <version>0.3.3</version>
+            <version>0.3.4</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -151,7 +163,7 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.2.0-B02</version>
+            <version>3.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
@@ -171,10 +183,23 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-googleapis</artifactId>
-            <version>1.62.2</version>
+            <version>1.63.1</version>
             <scope>runtime</scope>
         </dependency>
         <!-- END Google Cloud LOG -->
+
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <!-- END Swagger UI -->
     </dependencies>
 
     <profiles>
