@@ -1,49 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProperty scope="context" name="logTailActive" source="app.logTail.active"/>
-    <springProperty scope="context" name="level" source="app.logTail.level"/>
+    <!-- Define Spring properties -->
+    <springProperty scope="context" name="logTailActive" source="logging.logback.logTail.active"/>
+    <springProperty scope="context" name="googleActive" source="logging.logback.google-cloud.active"/>
     <springProperty scope="context" name="FAIL_ON_EMPTY_BEANS"
                     source="spring.jackson.serialization.FAIL_ON_EMPTY_BEANS"/>
 
+    <!-- Disable initial status messages -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- Appender for Google Cloud Logging -->
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+        <!-- Filter logs at or above INFO level -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <!-- Log file name (optional, default: java.log) -->
+        <log>application.log</log>
+        <!-- Resource type (optional, default: auto-detect) -->
+        <resourceType>gae_app</resourceType>
+        <!-- Flush level (optional, default: ERROR) -->
+        <flushLevel>WARN</flushLevel>
+        <!-- Logging event enhancer class -->
+        <loggingEventEnhancer>io.github.giovannilamarmora.utils.config.GoogleLogConfig</loggingEventEnhancer>
+    </appender>
+
+    <!-- Appender for Logtail -->
     <appender name="LogtailHttp" class="com.logtail.logback.LogtailAppender">
+        <!-- Log layout pattern -->
         <encoder>
-            <pattern>%yellow(%C{1.}): %msg%n%throwable</pattern>
+            <pattern>%yellow(%C{1}): %msg%n%throwable</pattern>
         </encoder>
+        <!-- Application name -->
         <appName>${LOGTAIL_APP_NAME}</appName>
+        <!-- Ingestion key -->
         <ingestKey>${LOGTAIL_LOGS}</ingestKey>
+        <!-- Source token -->
         <sourceToken>${LOGTAIL_LOGS}</sourceToken>
-        <mdcFields>requestId,requestTime</mdcFields>
-        <mdcTypes>string,int</mdcTypes>
+        <!-- MDC fields -->
+        <mdcFields>requestId,requestTime,correlationId</mdcFields>
+        <!-- MDC field types -->
+        <mdcTypes>string,int,string</mdcTypes>
+        <!-- ObjectMapper module for serialization/deserialization -->
         <objectMapperModule>com.fasterxml.jackson.datatype.jsr310.JavaTimeModule</objectMapperModule>
     </appender>
 
+    <!-- Asynchronous appender for Logtail -->
     <appender name="Logtail" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="LogtailHttp"/>
+        <!-- Maximum queue size -->
         <queueSize>500</queueSize>
+        <!-- Discarding threshold for events -->
         <discardingThreshold>0</discardingThreshold>
+        <!-- Include caller data -->
         <includeCallerData>true</includeCallerData>
     </appender>
 
+    <!-- Appender for console logging -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable</pattern>
+            <!-- Console log layout pattern -->
+            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1} [%mdc{correlationId}]): %msg%n%throwable
+            </pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
 
-    <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
-    <if condition='property("logTailActive").equalsIgnoreCase("true")'>
-        <then>
-            <root level="${level}">
+    <!-- Root logger definition -->
+    <root level="INFO">
+        <!-- Add Logtail appender if active -->
+        <if condition='property("logTailActive").equalsIgnoreCase("true")'>
+            <then>
                 <appender-ref ref="Logtail"/>
-                <appender-ref ref="Console"/>
-            </root>
-        </then>
-        <else>
-            <root level="${level}">
-                <appender-ref ref="Console"/>
-            </root>
-        </else>
-    </if>
+            </then>
+        </if>
+        <!-- Add Google Cloud appender if active -->
+        <if condition='property("googleActive").equalsIgnoreCase("true")'>
+            <then>
+                <appender-ref ref="CLOUD"/>
+            </then>
+        </if>
+        <!-- Add console appender -->
+        <appender-ref ref="Console"/>
+    </root>
 
 </configuration>
