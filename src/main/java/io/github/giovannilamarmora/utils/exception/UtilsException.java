@@ -50,7 +50,7 @@ public class UtilsException extends RuntimeException {
       if (isUtilsStackTraceActive
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) {
-        errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
+        errorMes.setStackTrace(e.getStackTrace()[0].toString());
         LOG.error("Stacktrace error: ", e);
       } else if (!isUtilsStackTraceActive
           && !ObjectUtils.isEmpty(e.getStackTrace())

@@ -52,12 +52,13 @@ public class LogTimeTracker {
   }
 
   public void trackSuccess(Logger LOG) {
-    LOG.info(
-        "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
-        this.actionType,
-        this.methodName,
-        this.correlationId,
-        getDeltaInMilli());
+    if (this.actionType.equals(ActionType.CONTROLLER))
+      LOG.info(
+          "[ACTION_TYPE]={}, [METHOD]={}, [CORRELATION_ID]={}, [TIME_TAKEN]={}, [STATUS]=OK",
+          this.actionType,
+          this.methodName,
+          this.correlationId,
+          getDeltaInMilli());
   }
 
   private long getDeltaInMilli() {
@@ -86,11 +87,6 @@ public class LogTimeTracker {
       return "<null class>";
     }
     return c.getName();
-  }
-
-  private boolean isDebugLevel() {
-    return !this.actionType.equals(ActionType.CONTROLLER)
-        && !this.actionType.equals(ActionType.SCHEDULER);
   }
 
   public enum ActionType {
