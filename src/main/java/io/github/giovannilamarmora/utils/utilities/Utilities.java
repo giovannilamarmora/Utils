@@ -1,21 +1,23 @@
 package io.github.giovannilamarmora.utils.utilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Base64;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -23,14 +25,10 @@ import org.springframework.util.ObjectUtils;
 @Logged
 public class Utilities {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
+  private static final Logger LOG = LoggerFilter.getLogger(Utilities.class);
 
   private static final ObjectMapper objectMapper =
-      new ObjectMapper()
-          .findAndRegisterModules()
-          .registerModule(new JavaTimeModule())
-          .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-          .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+      MapperUtils.mapper().dateAsTimestamp().emptyStringAsNullObject().failOnEmptyBean().build();
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String convertObjectToJson(Object object) throws JsonProcessingException {
@@ -88,5 +86,39 @@ public class Utilities {
       LOG.debug("Not contains https://, returning data:image/png;base64,");
       return url;
     }
+  }
+
+  public static <T> boolean isInstanceOf(String source, TypeReference<T> typeReference) {
+    try {
+      return !isNullOrEmpty(objectMapper.readValue(source, typeReference));
+    } catch (JsonProcessingException e) {
+      return false;
+    }
+  }
+
+  public static boolean isNullOrEmpty(Object obj) {
+    if (ObjectUtils.isEmpty(obj)) return true;
+    // Ottiene tutti i campi della classe dell'oggetto
+    Field[] campi = obj.getClass().getDeclaredFields();
+    // Itera su tutti i campi
+    for (Field campo : campi) {
+      campo.setAccessible(true); // Permette l'accesso ai campi privati
+      try {
+        // Controlla se il campo è null
+        if (campo.get(obj) != null) {
+          return false; // Se anche solo un campo non è null, restituisce false
+        }
+      } catch (IllegalAccessException e) {
+        return true;
+      }
+    }
+    return true; // Se tutti i campi sono null, restituisce true
+  }
+
+  public static boolean isCharacterAndRegexValid(String field, String regex) {
+    if (ObjectUtils.isEmpty(field) || ObjectUtils.isEmpty(regex)) return false;
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(field);
+    return m.find();
   }
 }

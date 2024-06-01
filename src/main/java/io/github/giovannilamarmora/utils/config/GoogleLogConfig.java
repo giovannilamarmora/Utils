@@ -31,7 +31,7 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
 
     // Build log payload
     HashMap<String, Object> map = new HashMap<>();
-    map.put("env", env);
+    if (!env.equalsIgnoreCase("Local") && !env.equalsIgnoreCase("Default")) map.put("env", env);
     map.put("thread", e.getThreadName());
     map.put("context", e.getLoggerContextVO().getName());
     map.put("logger", e.getLoggerName());

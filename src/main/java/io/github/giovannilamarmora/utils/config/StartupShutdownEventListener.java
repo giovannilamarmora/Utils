@@ -1,12 +1,12 @@
 package io.github.giovannilamarmora.utils.config;
 
 import io.github.giovannilamarmora.utils.interceptors.Logged;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Logged
 public class StartupShutdownEventListener {
-  private static final Logger LOG = LoggerFactory.getLogger(StartupShutdownEventListener.class);
+  private static final Logger LOG = LoggerFilter.getLogger(StartupShutdownEventListener.class);
   private static final String APPLICATION_NAME = "spring.application.name";
   private static final String APPLICATION_NAME_DEFAULT = "Application";
   private static final String STARTUP_LOG_ACTIVE = "spring.application.starter-log";

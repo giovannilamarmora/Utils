@@ -1,8 +1,8 @@
 package io.github.giovannilamarmora.utils.config;
 
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.util.List;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class CorsConfig implements WebFilter {
-  private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+  private final Logger LOG = LoggerFilter.getLogger(this.getClass());
 
   @Value(value = "#{new Boolean(${app.cors.enabled:false})}")
   private Boolean isCorsEnabled;

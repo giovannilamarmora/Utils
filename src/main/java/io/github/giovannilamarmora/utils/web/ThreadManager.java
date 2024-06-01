@@ -4,15 +4,15 @@ import io.github.giovannilamarmora.utils.exception.GenericException;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @Logged
 public class ThreadManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ThreadManager.class);
+  private static final Logger LOG = LoggerFilter.getLogger(ThreadManager.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static void threadSeep(Integer millisecond) {

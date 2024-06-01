@@ -1,15 +1,15 @@
 package io.github.giovannilamarmora.utils.config;
 
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.utilities.FilesUtils;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 public class OpenAPIConfig {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OpenAPIConfig.class);
+  private static final Logger LOG = LoggerFilter.getLogger(OpenAPIConfig.class);
 
   public static PathItem addJSONExamplesOnResource(PathItem pathItem, Class<?>... optionalClass) {
     if (!ObjectUtils.isEmpty(pathItem.getGet())) {

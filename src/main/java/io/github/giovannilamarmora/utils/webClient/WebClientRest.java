@@ -5,6 +5,8 @@ import static org.springframework.http.MediaType.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.utilities.MapperUtils;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.net.URI;
 import java.util.List;
@@ -12,7 +14,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.Setter;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ClientCodecConfigurer;
@@ -30,9 +31,9 @@ import reactor.netty.http.client.HttpClient;
 @Component
 public class WebClientRest {
   private static final String END_STRING = "\n";
-  private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+  private final ObjectMapper mapper = MapperUtils.mapper().indentOutput().build();
   private WebClient webClient;
-  private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+  private final Logger LOG = LoggerFilter.getLogger(this.getClass());
 
   @Setter private String baseUrl;
 
@@ -124,7 +125,12 @@ public class WebClientRest {
       throws WebClientException {
     if (body != null) {
       try {
-        logBuilder.append("Body: ").append(mapper.writeValueAsString(body)).append(END_STRING);
+        logBuilder
+            .append("Body: ")
+            .append(END_STRING)
+            .append(mapper.writeValueAsString(body))
+            .append(END_STRING)
+            .append(END_STRING);
       } catch (JsonProcessingException e) {
         LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
         throw new WebClientException(e.getMessage(), e);
@@ -141,32 +147,47 @@ public class WebClientRest {
 
   private Consumer<HttpHeaders> getDefaultHttpHeaders(
       HttpHeaders headerList, StringBuilder logBuilder) {
-    logBuilder.append("Header: ").append(headerList).append(END_STRING);
+    logBuilder.append("Headers:").append(END_STRING);
+    headerList.forEach(
+        (name, values) -> {
+          values.forEach(
+              value -> logBuilder.append(name).append(":").append(value).append(END_STRING));
+        });
     return headers -> {
       headers.putAll(headerList);
     };
   }
 
-  private <T> void logReturnSome(HttpStatusCode code, String uri, String headers, String jsonBody) {
+  private <T> void logReturnSome(
+      HttpStatusCode code, String uri, HttpHeaders headers, String jsonBody) {
+    StringBuilder header = new StringBuilder();
+    headers.forEach(
+        (name, values) -> {
+          values.forEach(
+              value -> header.append(name).append(": ").append(value).append(END_STRING));
+        });
     LOG.info(
-        "Received Response from {} with Status code: {}"
+        "Received Response with Status code: {} from: {} "
             + END_STRING
-            + "Headers: {}"
             + END_STRING
-            + "Body: {}",
-        uri,
+            + "Headers:"
+            + END_STRING
+            + "{}"
+            + END_STRING
+            + END_STRING
+            + "Body:"
+            + END_STRING
+            + "{}"
+            + END_STRING,
         code,
-        headers,
+        uri,
+        header,
         jsonBody);
   }
 
   private <T> ResponseEntity<T> mapResponseEntity(ResponseEntity<T> x, String uri) {
     try {
-      logReturnSome(
-          x.getStatusCode(),
-          uri,
-          x.getHeaders().toString(),
-          mapper.writeValueAsString(x.getBody()));
+      logReturnSome(x.getStatusCode(), uri, x.getHeaders(), mapper.writeValueAsString(x.getBody()));
       return x;
     } catch (JsonProcessingException e) {
       LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
@@ -188,20 +209,16 @@ public class WebClientRest {
 
   private <R> Mono<R> flatMapResponse(ResponseEntity<?> w, String uri) {
     try {
-      logReturnSome(
-          w.getStatusCode(),
-          uri,
-          w.getHeaders().toString(),
-          mapper.writeValueAsString(w.getBody()));
-      StringBuilder message =
-          new StringBuilder("An error happened while calling the API: ")
-              .append(baseUrl != null ? baseUrl : "")
-              .append(uri)
-              .append(", Status Code: ")
-              .append(w.getStatusCode())
-              .append(", and body message ")
-              .append(mapper.writeValueAsString(w.getBody()));
-      throw new WebClientException(message.toString());
+      logReturnSome(w.getStatusCode(), uri, w.getHeaders(), mapper.writeValueAsString(w.getBody()));
+      String message =
+          "An error happened while calling the API: "
+              + (baseUrl != null ? baseUrl : "")
+              + uri
+              + ", Status Code: "
+              + w.getStatusCode()
+              + ", and body message "
+              + mapper.writeValueAsString(w.getBody());
+      throw new WebClientException(message);
     } catch (JsonProcessingException e) {
       throw new WebClientException(e.getMessage(), e);
     }

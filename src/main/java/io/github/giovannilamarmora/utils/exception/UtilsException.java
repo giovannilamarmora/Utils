@@ -3,10 +3,10 @@ package io.github.giovannilamarmora.utils.exception;
 import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.util.Arrays;
 import lombok.Getter;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -23,7 +23,7 @@ public class UtilsException extends RuntimeException {
   @Value("#{new Boolean(${app.exception.stacktrace:true})}")
   private Boolean isUtilsStackTraceActive;
 
-  public static final Logger LOG = LoggerFactory.getLogger(UtilsException.class);
+  public static final Logger LOG = LoggerFilter.getLogger(UtilsException.class);
 
   @ExceptionHandler(value = UtilsException.class)
   private ResponseEntity<ExceptionResponse> handleUtilsException(
@@ -104,7 +104,7 @@ public class UtilsException extends RuntimeException {
     }
 
     if (!ObjectUtils.isEmpty(e.getStackTrace())) {
-      errorMes.setStackTrace(Arrays.toString(e.getStackTrace()));
+      errorMes.setStackTrace(e.getStackTrace()[0].toString());
       LOG.error("Stacktrace error: ", e);
     }
 

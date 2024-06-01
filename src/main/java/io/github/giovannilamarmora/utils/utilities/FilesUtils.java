@@ -3,6 +3,7 @@ package io.github.giovannilamarmora.utils.utilities;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -16,13 +17,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @Logged
 public class FilesUtils {
-  private static final Logger LOG = LoggerFactory.getLogger(FilesUtils.class);
+  private static final Logger LOG = LoggerFilter.getLogger(FilesUtils.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static boolean matchPath(String requestPath, String endpoint) {

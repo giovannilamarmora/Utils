@@ -3,13 +3,13 @@ package io.github.giovannilamarmora.utils.web;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Function;
 import org.apache.commons.text.StringTokenizer;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -21,7 +21,7 @@ import org.springframework.web.util.UriUtils;
 @Logged
 public class WebManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WebManager.class);
+  private static final Logger LOG = LoggerFilter.getLogger(WebManager.class);
   private static final String CLIENT_IP = "Client-IP";
   private static final String X_FORWARDED_FOR = "X-Forwarded-For";
   private static final String X_ORIGINAL_FORWARDED_FOR = "x-original-forwarded-for";
@@ -69,5 +69,12 @@ public class WebManager {
         UriComponentsBuilder.fromUri(
             urlFunction.apply(UriComponentsBuilder.fromUriString(baseUrl)));
     return UriUtils.decode(uriComponentsBuilder.build().toUriString(), StandardCharsets.UTF_8);
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static String getRemoteAddress(ServerHttpRequest request) {
+    return ObjectUtils.isEmpty(request.getRemoteAddress())
+        ? null
+        : request.getRemoteAddress().getHostName();
   }
 }

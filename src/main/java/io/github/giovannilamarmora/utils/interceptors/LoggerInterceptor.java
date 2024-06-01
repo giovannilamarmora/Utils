@@ -1,6 +1,7 @@
 package io.github.giovannilamarmora.utils.interceptors;
 
 import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
+import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,7 +10,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggerInterceptor implements Serializable {
   private static final long serialVersionUID = 5001545131635232118L;
-  private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+  private final Logger LOG = LoggerFilter.getLogger(this.getClass());
 
   @Pointcut("@annotation(io.github.giovannilamarmora.utils.interceptors.LogInterceptor)")
   public void annotationPointcut() {}
