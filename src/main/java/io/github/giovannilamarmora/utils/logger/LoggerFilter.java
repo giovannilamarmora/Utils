@@ -22,7 +22,7 @@ public class LoggerFilter implements Logger {
     SENSITIVE_DATA = sensitiveData;
   }
 
-  public static Logger getLogger(Class<?> clazz) {
+  public static Logger getLogger(Class clazz) {
     LoggerFilter instance = new LoggerFilter();
     instance.setLogger(LoggerFactory.getLogger(clazz));
     return instance;
@@ -33,23 +33,25 @@ public class LoggerFilter implements Logger {
   }
 
   private String maskSensitiveFields(String message) {
+    String response = message;
     // Maschera i campi nel corpo del messaggio
-    message =
-        message.replaceAll("(?i)\"(" + SENSITIVE_DATA + ")\":\"[^\"]*\"", "\"$1\" : \"********\"");
-    message =
-        message.replaceAll(
+    response =
+        response.replaceAll("(?i)\"(" + SENSITIVE_DATA + ")\":\"[^\"]*\"", "\"$1\" : \"********\"");
+    response =
+        response.replaceAll(
             "(?i)\"(" + SENSITIVE_DATA + ")\"\\s*:\\s*\"[^\"]*\"", "\"$1\" : \"********\"");
-    message =
-        message.replaceAll(
-            "(?i)\"(" + SENSITIVE_DATA + ")\"\\s*:\\s*\"[^\"]*\"\\s*(,|$)",
+    response =
+        response.replaceAll(
+            "(?i)\"(" + this.SENSITIVE_DATA + ")\"\\s*:\\s*\"([^\"]*)\"\\s*(,|$)",
             "\"$1\" : \"********\"$3");
+
     // Maschera i campi negli header con formato "NomeHeader: ValoreHeader"
-    message = message.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*\\S*", "$1: ********");
+    response = response.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*\\S*", "$1: ********");
     // Maschera i campi negli header con formato "NomeHeader: ValoreHeader"
-    message = message.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*.*", "$1: ********");
+    response = response.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*.*", "$1: ********");
     // Maschera i campi negli header con formato "NomeHeader: ValoreHeader"
-    message = message.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*\\S+", "$1: ********");
-    return message;
+    response = response.replaceAll("(?i)(" + SENSITIVE_DATA + "):\\s*\\S+", "$1: ********");
+    return response;
   }
 
   private Object[] filterSensitiveFields(Object... objects) {
