@@ -18,18 +18,18 @@ public class LoggerFilter implements Logger {
 
   private Logger logger;
 
+  public LoggerFilter() {}
+
+  private LoggerFilter(Class<?> clazz) {
+    this.logger = LoggerFactory.getLogger(clazz);
+  }
+
   public void setSensitiveData(String sensitiveData) {
     SENSITIVE_DATA = sensitiveData;
   }
 
-  public static Logger getLogger(Class clazz) {
-    LoggerFilter instance = new LoggerFilter();
-    instance.setLogger(LoggerFactory.getLogger(clazz));
-    return instance;
-  }
-
-  private void setLogger(Logger logger) {
-    this.logger = logger;
+  public static Logger getLogger(Class<?> clazz) {
+    return new LoggerFilter(clazz);
   }
 
   private String maskSensitiveFields(String message) {
