@@ -3,6 +3,8 @@ package io.github.giovannilamarmora.utils.utilities;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.giovannilamarmora.utils.exception.GenericException;
+import io.github.giovannilamarmora.utils.exception.UtilsException;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
@@ -28,16 +30,26 @@ public class Utilities {
   private static final Logger LOG = LoggerFilter.getLogger(Utilities.class);
 
   private static final ObjectMapper objectMapper =
-      MapperUtils.mapper().dateAsTimestamp().emptyStringAsNullObject().failOnEmptyBean().build();
+      MapperUtils.mapper()
+          .enableJavaTime()
+          .disableDateAsTimestamp()
+          .emptyStringAsNullObject()
+          .failOnEmptyBean()
+          .build();
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String convertObjectToJson(Object object) throws JsonProcessingException {
+  public static String convertObjectToJson(Object object) {
     LOG.debug("Converting Object");
     if (ObjectUtils.isEmpty(object)) {
       LOG.debug("The Object is null, returning null");
       return null;
     }
-    String value = objectMapper.writeValueAsString(object);
+    String value = null;
+    try {
+      value = objectMapper.writeValueAsString(object);
+    } catch (JsonProcessingException e) {
+      throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to write json!");
+    }
     LOG.debug("The Object is converted, value is {}", value);
     return value;
   }

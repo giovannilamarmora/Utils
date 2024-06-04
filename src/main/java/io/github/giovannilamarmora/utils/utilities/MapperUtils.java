@@ -23,12 +23,21 @@ public class MapperUtils {
     private final ObjectMapper objectMapper;
 
     public MapperBuilder() {
-      this.objectMapper =
-          new ObjectMapper().findAndRegisterModules().registerModule(new JavaTimeModule());
+      this.objectMapper = new ObjectMapper();
     }
 
-    public MapperBuilder dateAsTimestamp() {
-      this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+    public MapperBuilder enableJavaTime() {
+      this.objectMapper.registerModule(new JavaTimeModule());
+      return this;
+    }
+
+    public MapperBuilder enableDateAsTimestamp() {
+      this.objectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+      return this;
+    }
+
+    public MapperBuilder disableDateAsTimestamp() {
+      this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
       return this;
     }
 
@@ -48,7 +57,7 @@ public class MapperUtils {
     }
 
     public ObjectMapper build() {
-      return this.objectMapper;
+      return this.objectMapper.findAndRegisterModules();
     }
   }
 }
