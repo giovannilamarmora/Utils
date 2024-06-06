@@ -1,6 +1,8 @@
 package io.github.giovannilamarmora.utils.interceptors.correlationID;
 
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -8,8 +10,14 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+@Order(value = 1)
 @Component
 public class CorrelationIdInterceptor implements WebFilter {
+
+  private static final String MDC_ENV = "environment";
+
+  @Value(value = "${env:Default}")
+  private String env;
 
   private static boolean isEmpty(String value) {
     return value == null || value.isBlank();
@@ -31,6 +39,13 @@ public class CorrelationIdInterceptor implements WebFilter {
         .getResponse()
         .getHeaders()
         .add(CorrelationIdUtils.CORRELATION_HEADER_NAME, CorrelationIdUtils.getCorrelationId());
+
+    String mdcEnv = MDC.get(MDC_ENV);
+    if (isEmpty(mdcEnv) || !mdcEnv.equalsIgnoreCase(env)) {
+      MDC.remove(MDC_ENV);
+    }
+    MDC.put(MDC_ENV, env);
+
     return chain.filter(exchange);
   }
 
