@@ -10,6 +10,7 @@ import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -22,8 +23,8 @@ public class CookieManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static void setCookieInResponse(
-      String cookieName, String cookieValue, ServerHttpRequest response) {
-    LOG.info("Setting Cookie {}, with value {}", cookieName, cookieValue);
+      String cookieName, String cookieValue, ServerHttpResponse response) {
+    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
     ResponseCookie cookie =
         ResponseCookie.from(cookieName, cookieValue)
             .maxAge(360000)
@@ -37,8 +38,20 @@ public class CookieManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static ResponseCookie setCookie(String cookieName, String cookieValue) {
+    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
+    return ResponseCookie.from(cookieName, cookieValue)
+        .maxAge(360000)
+        .sameSite("None")
+        .secure(true)
+        .httpOnly(true)
+        .path("/")
+        .build();
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static HttpHeaders setCookieInResponse(String cookieName, String cookieValue) {
-    LOG.info("Setting Cookie {}, with value {}", cookieName, cookieValue);
+    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
     ResponseCookie cookie =
         ResponseCookie.from(cookieName, cookieValue)
             .maxAge(360000L)
@@ -54,7 +67,7 @@ public class CookieManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getCookie(String cookieName, ServerHttpRequest request) {
-    LOG.info("Getting Cookie {}", cookieName);
+    LOG.debug("Getting Cookie {}", cookieName);
     MultiValueMap<String, HttpCookie> cookies = request.getCookies();
     if (ObjectUtils.isEmpty(cookies) || ObjectUtils.isEmpty(cookies.get(cookieName))) return null;
     return Objects.requireNonNull(cookies.get(cookieName)).getFirst().getValue();

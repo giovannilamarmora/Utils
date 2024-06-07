@@ -53,4 +53,16 @@ public class CorrelationIdInterceptor implements WebFilter {
     String path = request.getPath().value();
     return "/actuator/health".equals(path);
   }
+
+  public static void initMDCSettings(String env) {
+    String correlationId = CorrelationIdUtils.generateCorrelationId();
+    CorrelationIdUtils.setCorrelationId(correlationId);
+    MDC.put(CorrelationIdUtils.CORRELATION_MDC_NAME, CorrelationIdUtils.getCorrelationId());
+
+    String mdcEnv = MDC.get(MDC_ENV);
+    if (isEmpty(mdcEnv) || !mdcEnv.equalsIgnoreCase(env)) {
+      MDC.remove(MDC_ENV);
+    }
+    MDC.put(MDC_ENV, env);
+  }
 }

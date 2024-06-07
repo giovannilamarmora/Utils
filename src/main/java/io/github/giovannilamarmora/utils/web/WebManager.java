@@ -6,13 +6,16 @@ import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import org.apache.commons.text.StringTokenizer;
 import org.slf4j.Logger;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
@@ -76,5 +79,16 @@ public class WebManager {
     return ObjectUtils.isEmpty(request.getRemoteAddress())
         ? null
         : request.getRemoteAddress().getHostName();
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static boolean shouldNotFilter(ServerHttpRequest req, List<String> shouldNotFilter) {
+    String path = req.getPath().value();
+    String method = req.getMethod().name();
+    if (HttpMethod.OPTIONS.name().equals(method)) {
+      return true;
+    }
+    return shouldNotFilter.stream()
+        .anyMatch(endpoint -> PatternMatchUtils.simpleMatch(endpoint, path));
   }
 }
