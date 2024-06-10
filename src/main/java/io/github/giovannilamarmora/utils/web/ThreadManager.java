@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Logged
-public class ThreadManager {
+public interface ThreadManager {
 
-  private static final Logger LOG = LoggerFilter.getLogger(ThreadManager.class);
+  Logger LOG = LoggerFilter.getLogger(ThreadManager.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static void threadSeep(Integer millisecond) {
+  static void threadSeep(Integer millisecond) {
     LOG.debug("Starting process for {}", millisecond);
     try {
       LOG.info("Thread is sleeping for {} millisecond", millisecond);
