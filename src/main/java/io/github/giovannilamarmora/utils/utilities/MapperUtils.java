@@ -51,6 +51,11 @@ public class MapperUtils {
       return this;
     }
 
+    public MapperBuilder failOnUnknownProprieties() {
+      this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      return this;
+    }
+
     public MapperBuilder indentOutput() {
       this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
       return this;
