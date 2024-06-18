@@ -38,6 +38,11 @@ rest:
       write: 15000
       connection: 10000
 
+filter:
+  requestResponse:
+    enabled: false
+    shouldNotFilter: "**/swagger-ui/**,/api-docs,**/api-docs/**,*/,*.css,*.js,*/img/*,*/favicon.ico"
+
 management:
   info:
     enabled: true
