@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Define Spring properties -->
+    <springProperty scope="context" name="FAIL_ON_EMPTY_BEANS"
+                    source="spring.jackson.serialization.FAIL_ON_EMPTY_BEANS"/>
+
+    <!-- Disable initial status messages -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- Appender for Logtail -->
+    <appender name="LogtailHttp" class="com.logtail.logback.LogtailAppender">
+        <!-- Log layout pattern -->
+        <encoder>
+            <pattern>%yellow(%C{1}): %msg%n%throwable</pattern>
+        </encoder>
+        <!-- Application name -->
+        <appName>${LOGTAIL_APP_NAME}</appName>
+        <!-- Ingestion key -->
+        <ingestKey>${LOGTAIL_LOGS}</ingestKey>
+        <!-- Source token -->
+        <sourceToken>${LOGTAIL_LOGS}</sourceToken>
+        <!-- MDC fields -->
+        <mdcFields>requestId,requestTime,correlationId</mdcFields>
+        <!-- MDC field types -->
+        <mdcTypes>string,int,string</mdcTypes>
+        <!-- ObjectMapper module for serialization/deserialization -->
+        <objectMapperModule>com.fasterxml.jackson.datatype.jsr310.JavaTimeModule</objectMapperModule>
+    </appender>
+
+    <!-- Asynchronous appender for Logtail -->
+    <appender name="Logtail" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LogtailHttp"/>
+        <!-- Maximum queue size -->
+        <queueSize>500</queueSize>
+        <!-- Discarding threshold for events -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- Include caller data -->
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <!-- Appender for console logging -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Console log layout pattern -->
+            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%logger [%mdc{environment}] [%mdc{correlationId}]): %msg%n%throwable</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Root logger definition -->
+    <root level="INFO">
+        <!-- Add Logtail appender if active -->
+        <appender-ref ref="Logtail"/>
+        <!-- Add console appender -->
+        <appender-ref ref="Console"/>
+    </root>
+
+</configuration>

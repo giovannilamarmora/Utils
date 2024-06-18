@@ -13,10 +13,10 @@ app:
   # Cors status
   cors:
     enabled: false
-  # Logging on LogTail
-  logTail:
-    active: false
-    level: INFO # Keep as INFO and work on logging instead
+
+  # Level of LOG
+logging:
+  config: classpath:logback-spring.xml # classpath:logback-google.xml, classpath:logback-logtail.xml
 ```
 
 ## `app` Section
@@ -38,19 +38,11 @@ app:
 - `enabled`: Controls whether Cross-Origin Resource Sharing (CORS) is enabled. If set to `true`, CORS is enabled; if set
   to `false`, CORS is disabled.
 
-### `logTail` Subsection
-
-- `active`: Controls whether logging to LogTail is active. If set to `true`, logs will be sent to LogTail; if set
-  to `false`, LogTail logging is disabled.
-
-- `level`: Sets the logging level for LogTail. Keep it as INFO and adjust the logging configuration instead.
-
 ## Notes 📝
 
 - Modify these configurations based on your application's requirements and environment.
 - Ensure sensitive information is not exposed or logged inappropriately, especially when enabling stack traces in
   responses or logs.
-- Keep the `logTail` level at INFO unless there's a specific need to change it.
 
 Feel free to adjust these configurations to meet the specific needs of your application and environment.
 
@@ -185,9 +177,10 @@ for Java applications.
 
 ### Root Logger Configuration 🌐
 
-- The root logger is configured based on the value of `logTailActive`.
+- The root logger is configured based on the value of `logging.config`.
 
-    - If `logTailActive` is `true`, the root logger includes both the `Logtail` and `Console` appenders, with the
+    - If `logging.config` is `classpath:logback-logtail.xml`, the root logger includes both the `Logtail` and `Console`
+      appenders, with the
       logging level specified by the `level` property.
 
 ### Notes 📝
@@ -260,6 +253,13 @@ Configuration
 
 Once configured, your application will start logging to Google Cloud Logging automatically. You can view and analyze
 your logs using the Google Cloud Console.
+
+### Root Logger Configuration 🌐
+
+- The root logger is configured based on the value of `logging.config`.
+
+    - If `logging.config` is `classpath:logback-google.xml`, the root logger includes both the `Logtail` and `Console`
+      appenders.
 
 ### Troubleshooting
 

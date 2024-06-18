@@ -7,6 +7,22 @@
     <!-- Disable initial status messages -->
     <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
+    <!-- Appender for Google Cloud Logging -->
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+        <!-- Filter logs at or above INFO level -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <!-- Log file name (optional, default: java.log) -->
+        <log>application.log</log>
+        <!-- Resource type (optional, default: auto-detect) -->
+        <resourceType>gae_app</resourceType>
+        <!-- Flush level (optional, default: ERROR) -->
+        <flushLevel>WARN</flushLevel>
+        <!-- Logging event enhancer class -->
+        <loggingEventEnhancer>io.github.giovannilamarmora.utils.config.GoogleLogConfig</loggingEventEnhancer>
+    </appender>
+
     <!-- Appender for console logging -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -18,6 +34,8 @@
 
     <!-- Root logger definition -->
     <root level="INFO">
+        <!-- Add Google Cloud appender if active -->
+        <appender-ref ref="CLOUD"/>
         <!-- Add console appender -->
         <appender-ref ref="Console"/>
     </root>
