@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,6 +99,31 @@ public class Utilities {
       LOG.debug("Not contains https://, returning data:image/png;base64,");
       return url;
     }
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static Map<String, String> getFinalMapFromValue(
+      Map<String, String> source, Map<String, String> target) {
+    // Creazione della mappa finalParam
+    Map<String, String> finalParam = new HashMap<>();
+    Pattern pattern = Pattern.compile("\\{\\{(.+?)\\}\\}");
+
+    for (Map.Entry<String, String> entry : target.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      Matcher matcher = pattern.matcher(value);
+
+      StringBuffer result = new StringBuffer();
+      while (matcher.find()) {
+        String placeholder = matcher.group(1);
+        String replacement = source.getOrDefault(placeholder, matcher.group(0));
+        if (!ObjectUtils.isEmpty(replacement)) matcher.appendReplacement(result, replacement);
+      }
+      matcher.appendTail(result);
+
+      finalParam.put(key, result.toString());
+    }
+    return finalParam;
   }
 
   public static <T> boolean isInstanceOf(String source, TypeReference<T> typeReference) {
