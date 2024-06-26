@@ -38,9 +38,9 @@ public class WebManager {
     String headerClientIp = request.getHeaders().getFirst(CLIENT_IP);
     String headerXForwardedFor = request.getHeaders().getFirst(X_FORWARDED_FOR);
     String headerOriginalXForwardedFor = request.getHeaders().getFirst(X_ORIGINAL_FORWARDED_FOR);
-    LOG.info("Info header Client-IP: " + headerClientIp);
-    LOG.info("Info header X-Forwarded-For: " + headerXForwardedFor);
-    LOG.info("Info header x-original-forwarded-for: " + headerOriginalXForwardedFor);
+    LOG.debug("Info header Client-IP: {}", headerClientIp);
+    LOG.debug("Info header X-Forwarded-For: {}", headerXForwardedFor);
+    LOG.debug("Info header x-original-forwarded-for: {}", headerOriginalXForwardedFor);
 
     if (headerClientIp != null && !headerClientIp.isEmpty()) {
       ipClient = headerClientIp;
@@ -57,7 +57,7 @@ public class WebManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getClientIp(ServerHttpRequest request, String xForwardedForHeader) {
+  private static String getClientIp(ServerHttpRequest request, String xForwardedForHeader) {
     LOG.debug("Getting Client IP for {}", xForwardedForHeader);
     if (xForwardedForHeader == null) {
       return Objects.requireNonNull(request.getRemoteAddress()).getHostName();
