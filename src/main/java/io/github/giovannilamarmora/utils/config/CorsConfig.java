@@ -21,7 +21,7 @@ public class CorsConfig implements WebFilter {
   @Value(value = "#{new Boolean(${app.cors.enabled:false})}")
   private Boolean isCorsEnabled;
 
-  @Value(value = "${app.shouldNotFilter:}")
+  @Value(value = "${app.cors.shouldNotFilter:**/swagger-ui/**,/api-docs,**/api-docs/**}")
   private List<String> shouldNotFilter;
 
   @Override

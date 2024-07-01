@@ -4,11 +4,14 @@ import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.utilities.Utilities;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import org.apache.commons.text.StringTokenizer;
@@ -30,6 +33,15 @@ public class WebManager {
   private static final String CLIENT_IP = "Client-IP";
   private static final String X_FORWARDED_FOR = "X-Forwarded-For";
   private static final String X_ORIGINAL_FORWARDED_FOR = "x-original-forwarded-for";
+
+  public static String getAddressFromRequest(ServerHttpRequest request) {
+    List<String> host = request.getHeaders().get("Referer");
+    if (ObjectUtils.isEmpty(host)) return WebManager.getRealClientIP(request);
+    Map<String, Object> requestData = new HashMap<>();
+    requestData.put("ingress_host", host);
+    requestData.put("ip_address", WebManager.getRealClientIP(request));
+    return Utilities.convertObjectToJson(requestData);
+  }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getRealClientIP(ServerHttpRequest request) {

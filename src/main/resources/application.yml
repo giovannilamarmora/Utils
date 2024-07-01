@@ -5,12 +5,12 @@ spring:
     starter-log: true # Show Started Application
 app:
   version: @project.version@ # Show Project Version
-  shouldNotFilter: "**/swagger-ui/**,/api-docs,**/api-docs/**,*/,*.css,*.js,*/img/*,*/favicon.ico"
   exception:
     stacktrace: true # Active StackTrace in Response
   # Cors status
   cors: # Disabled
     enabled: false
+    shouldNotFilter: "**/swagger-ui/**,/api-docs,**/api-docs/**"
 
 # Level of LOG
 logging:
@@ -41,7 +41,7 @@ rest:
 filter:
   requestResponse:
     enabled: false
-    shouldNotFilter: "**/swagger-ui/**,/api-docs,**/api-docs/**,*/,*.css,*.js,*/img/*,*/favicon.ico"
+    shouldNotFilter: "**/swagger-ui/**,/api-docs,**/api-docs/**"
 
 management:
   info:
