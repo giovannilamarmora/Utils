@@ -27,7 +27,7 @@
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!-- Console log layout pattern -->
-            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%logger [%mdc{environment}] [%mdc{correlationId}]): %msg%n%throwable</pattern>
+            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%logger %mdc{environment} %mdc{Span-ID}): %msg%n%throwable</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>

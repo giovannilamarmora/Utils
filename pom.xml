@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
@@ -206,6 +206,13 @@
             <version>2.5.0</version>
         </dependency>
         <!-- END Swagger UI -->
+
+        <!-- Micrometer tracing (Required for observability) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+            <version>1.3.2</version>
+        </dependency>
     </dependencies>
 
     <profiles>

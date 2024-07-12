@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Logged
-public class TokenUtils {
+public interface TokenUtils {
 
-  private static final Logger LOG = LoggerFilter.getLogger(TokenUtils.class);
+  Logger LOG = LoggerFilter.getLogger(TokenUtils.class);
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String hashingToken(String token) {
+  static String hashingToken(String token) {
     MessageDigest messageDigest = null;
     try {
       messageDigest = MessageDigest.getInstance("SHA-256");

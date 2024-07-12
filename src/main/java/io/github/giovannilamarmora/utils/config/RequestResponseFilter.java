@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -38,20 +39,24 @@ public class RequestResponseFilter implements WebFilter {
       return Mono.defer(
           () -> {
             LOG.info(
-                "[REQUEST] Received Request: {} {} from {}",
+                "[REQUEST] Received Request: {} {}{}",
                 request.getMethod(),
                 request.getURI(),
-                WebManager.getAddressFromRequest(request));
+                ObjectUtils.isEmpty(WebManager.getHostFromRequest(request))
+                    ? ""
+                    : " from " + WebManager.getHostFromRequest(request));
             return chain
                 .filter(exchange)
                 .then(
                     Mono.fromRunnable(
                         () -> {
                           LOG.info(
-                              "[RESPONSE] Sent Response: {} with status {} to {}",
+                              "[RESPONSE] Sent Response: {} with status {}{}",
                               request.getURI(),
                               response.getStatusCode(),
-                              WebManager.getAddressFromRequest(request));
+                              ObjectUtils.isEmpty(WebManager.getHostFromRequest(request))
+                                  ? ""
+                                  : " to " + WebManager.getHostFromRequest(request));
                         }));
           });
     } else {

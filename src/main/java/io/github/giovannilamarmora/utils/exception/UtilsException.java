@@ -1,8 +1,8 @@
 package io.github.giovannilamarmora.utils.exception;
 
+import io.github.giovannilamarmora.utils.context.TraceUtils;
 import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
-import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.util.Arrays;
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class UtilsException extends RuntimeException {
 
       if (!ObjectUtils.isEmpty(e.exceptionCode.exception()))
         errorMes.setException(e.exceptionCode.exception());
-      error.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+      error.setSpanId(TraceUtils.getSpanID());
       error.setError(errorMes);
 
       return new ResponseEntity<>(error, e.exceptionCode.getStatus());
@@ -108,7 +108,7 @@ public class UtilsException extends RuntimeException {
       LOG.error("Stacktrace error: ", e);
     }
 
-    exceptionResponse.setCorrelationId(CorrelationIdUtils.getCorrelationId());
+    exceptionResponse.setSpanId(TraceUtils.getSpanID());
     exceptionResponse.setError(errorMes);
     return exceptionResponse;
   }
@@ -123,7 +123,7 @@ public class UtilsException extends RuntimeException {
             GenericException.ERR_DEF_UTL_001.getMessage(),
             null);
 
-    return new ExceptionResponse(null, CorrelationIdUtils.getCorrelationId(), errorMes);
+    return new ExceptionResponse(null, TraceUtils.getSpanID(), errorMes);
   }
 
   /**

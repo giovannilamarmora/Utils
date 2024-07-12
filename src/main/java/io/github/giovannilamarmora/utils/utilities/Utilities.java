@@ -40,9 +40,7 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String convertObjectToJson(Object object) {
-    LOG.debug("Converting Object");
     if (ObjectUtils.isEmpty(object)) {
-      LOG.debug("The Object is null, returning null");
       return null;
     }
     String value = null;
@@ -57,9 +55,7 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String convertMapToString(Map<String, ?> map) {
-    LOG.debug("Converting Map");
     if (ObjectUtils.isEmpty(map)) {
-      LOG.debug("The Map is null, returning null");
       return null;
     }
     String mapAsString =

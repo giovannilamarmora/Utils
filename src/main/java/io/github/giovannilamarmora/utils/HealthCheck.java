@@ -1,10 +1,10 @@
 package io.github.giovannilamarmora.utils;
 
+import io.github.giovannilamarmora.utils.context.TraceUtils;
 import io.github.giovannilamarmora.utils.generic.Response;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
-import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class HealthCheck {
         new Response(
             HttpStatus.OK.value(),
             LocalDateTime.now() + " the system is ACTIVE.",
-            CorrelationIdUtils.getCorrelationId(),
+            TraceUtils.getSpanID(),
             null));
   }
 }

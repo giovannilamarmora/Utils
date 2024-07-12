@@ -23,7 +23,7 @@ public class ExceptionResponse implements Serializable {
   private LocalDateTime dateTime;
 
   private String url;
-  private String correlationId;
+  private String spanId;
   private ErrorInfo error;
 
   public ExceptionResponse(ErrorInfo error) {
@@ -31,10 +31,10 @@ public class ExceptionResponse implements Serializable {
     this.error = error;
   }
 
-  public ExceptionResponse(String url, String correlationId, ErrorInfo error) {
+  public ExceptionResponse(String url, String spanId, ErrorInfo error) {
     this.dateTime = getDateTime();
     this.url = url;
-    this.correlationId = correlationId;
+    this.spanId = spanId;
     this.error = error;
   }
 

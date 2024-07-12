@@ -1,6 +1,6 @@
 package io.github.giovannilamarmora.utils.interceptors;
 
-import io.github.giovannilamarmora.utils.interceptors.correlationID.CorrelationIdUtils;
+import io.github.giovannilamarmora.utils.context.TraceUtils;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -32,13 +32,12 @@ public class LoggerInterceptor implements Serializable {
     if (annotation == null) {
       return proceedingJoinPoint.proceed();
     } else if (annotation.type() == LogTimeTracker.ActionType.CONTROLLER) {
-      CorrelationIdUtils.generateCorrelationId();
+      TraceUtils.generateTrace();
     }
     String className = method.getDeclaringClass().getSimpleName();
     String methodName = className + "." + method.getName();
     LogTimeTracker tracker =
-        LogTimeTracker.startInvocation(
-            annotation.type(), methodName, CorrelationIdUtils.getCorrelationId());
+        LogTimeTracker.startInvocation(annotation.type(), methodName, TraceUtils.getSpanID());
     Object obj;
     try {
       obj = proceedingJoinPoint.proceed();

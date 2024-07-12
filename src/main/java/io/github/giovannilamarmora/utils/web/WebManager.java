@@ -34,6 +34,7 @@ public class WebManager {
   private static final String X_FORWARDED_FOR = "X-Forwarded-For";
   private static final String X_ORIGINAL_FORWARDED_FOR = "x-original-forwarded-for";
 
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getAddressFromRequest(ServerHttpRequest request) {
     List<String> host = request.getHeaders().get("Referer");
     if (ObjectUtils.isEmpty(host)) return WebManager.getRealClientIP(request);
@@ -41,6 +42,12 @@ public class WebManager {
     requestData.put("ingress_host", host);
     requestData.put("ip_address", WebManager.getRealClientIP(request));
     return Utilities.convertObjectToJson(requestData);
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static String getHostFromRequest(ServerHttpRequest request) {
+    List<String> host = request.getHeaders().get("Referer");
+    return Utilities.convertObjectToJson(host);
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
