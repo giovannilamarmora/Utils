@@ -87,11 +87,6 @@ public class TracingFilter implements WebFilter {
         .filter(entry -> pattern.matcher(entry.getKey()).matches())
         .findFirst()
         .map(entry -> entry.getValue().getFirst())
-        .orElseGet(
-            () -> {
-              String generatedId = TraceUtils.generateTrace();
-              LOG.debug("Generated new {} : {}", defaultHeaderName, generatedId);
-              return generatedId;
-            });
+        .orElseGet(TraceUtils::generateTrace);
   }
 }
