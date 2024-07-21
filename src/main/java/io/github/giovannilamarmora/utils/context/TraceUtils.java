@@ -43,7 +43,6 @@ public interface TraceUtils {
 
   static String getEnvironment() {
     return Optional.ofNullable(MDC.get(ContextConfig.ENV.getValue()))
-        .orElseThrow(
-            () -> new TracingException(ContextConfig.ENV.getValue() + " has not been initialized"));
+        .orElseThrow(() -> new TracingException("No " + ContextConfig.ENV.getValue()));
   }
 }

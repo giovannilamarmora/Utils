@@ -1,7 +1,7 @@
 package io.github.giovannilamarmora.utils.context;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
-import io.github.giovannilamarmora.utils.utilities.MDCUtils;
+import io.github.giovannilamarmora.utils.logger.MDCUtils;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
