@@ -36,7 +36,6 @@ public abstract class MDCUtils {
   public static void registerDefaultMDC(String env) {
     MDC.put(TRACE_ID.getValue(), TraceUtils.getTraceID());
     MDC.put(SPAN_ID.getValue(), TraceUtils.getSpanID());
-    MDC.put(PARENT_ID.getValue(), TraceUtils.getParentID());
     if (!ObjectUtils.isEmpty(env)) MDC.put(ENV.getValue(), env);
   }
 }
