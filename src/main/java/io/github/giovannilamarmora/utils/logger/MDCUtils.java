@@ -34,8 +34,24 @@ public abstract class MDCUtils {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static void registerDefaultMDC(String env) {
-    MDC.put(TRACE_ID.getValue(), TraceUtils.getTraceID());
-    MDC.put(SPAN_ID.getValue(), TraceUtils.getSpanID());
+    try {
+      MDC.put(TRACE_ID.getValue(), TraceUtils.getTraceID());
+    } catch (Exception exception) {
+      MDC.put(TRACE_ID.getValue(), exception.getMessage());
+    }
+
+    try {
+      MDC.put(SPAN_ID.getValue(), TraceUtils.getSpanID());
+    } catch (Exception exception) {
+      MDC.put(SPAN_ID.getValue(), exception.getMessage());
+    }
+
+    try {
+      MDC.put(PARENT_ID.getValue(), TraceUtils.getParentID());
+    } catch (Exception exception) {
+      MDC.put(PARENT_ID.getValue(), exception.getMessage());
+    }
+
     if (!ObjectUtils.isEmpty(env)) MDC.put(ENV.getValue(), env);
   }
 }
