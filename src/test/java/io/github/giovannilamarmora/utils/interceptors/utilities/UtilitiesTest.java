@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.giovannilamarmora.utils.utilities.Mapper;
 import io.github.giovannilamarmora.utils.utilities.Utilities;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class UtilitiesTest {
     Object testObject = new Object();
 
     // Chiamata al metodo da testare
-    String jsonResult = Utilities.convertObjectToJson(testObject);
+    String jsonResult = Mapper.writeObjectToString(testObject);
 
     // Verifica che il risultato non sia nullo
     assertNotNull(jsonResult);
@@ -34,7 +35,7 @@ public class UtilitiesTest {
   @Test
   void testConvertObjectToJsonWithNullObject() throws JsonProcessingException {
     // Chiamata al metodo da testare con un oggetto nullo
-    String jsonResult = Utilities.convertObjectToJson(null);
+    String jsonResult = Mapper.writeObjectToString(null);
 
     // Verifica che il risultato sia nullo
     assertNull(jsonResult);
@@ -48,7 +49,7 @@ public class UtilitiesTest {
     testMap.put("key2", "value2");
 
     // Chiamata al metodo da testare
-    String mapString = Utilities.convertMapToString(testMap);
+    String mapString = Mapper.convertMapToString(testMap);
 
     // Verifica che il risultato non sia nullo
     assertNotNull(mapString);
@@ -57,7 +58,7 @@ public class UtilitiesTest {
   @Test
   void testConvertMapToStringWithNullMap() {
     // Chiamata al metodo da testare con una mappa nulla
-    String mapString = Utilities.convertMapToString(null);
+    String mapString = Mapper.convertMapToString(null);
 
     // Verifica che il risultato sia nullo
     assertNull(mapString);

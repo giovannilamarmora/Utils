@@ -4,7 +4,7 @@ import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
-import io.github.giovannilamarmora.utils.utilities.Utilities;
+import io.github.giovannilamarmora.utils.utilities.Mapper;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -27,31 +27,31 @@ import org.springframework.web.util.UriUtils;
 
 @Service
 @Logged
-public class WebManager {
+public interface WebManager {
 
-  private static final Logger LOG = LoggerFilter.getLogger(WebManager.class);
-  private static final String CLIENT_IP = "Client-IP";
-  private static final String X_FORWARDED_FOR = "X-Forwarded-For";
-  private static final String X_ORIGINAL_FORWARDED_FOR = "x-original-forwarded-for";
+  Logger LOG = LoggerFilter.getLogger(WebManager.class);
+  String CLIENT_IP = "Client-IP";
+  String X_FORWARDED_FOR = "X-Forwarded-For";
+  String X_ORIGINAL_FORWARDED_FOR = "x-original-forwarded-for";
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getAddressFromRequest(ServerHttpRequest request) {
+  static String getAddressFromRequest(ServerHttpRequest request) {
     List<String> host = request.getHeaders().get("Referer");
     if (ObjectUtils.isEmpty(host)) return WebManager.getRealClientIP(request);
     Map<String, Object> requestData = new HashMap<>();
     requestData.put("ingress_host", host);
     requestData.put("ip_address", WebManager.getRealClientIP(request));
-    return Utilities.convertObjectToJson(requestData);
+    return Mapper.writeObjectToString(requestData);
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getHostFromRequest(ServerHttpRequest request) {
+  static String getHostFromRequest(ServerHttpRequest request) {
     List<String> host = request.getHeaders().get("Referer");
-    return Utilities.convertObjectToJson(host);
+    return Mapper.writeObjectToString(host);
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getRealClientIP(ServerHttpRequest request) {
+  static String getRealClientIP(ServerHttpRequest request) {
     LOG.debug("Getting Real Client IP for {}", request.getPath().value());
     String ipClient = null;
     String headerClientIp = request.getHeaders().getFirst(CLIENT_IP);
@@ -86,7 +86,7 @@ public class WebManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getUrlAsString(Function<UriBuilder, URI> urlFunction, String baseUrl) {
+  static String getUrlAsString(Function<UriBuilder, URI> urlFunction, String baseUrl) {
     if (ObjectUtils.isEmpty(urlFunction)) return null;
     if (ObjectUtils.isEmpty(baseUrl)) baseUrl = "";
     UriComponentsBuilder uriComponentsBuilder =
@@ -96,14 +96,14 @@ public class WebManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String getRemoteAddress(ServerHttpRequest request) {
+  static String getRemoteAddress(ServerHttpRequest request) {
     return ObjectUtils.isEmpty(request.getRemoteAddress())
         ? null
         : request.getRemoteAddress().getHostName();
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static boolean shouldNotFilter(ServerHttpRequest req, List<String> shouldNotFilter) {
+  static boolean shouldNotFilter(ServerHttpRequest req, List<String> shouldNotFilter) {
     String path = req.getPath().value();
     String method = req.getMethod().name();
     if (HttpMethod.OPTIONS.name().equals(method)) {
@@ -114,12 +114,12 @@ public class WebManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String encodeURLValue(String value) {
+  static String encodeURLValue(String value) {
     return ObjectUtils.isEmpty(value) ? value : URLEncoder.encode(value, StandardCharsets.UTF_8);
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String decodeURLValue(String value) {
+  static String decodeURLValue(String value) {
     return ObjectUtils.isEmpty(value) ? value : URLDecoder.decode(value, StandardCharsets.UTF_8);
   }
 }

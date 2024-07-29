@@ -12,6 +12,9 @@ import java.util.function.Supplier;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.context.Context;
 
 @Component
 public abstract class MDCUtils {
@@ -33,25 +36,49 @@ public abstract class MDCUtils {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static void registerDefaultMDC(String env) {
-    try {
-      MDC.put(TRACE_ID.getValue(), TraceUtils.getTraceID());
-    } catch (Exception exception) {
-      MDC.put(TRACE_ID.getValue(), exception.getMessage());
-    }
+  public static Mono<Void> registerDefaultMDC(String env) {
+    return Mono.deferContextual(
+            contextView -> {
+              String spanID = "";
+              String traceID = "";
+              String parentID = "";
 
-    try {
-      MDC.put(SPAN_ID.getValue(), TraceUtils.getSpanID());
-    } catch (Exception exception) {
-      MDC.put(SPAN_ID.getValue(), exception.getMessage());
-    }
+              try {
+                spanID = TraceUtils.getTraceID();
+                MDC.put(TRACE_ID.getValue(), spanID);
+              } catch (Exception exception) {
+                MDC.put(TRACE_ID.getValue(), exception.getMessage());
+              }
 
-    try {
-      MDC.put(PARENT_ID.getValue(), TraceUtils.getParentID());
-    } catch (Exception exception) {
-      MDC.put(PARENT_ID.getValue(), exception.getMessage());
-    }
+              try {
+                traceID = TraceUtils.getSpanID();
+                MDC.put(SPAN_ID.getValue(), traceID);
+              } catch (Exception exception) {
+                MDC.put(SPAN_ID.getValue(), exception.getMessage());
+              }
 
-    if (!ObjectUtils.isEmpty(env)) MDC.put(ENV.getValue(), env);
+              try {
+                parentID = TraceUtils.getParentID();
+                MDC.put(PARENT_ID.getValue(), parentID);
+              } catch (Exception exception) {
+                parentID = exception.getMessage();
+                MDC.put(PARENT_ID.getValue(), exception.getMessage());
+              }
+
+              if (!ObjectUtils.isEmpty(env)) {
+                MDC.put(ENV.getValue(), env);
+              }
+
+              // Propaga il contesto MDC nel contesto reattivo
+              return Mono.empty()
+                  .contextWrite(
+                      Context.of(
+                          TRACE_ID.getValue(), traceID,
+                          SPAN_ID.getValue(), spanID,
+                          PARENT_ID.getValue(), parentID,
+                          ENV.getValue(), env))
+                  .doFinally(signalType -> MDC.clear());
+            })
+        .then();
   }
 }

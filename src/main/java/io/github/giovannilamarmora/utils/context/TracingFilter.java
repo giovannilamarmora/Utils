@@ -3,14 +3,17 @@ package io.github.giovannilamarmora.utils.context;
 import static io.github.giovannilamarmora.utils.context.ContextConfig.*;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.web.CookieManager;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -48,16 +51,13 @@ public class TracingFilter implements WebFilter {
       return chain.filter(exchange);
     }
 
-    HttpHeaders requestHeaders = request.getHeaders();
-    HttpHeaders responseHeaders = response.getHeaders();
-
-    String traceId = getOrGenerateId(requestHeaders, TRACE_ID_PATTERN, TRACE_ID.getValue());
+    String traceId = getOrGenerateId(request, TRACE_ID_PATTERN, TRACE_ID.getValue());
     String spanId = TraceUtils.generateTrace();
-    String parentId = getOrGenerateId(requestHeaders, SPAN_ID_PATTERN, SPAN_ID.getValue());
+    String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
-    responseHeaders.set(TRACE_ID.getValue(), traceId);
-    responseHeaders.set(SPAN_ID.getValue(), spanId);
-    responseHeaders.set(PARENT_ID.getValue(), parentId);
+    CookieManager.setCookieInResponse(TRACE_ID.getValue(), traceId, response);
+    CookieManager.setCookieInResponse(SPAN_ID.getValue(), spanId, response);
+    CookieManager.setCookieInResponse(PARENT_ID.getValue(), parentId, response);
 
     return Mono.fromRunnable(
             () -> {
@@ -82,11 +82,23 @@ public class TracingFilter implements WebFilter {
         .doFinally(signalType -> MDC.clear());
   }
 
-  private String getOrGenerateId(HttpHeaders headers, Pattern pattern, String defaultHeaderName) {
+  private String getOrGenerateId(
+      ServerHttpRequest request, Pattern pattern, String defaultHeaderName) {
+    return getCookieValue(request, defaultHeaderName)
+        .orElseGet(
+            () ->
+                getHeaderValue(request.getHeaders(), pattern).orElseGet(TraceUtils::generateTrace));
+  }
+
+  private Optional<String> getCookieValue(ServerHttpRequest request, String cookieName) {
+    HttpCookie cookie = request.getCookies().getFirst(cookieName);
+    return !ObjectUtils.isEmpty(cookie) ? Optional.of(cookie.getValue()) : Optional.empty();
+  }
+
+  private Optional<String> getHeaderValue(HttpHeaders headers, Pattern pattern) {
     return headers.entrySet().stream()
         .filter(entry -> pattern.matcher(entry.getKey()).matches())
         .findFirst()
-        .map(entry -> entry.getValue().getFirst())
-        .orElseGet(TraceUtils::generateTrace);
+        .map(entry -> entry.getValue().getFirst());
   }
 }

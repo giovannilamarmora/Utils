@@ -1,10 +1,6 @@
 package io.github.giovannilamarmora.utils.utilities;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.giovannilamarmora.utils.exception.GenericException;
-import io.github.giovannilamarmora.utils.exception.UtilsException;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
@@ -19,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -29,40 +24,6 @@ import org.springframework.util.ObjectUtils;
 public class Utilities {
 
   private static final Logger LOG = LoggerFilter.getLogger(Utilities.class);
-
-  private static final ObjectMapper objectMapper =
-      MapperUtils.mapper()
-          .enableJavaTime()
-          .disableDateAsTimestamp()
-          .emptyStringAsNullObject()
-          .failOnEmptyBean()
-          .build();
-
-  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String convertObjectToJson(Object object) {
-    if (ObjectUtils.isEmpty(object)) {
-      return null;
-    }
-    String value = null;
-    try {
-      value = objectMapper.writeValueAsString(object);
-    } catch (JsonProcessingException e) {
-      throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to write json!");
-    }
-    return value;
-  }
-
-  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static String convertMapToString(Map<String, ?> map) {
-    if (ObjectUtils.isEmpty(map)) {
-      return null;
-    }
-    String mapAsString =
-        map.keySet().stream()
-            .map(key -> "\"" + key + "\"" + ": \"" + map.get(key) + "\"")
-            .collect(Collectors.joining(", ", "{", "}"));
-    return mapAsString;
-  }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getByteArrayFromImageURL(String url) {
@@ -120,14 +81,12 @@ public class Utilities {
     return finalParam;
   }
 
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static <T> boolean isInstanceOf(String source, TypeReference<T> typeReference) {
-    try {
-      return !isNullOrEmpty(objectMapper.readValue(source, typeReference));
-    } catch (JsonProcessingException e) {
-      return false;
-    }
+    return !isNullOrEmpty(Mapper.readObject(source, typeReference));
   }
 
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static boolean isNullOrEmpty(Object obj) {
     if (ObjectUtils.isEmpty(obj)) return true;
     // Ottiene tutti i campi della classe dell'oggetto
@@ -147,6 +106,7 @@ public class Utilities {
     return true; // Se tutti i campi sono null, restituisce true
   }
 
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static boolean isCharacterAndRegexValid(String field, String regex) {
     if (ObjectUtils.isEmpty(field) || ObjectUtils.isEmpty(regex)) return false;
     Pattern p = Pattern.compile(regex);
