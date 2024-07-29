@@ -51,10 +51,15 @@ public class TracingFilter implements WebFilter {
       return chain.filter(exchange);
     }
 
+    HttpHeaders responseHeaders = response.getHeaders();
+
     String traceId = getOrGenerateId(request, TRACE_ID_PATTERN, TRACE_ID.getValue());
     String spanId = TraceUtils.generateTrace();
     String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
+    responseHeaders.set(TRACE_ID.getValue(), traceId);
+    responseHeaders.set(SPAN_ID.getValue(), spanId);
+    responseHeaders.set(PARENT_ID.getValue(), parentId);
     CookieManager.setCookieInResponse(TRACE_ID.getValue(), traceId, response);
     CookieManager.setCookieInResponse(SPAN_ID.getValue(), spanId, response);
     CookieManager.setCookieInResponse(PARENT_ID.getValue(), parentId, response);
