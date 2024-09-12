@@ -2,6 +2,7 @@ package io.github.giovannilamarmora.utils.utilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.giovannilamarmora.utils.exception.GenericException;
 import io.github.giovannilamarmora.utils.exception.UtilsException;
@@ -99,6 +100,18 @@ public interface Mapper {
       return objectMapper.readValue(objectString, typeReference);
     } catch (JsonProcessingException e) {
       throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to read json!");
+    }
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static JsonNode readTree(String objectString) {
+    if (ObjectUtils.isEmpty(objectString)) {
+      return null;
+    }
+    try {
+      return objectMapper.readTree(objectString);
+    } catch (JsonProcessingException e) {
+      throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to read value!");
     }
   }
 

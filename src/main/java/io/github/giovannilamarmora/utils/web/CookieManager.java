@@ -25,7 +25,6 @@ public interface CookieManager {
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static void setCookieInResponse(
       String cookieName, String cookieValue, ServerHttpResponse response) {
-    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
     ResponseCookie cookie =
         ResponseCookie.from(cookieName, cookieValue)
             .maxAge(360000)
@@ -40,7 +39,6 @@ public interface CookieManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static ResponseCookie setCookie(String cookieName, String cookieValue) {
-    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
     return ResponseCookie.from(cookieName, cookieValue)
         .maxAge(360000)
         .sameSite("None")
@@ -52,7 +50,6 @@ public interface CookieManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static HttpHeaders setCookieInResponse(String cookieName, String cookieValue) {
-    LOG.debug("Setting Cookie {}, with value {}", cookieName, cookieValue);
     ResponseCookie cookie =
         ResponseCookie.from(cookieName, cookieValue)
             .maxAge(360000L)
