@@ -38,8 +38,35 @@ public interface CookieManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static void setCookieInResponse(
+      String cookieName, String cookieValue, String domain, ServerHttpResponse response) {
+    ResponseCookie cookie =
+        ResponseCookie.from(cookieName, cookieValue)
+            .domain(domain)
+            .maxAge(360000)
+            .sameSite("None")
+            .secure(true)
+            .httpOnly(true)
+            .path("/")
+            .build();
+    response.getHeaders().add(HttpHeaders.SET_COOKIE, cookie.toString());
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static ResponseCookie setCookie(String cookieName, String cookieValue) {
     return ResponseCookie.from(cookieName, cookieValue)
+        .maxAge(360000)
+        .sameSite("None")
+        .secure(true)
+        .httpOnly(true)
+        .path("/")
+        .build();
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static ResponseCookie setCookie(String cookieName, String cookieValue, String domain) {
+    return ResponseCookie.from(cookieName, cookieValue)
+        .domain(domain)
         .maxAge(360000)
         .sameSite("None")
         .secure(true)
@@ -52,6 +79,22 @@ public interface CookieManager {
   static HttpHeaders setCookieInResponse(String cookieName, String cookieValue) {
     ResponseCookie cookie =
         ResponseCookie.from(cookieName, cookieValue)
+            .maxAge(360000L)
+            .sameSite("None")
+            .secure(true)
+            .httpOnly(true)
+            .path("/")
+            .build();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+    return headers;
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static HttpHeaders setCookieInResponse(String cookieName, String cookieValue, String domain) {
+    ResponseCookie cookie =
+        ResponseCookie.from(cookieName, cookieValue)
+            .domain(domain)
             .maxAge(360000L)
             .sameSite("None")
             .secure(true)
