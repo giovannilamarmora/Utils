@@ -35,12 +35,8 @@ public class CorsConfig implements WebFilter {
           .add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, PATCH, PUT, GET, OPTIONS, DELETE");
       exchange.getResponse().getHeaders().add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
       exchange.getResponse().getHeaders().add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
-      exchange
-          .getResponse()
-          .getHeaders()
-          .add(
-              HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
-              "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+      exchange.getResponse().getHeaders().add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
+      exchange.getResponse().getHeaders().add(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "*");
       LOG.info("Setting Up CORS Policy for mainstream: {}", exchange.getResponse());
     }
     return chain.filter(exchange);
