@@ -2,6 +2,8 @@ package io.github.giovannilamarmora.utils.config;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Payload;
 import com.google.cloud.logging.Severity;
@@ -28,6 +30,24 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
     // Add existing payload data
     Payload.JsonPayload payload = logEntry.build().getPayload();
     map.putAll(payload.getDataAsMap());
+
+    // Check if there's a ThrowableProxy (exception)
+    IThrowableProxy throwableProxy = e.getThrowableProxy();
+    if (throwableProxy != null) {
+      // Include exception message and stack trace in the log payload
+      map.put("exception_message", throwableProxy.getMessage());
+
+      // Get the first element in the stack trace (location of the error)
+      StackTraceElementProxy[] stackTraceElements = throwableProxy.getStackTraceElementProxyArray();
+      if (stackTraceElements != null && stackTraceElements.length > 0) {
+        StackTraceElement firstElement = stackTraceElements[0].getStackTraceElement();
+        map.put("error_class", firstElement.getClassName());
+        map.put("error_method", firstElement.getMethodName());
+        map.put(
+            "error_line",
+            firstElement.getLineNumber()); // Add the line number where the exception occurred
+      }
+    }
 
     logEntry.setPayload(Payload.JsonPayload.of(map));
 

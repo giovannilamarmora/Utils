@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.giovannilamarmora.utils.exception.GenericException;
 import io.github.giovannilamarmora.utils.exception.UtilsException;
 import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
@@ -113,6 +114,29 @@ public interface Mapper {
     } catch (JsonProcessingException e) {
       throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to read value!");
     }
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static JsonNode readTree(Map<String, Object> objectMap) {
+    if (objectMap == null || objectMap.isEmpty()) {
+      return null;
+    } else {
+      try {
+        return objectMapper.valueToTree(objectMap); // Converte la mappa in JsonNode
+      } catch (Exception e) {
+        throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to read value!");
+      }
+    }
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static JsonNode removeField(JsonNode originalNode, String fieldName) {
+    if (originalNode.isObject()) {
+      ObjectNode newNode = (ObjectNode) originalNode.deepCopy(); // Crea una copia profonda
+      newNode.remove(fieldName); // Rimuove il campo specificato
+      return newNode; // Restituisce il nuovo JsonNode senza il campo
+    }
+    return originalNode; // Restituisce l'originale se non è un oggetto
   }
 
   /**
