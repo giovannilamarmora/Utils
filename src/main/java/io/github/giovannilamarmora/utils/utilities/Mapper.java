@@ -40,8 +40,14 @@ public interface Mapper {
     }
   }
 
+  /**
+   * @param object The object to convert.
+   * @param tClass The class indicating the target type.
+   * @param <T> The type of the desired object.
+   * @return The converted object.
+   */
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  static <T> T convertObject(T object, Class<T> tClass) {
+  static <T> T convertValue(T object, Class<T> tClass) {
     if (ObjectUtils.isEmpty(object)) {
       return null;
     }
@@ -61,7 +67,45 @@ public interface Mapper {
    * @return The converted object.
    */
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  static <T> T convertObject(T object, TypeReference<T> typeReference) {
+  static <T> T convertValue(T object, TypeReference<T> typeReference) {
+    if (ObjectUtils.isEmpty(object)) {
+      return null;
+    }
+    try {
+      return objectMapper.convertValue(object, typeReference);
+    } catch (IllegalArgumentException e) {
+      throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to convert json!");
+    }
+  }
+
+  /**
+   * @param object The object to convert.
+   * @param tClass The class indicating the target type.
+   * @param <T> The type of the desired object.
+   * @return The converted object.
+   */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static <T> T convertObject(Object object, Class<T> tClass) {
+    if (ObjectUtils.isEmpty(object)) {
+      return null;
+    }
+    try {
+      return objectMapper.convertValue(object, tClass);
+    } catch (IllegalArgumentException e) {
+      throw new UtilsException(GenericException.ERR_DEF_UTL_001, "Unable to convert value!");
+    }
+  }
+
+  /**
+   * Converts an object to the specified type.
+   *
+   * @param object The object to convert.
+   * @param typeReference The type reference indicating the target type.
+   * @param <T> The type of the desired object.
+   * @return The converted object.
+   */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static <T> T convertObject(Object object, TypeReference<T> typeReference) {
     if (ObjectUtils.isEmpty(object)) {
       return null;
     }
