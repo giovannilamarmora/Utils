@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.giovannilamarmora.utils</groupId>
     <artifactId>utils-code</artifactId>
-    <version>1.0.37</version>
+    <version>1.0.38</version>
     <packaging>jar</packaging>
     <name>utils</name>
     <description>Utils Maven Repository</description>
@@ -108,11 +108,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
         </dependency>
-        <!-- Excel Library -->
+        <!-- Excel Library (Do not Update) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.3.0</version>
+            <version>5.2.5</version>
         </dependency>
         <!-- END Excel Library -->
         <dependency>
@@ -121,13 +121,6 @@
             <version>5.11.0-M2</version>
             <scope>test</scope>
         </dependency>
-        <!-- Swagger API -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>2.6.0</version>
-        </dependency>
-        <!-- END Swagger API -->
         <!-- LogTail Logs -->
         <dependency>
             <groupId>com.logtail</groupId>
@@ -203,7 +196,12 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
-            <version>2.6.0</version>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>2.5.0</version>
         </dependency>
         <!-- END Swagger UI -->
 
