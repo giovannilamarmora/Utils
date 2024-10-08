@@ -3,7 +3,9 @@ package io.github.giovannilamarmora.utils.context;
 import static io.github.giovannilamarmora.utils.context.ContextConfig.*;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.logger.MDCUtils;
 import io.github.giovannilamarmora.utils.web.CookieManager;
+import io.github.giovannilamarmora.utils.web.HeaderManager;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.util.List;
 import java.util.Optional;
@@ -51,25 +53,23 @@ public class TracingFilter implements WebFilter {
       return chain.filter(exchange);
     }
 
-    HttpHeaders responseHeaders = response.getHeaders();
-
     String traceId = getOrGenerateId(request, TRACE_ID_PATTERN, TRACE_ID.getValue());
     String spanId = TraceUtils.generateTrace();
     String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
-    responseHeaders.set(TRACE_ID.getValue(), traceId);
-    responseHeaders.set(SPAN_ID.getValue(), spanId);
-    responseHeaders.set(PARENT_ID.getValue(), parentId);
+    HeaderManager.addOrSetHeaderInResponse(TRACE_ID.getValue(), traceId, response);
+    HeaderManager.addOrSetHeaderInResponse(SPAN_ID.getValue(), spanId, response);
+    HeaderManager.addOrSetHeaderInResponse(PARENT_ID.getValue(), parentId, response);
     CookieManager.setCookieInResponse(TRACE_ID.getValue(), traceId, response);
     CookieManager.setCookieInResponse(SPAN_ID.getValue(), spanId, response);
     CookieManager.setCookieInResponse(PARENT_ID.getValue(), parentId, response);
 
     return Mono.fromRunnable(
             () -> {
-              MDC.put(TRACE_ID.getValue(), traceId);
-              MDC.put(SPAN_ID.getValue(), spanId);
-              MDC.put(PARENT_ID.getValue(), parentId);
-              if (!ObjectUtils.isEmpty(env)) MDC.put(ENV.getValue(), env);
+              MDCUtils.setDataIntoMDC(TRACE_ID.getValue(), traceId);
+              MDCUtils.setDataIntoMDC(SPAN_ID.getValue(), spanId);
+              MDCUtils.setDataIntoMDC(PARENT_ID.getValue(), parentId);
+              MDCUtils.setDataIntoMDC(ENV.getValue(), env);
             })
         .then(
             chain
