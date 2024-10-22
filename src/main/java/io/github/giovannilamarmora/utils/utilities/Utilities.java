@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -27,7 +28,6 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static String getByteArrayFromImageURL(String url) {
-    LOG.debug("Converting Image URL");
     if (ObjectUtils.isEmpty(url)) return null;
     if (url.contains("https://")) {
       try {
@@ -83,11 +83,11 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static <T> boolean isInstanceOf(String source, TypeReference<T> typeReference) {
-    return !isNullOrEmpty(Mapper.readObject(source, typeReference));
+    return !fieldsNullOrEmpty(Mapper.readObject(source, typeReference));
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  public static boolean isNullOrEmpty(Object obj) {
+  public static boolean fieldsNullOrEmpty(Object obj) {
     if (ObjectUtils.isEmpty(obj)) return true;
     // Ottiene tutti i campi della classe dell'oggetto
     Field[] campi = obj.getClass().getDeclaredFields();
@@ -112,5 +112,17 @@ public class Utilities {
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(field);
     return m.find();
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static <T> boolean isNullOrEmpty(T obj) {
+    return switch (obj) {
+      case null -> true; // L'oggetto è null
+      case String s -> s.isEmpty(); // Se è una stringa, verifica se è vuota
+      case Collection<?> collection ->
+          collection.isEmpty(); // Se è una collezione (List, Set), verifica se è vuota
+      case Map<?, ?> map -> map.isEmpty(); // Se è una mappa, verifica se è vuota
+      default -> false;
+    };
   }
 }

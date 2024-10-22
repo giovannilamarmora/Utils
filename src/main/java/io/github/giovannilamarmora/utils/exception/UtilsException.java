@@ -88,7 +88,10 @@ public class UtilsException extends RuntimeException {
     ExceptionResponse exceptionResponse = new ExceptionResponse();
     ErrorInfo errorMes = new ErrorInfo();
 
-    if (!ObjectUtils.isEmpty(e.getClass().getName())) errorMes.setException(e.getClass().getName());
+    if (e instanceof UtilsException)
+      errorMes.setException(((UtilsException) e).getExceptionCode().exception());
+    else if (!ObjectUtils.isEmpty(e.getClass().getName()))
+      errorMes.setException(e.getClass().getName());
 
     if (!ObjectUtils.isEmpty(exceptionCode.name())) errorMes.setErrorCode(exceptionCode.name());
 
