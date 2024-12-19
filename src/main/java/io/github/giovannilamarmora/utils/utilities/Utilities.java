@@ -116,13 +116,42 @@ public class Utilities {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   public static <T> boolean isNullOrEmpty(T obj) {
+    if (ObjectUtils.isEmpty(obj)) return true;
     return switch (obj) {
-      case null -> true; // L'oggetto è null
+      // L'oggetto è null
       case String s -> s.isEmpty(); // Se è una stringa, verifica se è vuota
       case Collection<?> collection ->
           collection.isEmpty(); // Se è una collezione (List, Set), verifica se è vuota
       case Map<?, ?> map -> map.isEmpty(); // Se è una mappa, verifica se è vuota
       default -> false;
     };
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static Long convertToSize(String size) {
+    if (Utilities.isNullOrEmpty(size)) {
+      throw new IllegalArgumentException("Size must not be null or empty");
+    }
+
+    String unit = size.replaceAll("[0-9]", "").trim().toUpperCase();
+    long value = Long.parseLong(size.replaceAll("[^0-9]", "").trim());
+
+    return switch (unit) {
+      case "KB" -> value * 1024; // 1 KB = 1024 bytes
+      case "MB" -> value * 1024 * 1024; // 1 MB = 1024 * 1024 bytes
+      case "GB" -> value * 1024 * 1024 * 1024; // 1 GB = 1024 * 1024 * 1024 bytes
+      case "B" -> value; // Already in bytes
+      default -> throw new IllegalArgumentException("Unsupported size unit: " + unit);
+    };
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  public static <E extends Enum<E>> boolean isEnumValue(String value, Class<E> enumClass) {
+    try {
+      Enum.valueOf(enumClass, value);
+      return true;
+    } catch (IllegalArgumentException | NullPointerException e) {
+      return false;
+    }
   }
 }
