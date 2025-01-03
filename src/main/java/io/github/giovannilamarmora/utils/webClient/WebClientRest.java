@@ -3,10 +3,9 @@ package io.github.giovannilamarmora.utils.webClient;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.MediaType.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
-import io.github.giovannilamarmora.utils.utilities.MapperUtils;
+import io.github.giovannilamarmora.utils.utilities.Mapper;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.net.URI;
 import java.util.List;
@@ -31,7 +30,6 @@ import reactor.netty.http.client.HttpClient;
 @Component
 public class WebClientRest {
   private static final String END_STRING = "\n";
-  private final ObjectMapper mapper = MapperUtils.mapper().indentOutput().build();
   private WebClient webClient;
   private final Logger LOG = LoggerFilter.getLogger(this.getClass());
 
@@ -124,17 +122,12 @@ public class WebClientRest {
       StringBuilder logBuilder)
       throws WebClientException {
     if (body != null) {
-      try {
-        logBuilder
-            .append("Body: ")
-            .append(END_STRING)
-            .append(mapper.writeValueAsString(body))
-            .append(END_STRING)
-            .append(END_STRING);
-      } catch (JsonProcessingException e) {
-        LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
-        throw new WebClientException(e.getMessage(), e);
-      }
+      logBuilder
+          .append("Body: ")
+          .append(END_STRING)
+          .append(Mapper.writeObjectToString(body))
+          .append(END_STRING)
+          .append(END_STRING);
       return webClient
           .method(method)
           .uri(url)
@@ -166,7 +159,25 @@ public class WebClientRest {
           values.forEach(
               value -> header.append(name).append(": ").append(value).append(END_STRING));
         });
-    LOG.info(
+    if (!code.isError())
+      LOG.info(
+          "Received Response with Status code: {} from: {} "
+              + END_STRING
+              + END_STRING
+              + "Headers:"
+              + END_STRING
+              + "{}"
+              + END_STRING
+              + END_STRING
+              + "Body:"
+              + END_STRING
+              + "{}"
+              + END_STRING,
+          code,
+          uri,
+          header,
+          jsonBody);
+    LOG.error(
         "Received Response with Status code: {} from: {} "
             + END_STRING
             + END_STRING
@@ -186,13 +197,8 @@ public class WebClientRest {
   }
 
   private <T> ResponseEntity<T> mapResponseEntity(ResponseEntity<T> x, String uri) {
-    try {
-      logReturnSome(x.getStatusCode(), uri, x.getHeaders(), mapper.writeValueAsString(x.getBody()));
-      return x;
-    } catch (JsonProcessingException e) {
-      LOG.error("An error occurred during deserialize Object, message is {}", e.getMessage(), e);
-      throw new WebClientException(e.getMessage(), e);
-    }
+    logReturnSome(x.getStatusCode(), uri, x.getHeaders(), Mapper.writeObjectToString(x.getBody()));
+    return x;
   }
 
   private Mono<? extends Throwable> handleException(
@@ -208,8 +214,8 @@ public class WebClientRest {
   }
 
   private <R> Mono<R> flatMapResponse(ResponseEntity<?> w, String uri) {
-    try {
-      logReturnSome(w.getStatusCode(), uri, w.getHeaders(), mapper.writeValueAsString(w.getBody()));
+      logReturnSome(
+          w.getStatusCode(), uri, w.getHeaders(), Mapper.writeObjectToString(w.getBody()));
       String message =
           "An error happened while calling the API: "
               + (baseUrl != null ? baseUrl : "")
@@ -217,11 +223,8 @@ public class WebClientRest {
               + ", Status Code: "
               + w.getStatusCode()
               + ", and body message "
-              + mapper.writeValueAsString(w.getBody());
-      throw new WebClientException(message);
-    } catch (JsonProcessingException e) {
-      throw new WebClientException(e.getMessage(), e);
-    }
+              + Mapper.writeObjectToString(w.getBody());
+      throw new WebClientException(message, Mapper.writeObjectToString(w.getBody()));
   }
 
   private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {

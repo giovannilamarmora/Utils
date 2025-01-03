@@ -31,4 +31,16 @@ public class WebClientException extends UtilsException {
   public WebClientException(String message, Throwable cause) {
     super(message, cause, false, false, DEFAULT_EXCEPTION);
   }
+
+  /**
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and
+   * may subsequently be initialized by a call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
+   * @param exceptionMessage
+   */
+  public WebClientException(String message, String exceptionMessage) {
+    super(DEFAULT_EXCEPTION, message, exceptionMessage);
+  }
 }

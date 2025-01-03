@@ -23,6 +23,7 @@ public interface Mapper {
   ObjectMapper objectMapper =
       MapperUtils.mapper()
           .enableJavaTime()
+          .indentOutput()
           .disableDateAsTimestamp()
           .emptyStringAsNullObject()
           .failOnEmptyBean()
