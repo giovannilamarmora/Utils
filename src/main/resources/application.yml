@@ -14,7 +14,7 @@ app:
 
 # Level of LOG
 logging:
-  config: classpath:logback-spring.xml # classpath:logback-google.xml, classpath:logback-logtail.xml
+  config: classpath:logback-spring.xml # classpath:logback-google.xml
   level:
     io.github.giovannilamarmora.utils: INFO # Use DEBUG for access to LogTimeTracker LOGS
     web: ERROR
