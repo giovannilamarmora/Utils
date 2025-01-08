@@ -4,8 +4,7 @@ import static io.github.giovannilamarmora.utils.context.ContextConfig.*;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.logger.MDCUtils;
-import io.github.giovannilamarmora.utils.web.CookieManager;
-import io.github.giovannilamarmora.utils.web.HeaderManager;
+import io.github.giovannilamarmora.utils.web.ResponseManager;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.util.List;
 import java.util.Optional;
@@ -57,12 +56,9 @@ public class TracingFilter implements WebFilter {
     String spanId = TraceUtils.generateTrace();
     String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
-    HeaderManager.addOrSetHeaderInResponse(TRACE_ID.getValue(), traceId, response);
-    HeaderManager.addOrSetHeaderInResponse(SPAN_ID.getValue(), spanId, response);
-    HeaderManager.addOrSetHeaderInResponse(PARENT_ID.getValue(), parentId, response);
-    CookieManager.setCookieInResponse(TRACE_ID.getValue(), traceId, response);
-    CookieManager.setCookieInResponse(SPAN_ID.getValue(), spanId, response);
-    CookieManager.setCookieInResponse(PARENT_ID.getValue(), parentId, response);
+    ResponseManager.setCookieAndHeaderData(TRACE_ID.getValue(), traceId, response);
+    ResponseManager.setCookieAndHeaderData(SPAN_ID.getValue(), spanId, response);
+    ResponseManager.setCookieAndHeaderData(PARENT_ID.getValue(), parentId, response);
 
     return Mono.fromRunnable(
             () -> {
