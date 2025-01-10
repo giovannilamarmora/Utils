@@ -177,23 +177,24 @@ public class WebClientRest {
           uri,
           header,
           jsonBody);
-    LOG.error(
-        "Received Response with Status code: {} from: {} "
-            + END_STRING
-            + END_STRING
-            + "Headers:"
-            + END_STRING
-            + "{}"
-            + END_STRING
-            + END_STRING
-            + "Body:"
-            + END_STRING
-            + "{}"
-            + END_STRING,
-        code,
-        uri,
-        header,
-        jsonBody);
+    else
+      LOG.error(
+          "Received Response with Status code: {} from: {} "
+              + END_STRING
+              + END_STRING
+              + "Headers:"
+              + END_STRING
+              + "{}"
+              + END_STRING
+              + END_STRING
+              + "Body:"
+              + END_STRING
+              + "{}"
+              + END_STRING,
+          code,
+          uri,
+          header,
+          jsonBody);
   }
 
   private <T> ResponseEntity<T> mapResponseEntity(ResponseEntity<T> x, String uri) {
@@ -214,17 +215,16 @@ public class WebClientRest {
   }
 
   private <R> Mono<R> flatMapResponse(ResponseEntity<?> w, String uri) {
-      logReturnSome(
-          w.getStatusCode(), uri, w.getHeaders(), Mapper.writeObjectToString(w.getBody()));
-      String message =
-          "An error happened while calling the API: "
-              + (baseUrl != null ? baseUrl : "")
-              + uri
-              + ", Status Code: "
-              + w.getStatusCode()
-              + ", and body message "
-              + Mapper.writeObjectToString(w.getBody());
-      throw new WebClientException(message, Mapper.writeObjectToString(w.getBody()));
+    logReturnSome(w.getStatusCode(), uri, w.getHeaders(), Mapper.writeObjectToString(w.getBody()));
+    String message =
+        "An error happened while calling the API: "
+            + (baseUrl != null ? baseUrl : "")
+            + uri
+            + ", Status Code: "
+            + w.getStatusCode()
+            + ", and body message "
+            + Mapper.writeObjectToString(w.getBody());
+    throw new WebClientException(message, Mapper.writeObjectToString(w.getBody()));
   }
 
   private void acceptedCodecs(ClientCodecConfigurer clientCodecConfigurer) {
