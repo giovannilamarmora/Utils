@@ -63,14 +63,14 @@ public interface WebManager {
     LOG.debug("Info header X-Forwarded-For: {}", headerXForwardedFor);
     LOG.debug("Info header x-original-forwarded-for: {}", headerOriginalXForwardedFor);
 
-    if (headerClientIp != null && !headerClientIp.isEmpty()) {
+    if (!Utilities.isNullOrEmpty(headerClientIp)) {
       ipClient = headerClientIp;
-    } else if (headerXForwardedFor != null && !headerXForwardedFor.isEmpty()) {
+    } else if (!Utilities.isNullOrEmpty(headerXForwardedFor)) {
       ipClient = headerXForwardedFor;
-    } else if (headerOriginalXForwardedFor != null && !headerOriginalXForwardedFor.isEmpty()) {
+    } else if (!Utilities.isNullOrEmpty(headerOriginalXForwardedFor)) {
       ipClient = getClientIp(request, headerOriginalXForwardedFor);
     }
-    if (ipClient == null) {
+    if (Utilities.isNullOrEmpty(ipClient) && !Utilities.isNullOrEmpty(request.getRemoteAddress())) {
       ipClient = Objects.requireNonNull(request.getRemoteAddress()).getHostName();
     }
     LOG.debug("Ended Get Real Client IP: {}", ipClient);
