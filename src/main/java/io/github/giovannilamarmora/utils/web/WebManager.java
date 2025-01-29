@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import org.apache.commons.text.StringTokenizer;
 import org.slf4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
@@ -99,6 +100,11 @@ public interface WebManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static String getRemoteAddress(ServerHttpRequest request) {
+    String hostHeader = request.getHeaders().getFirst(HttpHeaders.HOST);
+    if (!Utilities.isNullOrEmpty(hostHeader)) {
+      return hostHeader;
+    }
+
     String clientIp = getRealClientIP(request);
     if (Utilities.isNullOrEmpty(clientIp)) {
       if (!Utilities.isNullOrEmpty(request.getRemoteAddress()))
