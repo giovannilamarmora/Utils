@@ -5,6 +5,8 @@ import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.utilities.Mapper;
+import io.github.giovannilamarmora.utils.utilities.Utilities;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -97,9 +99,23 @@ public interface WebManager {
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static String getRemoteAddress(ServerHttpRequest request) {
-    return ObjectUtils.isEmpty(request.getRemoteAddress())
-        ? null
-        : request.getRemoteAddress().getHostName();
+    String clientIp = getRealClientIP(request);
+    if (Utilities.isNullOrEmpty(clientIp)) {
+      if (!Utilities.isNullOrEmpty(request.getRemoteAddress()))
+        clientIp = request.getRemoteAddress().getHostName();
+      else return null;
+    }
+
+    try {
+      InetAddress inetAddress = InetAddress.getByName(clientIp);
+
+      if (!Utilities.isNullOrEmpty(inetAddress.getHostName())) return inetAddress.getHostName();
+    } catch (Exception e) {
+      if (!Utilities.isNullOrEmpty(request.getRemoteAddress()))
+        return request.getRemoteAddress().getHostName();
+      else return null;
+    }
+    return clientIp;
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)

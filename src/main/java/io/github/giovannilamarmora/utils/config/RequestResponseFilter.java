@@ -3,6 +3,7 @@ package io.github.giovannilamarmora.utils.config;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.util.List;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -39,7 +39,7 @@ public class RequestResponseFilter implements WebFilter {
       return Mono.defer(
           () -> {
             LOG.info(
-                "[REQUEST] Received Request: {} {}{}",
+                "[REQUEST] Received Request: [{}] {}{}",
                 request.getMethod(),
                 request.getURI(),
                 ObjectUtils.isEmpty(WebManager.getHostFromRequest(request))

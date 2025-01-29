@@ -118,7 +118,6 @@ public class Utilities {
   public static <T> boolean isNullOrEmpty(T obj) {
     if (ObjectUtils.isEmpty(obj)) return true;
     return switch (obj) {
-      // L'oggetto è null
       case String s -> s.isEmpty(); // Se è una stringa, verifica se è vuota
       case Collection<?> collection ->
           collection.isEmpty(); // Se è una collezione (List, Set), verifica se è vuota
