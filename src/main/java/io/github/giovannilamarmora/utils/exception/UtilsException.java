@@ -4,9 +4,8 @@ import io.github.giovannilamarmora.utils.context.TraceUtils;
 import io.github.giovannilamarmora.utils.exception.dto.ErrorInfo;
 import io.github.giovannilamarmora.utils.exception.dto.ExceptionResponse;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.utilities.ObjectToolkit;
 import java.util.Arrays;
-
-import io.github.giovannilamarmora.utils.utilities.Utilities;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +44,7 @@ public class UtilsException extends RuntimeException {
       error.setUrl(request.getPath().value());
 
       if (!ObjectUtils.isEmpty(e.getMessage())) errorMes.setMessage(e.getMessage());
-      else if (!Utilities.isNullOrEmpty(e.exceptionCode.getMessage()))
+      else if (!ObjectToolkit.isNullOrEmpty(e.exceptionCode.getMessage()))
         errorMes.setMessage(e.exceptionCode.getMessage());
 
       if (!ObjectUtils.isEmpty(e.getExceptionMessage()))

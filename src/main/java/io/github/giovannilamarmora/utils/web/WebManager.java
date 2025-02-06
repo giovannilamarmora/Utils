@@ -5,7 +5,7 @@ import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.utilities.Mapper;
-import io.github.giovannilamarmora.utils.utilities.Utilities;
+import io.github.giovannilamarmora.utils.utilities.ObjectToolkit;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -64,14 +64,15 @@ public interface WebManager {
     LOG.debug("Info header X-Forwarded-For: {}", headerXForwardedFor);
     LOG.debug("Info header x-original-forwarded-for: {}", headerOriginalXForwardedFor);
 
-    if (!Utilities.isNullOrEmpty(headerClientIp)) {
+    if (!ObjectToolkit.isNullOrEmpty(headerClientIp)) {
       ipClient = headerClientIp;
-    } else if (!Utilities.isNullOrEmpty(headerXForwardedFor)) {
+    } else if (!ObjectToolkit.isNullOrEmpty(headerXForwardedFor)) {
       ipClient = headerXForwardedFor;
-    } else if (!Utilities.isNullOrEmpty(headerOriginalXForwardedFor)) {
+    } else if (!ObjectToolkit.isNullOrEmpty(headerOriginalXForwardedFor)) {
       ipClient = getClientIp(request, headerOriginalXForwardedFor);
     }
-    if (Utilities.isNullOrEmpty(ipClient) && !Utilities.isNullOrEmpty(request.getRemoteAddress())) {
+    if (ObjectToolkit.isNullOrEmpty(ipClient)
+        && !ObjectToolkit.isNullOrEmpty(request.getRemoteAddress())) {
       ipClient = Objects.requireNonNull(request.getRemoteAddress()).getHostName();
     }
     LOG.debug("Ended Get Real Client IP: {}", ipClient);
@@ -101,13 +102,13 @@ public interface WebManager {
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static String getRemoteAddress(ServerHttpRequest request) {
     String hostHeader = request.getHeaders().getFirst(HttpHeaders.HOST);
-    if (!Utilities.isNullOrEmpty(hostHeader)) {
+    if (!ObjectToolkit.isNullOrEmpty(hostHeader)) {
       return hostHeader;
     }
 
     String clientIp = getRealClientIP(request);
-    if (Utilities.isNullOrEmpty(clientIp)) {
-      if (!Utilities.isNullOrEmpty(request.getRemoteAddress()))
+    if (ObjectToolkit.isNullOrEmpty(clientIp)) {
+      if (!ObjectToolkit.isNullOrEmpty(request.getRemoteAddress()))
         clientIp = request.getRemoteAddress().getHostName();
       else return null;
     }
@@ -115,9 +116,9 @@ public interface WebManager {
     try {
       InetAddress inetAddress = InetAddress.getByName(clientIp);
 
-      if (!Utilities.isNullOrEmpty(inetAddress.getHostName())) return inetAddress.getHostName();
+      if (!ObjectToolkit.isNullOrEmpty(inetAddress.getHostName())) return inetAddress.getHostName();
     } catch (Exception e) {
-      if (!Utilities.isNullOrEmpty(request.getRemoteAddress()))
+      if (!ObjectToolkit.isNullOrEmpty(request.getRemoteAddress()))
         return request.getRemoteAddress().getHostName();
       else return null;
     }
