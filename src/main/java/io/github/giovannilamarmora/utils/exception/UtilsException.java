@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class UtilsException extends RuntimeException {
   private ExceptionCode exceptionCode;
+
+  private ExceptionType exception;
   private String exceptionMessage;
 
   @Value("#{new Boolean(${app.exception.stacktrace:true})}")
@@ -59,8 +61,11 @@ public class UtilsException extends RuntimeException {
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) LOG.debug("Stacktrace error: ", e);
 
-      if (!ObjectUtils.isEmpty(e.exceptionCode.exception()))
+      if (!ObjectToolkit.isNullOrEmpty(e.exception.name()))
         errorMes.setException(e.exceptionCode.exception());
+      else if (!ObjectToolkit.isNullOrEmpty(e.exceptionCode.exception()))
+        errorMes.setException(e.exceptionCode.exception());
+
       error.setSpanId(TraceUtils.getSpanID());
       error.setError(errorMes);
 
@@ -92,7 +97,9 @@ public class UtilsException extends RuntimeException {
     ErrorInfo errorMes = new ErrorInfo();
 
     if (e instanceof UtilsException)
-      errorMes.setException(((UtilsException) e).getExceptionCode().exception());
+      if (!ObjectToolkit.isNullOrEmpty(((UtilsException) e).getException().name()))
+        errorMes.setException(((UtilsException) e).getException().name());
+      else errorMes.setException(((UtilsException) e).getExceptionCode().exception());
     else if (!ObjectUtils.isEmpty(e.getClass().getName()))
       errorMes.setException(e.getClass().getName());
 
@@ -194,6 +201,46 @@ public class UtilsException extends RuntimeException {
   public UtilsException(ExceptionCode exceptionCode, String message, String exceptionMessage) {
     super(message);
     this.exceptionCode = exceptionCode;
+    this.exceptionMessage = exceptionMessage;
+  }
+
+  /**
+   * Constructs a new runtime exception with the specified detail message. The cause is not
+   * initialized, and may subsequently be initialized by a call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
+   */
+  public UtilsException(ExceptionCode exceptionCode, ExceptionType exception, String message) {
+    super(message);
+    this.exceptionCode = exceptionCode;
+    this.exception = exception;
+  }
+
+  /**
+   * Constructs a new runtime exception with {@code null} as its detail message. The cause is not
+   * initialized, and may subsequently be initialized by a call to {@link #initCause}.
+   */
+  public UtilsException(ExceptionCode exceptionCode, ExceptionType exception) {
+    this.exceptionCode = exceptionCode;
+    this.exception = exception;
+  }
+
+  /**
+   * Constructs a new runtime exception with the specified detail message. The cause is not
+   * initialized, and may subsequently be initialized by a call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for later retrieval by the
+   *     {@link #getMessage()} method.
+   */
+  public UtilsException(
+      String message,
+      ExceptionCode exceptionCode,
+      ExceptionType exception,
+      String exceptionMessage) {
+    super(message);
+    this.exceptionCode = exceptionCode;
+    this.exception = exception;
     this.exceptionMessage = exceptionMessage;
   }
 }
