@@ -211,24 +211,131 @@ public interface ObjectToolkit {
   /**
    * Checks if a nested property is not null or empty at multiple levels.
    *
-   * <p>This method checks the given path of properties (from root to leaf) to ensure all are not
-   * null and not empty.
+   * <p>This method checks the given path of properties (from root to leaf) to ensure that none of
+   * the retrieved values is null or empty. This version accepts an arbitrary number of getter
+   * functions with potentially different input/output types. Internally, each getter is cast to a
+   * {@code Function<Object, Object>}. Use this method if you prefer not to restrict the types of
+   * the getter functions at compile time.
    *
-   * @param <T> the type of the root object
-   * @param <R> the type of the final value to be checked
-   * @param obj the root object
-   * @param getters the series of getter functions to retrieve the nested values
+   * @param obj the root object from which the property chain starts
+   * @param getters the series of getter functions used to retrieve nested values; each function
+   *     should be compatible with the output of the previous one
    * @return {@code true} if all properties along the path are not null or empty, {@code false}
    *     otherwise
    */
-  static <T, R> boolean areNotNullOrEmpty(T obj, Function<T, ?>... getters) {
+  static boolean areNotNullOrEmptyCast(Object obj, Function<?, ?>... getters) {
+    if (isNullOrEmpty(obj)) return false;
     Object currentValue = obj;
-    for (Function getter : getters) {
-      currentValue = getter.apply(currentValue);
+    for (Function<?, ?> getter : getters) {
+      // Perform an unchecked cast to Function<Object, Object>
+      @SuppressWarnings("unchecked")
+      Function<Object, Object> func = (Function<Object, Object>) getter;
+      currentValue = func.apply(currentValue);
       if (isNullOrEmpty(currentValue)) {
-        return false; // Return false if any value in the path is null or empty
+        return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Checks if a nested property is not null or empty at multiple levels.
+   *
+   * <p>This method checks the given path of properties (from root to leaf) to ensure that none of
+   * the retrieved values is null or empty. Unlike {@code areNotNullOrEmptyCast}, this version
+   * accepts only getter functions of type {@code Function<Object, Object>}, thus avoiding unchecked
+   * casts.
+   *
+   * @param obj the root object from which the property chain starts
+   * @param getters the series of getter functions (each of type {@code Function<Object, Object>})
+   *     used to retrieve nested values
+   * @return {@code true} if all properties along the path are not null or empty, {@code false}
+   *     otherwise
+   */
+  @SafeVarargs
+  static boolean areNotNullOrEmpty(Object obj, Function<Object, Object>... getters) {
+    if (isNullOrEmpty(obj)) return false;
+    Object currentValue = obj;
+    for (Function<Object, Object> getter : getters) {
+      currentValue = getter.apply(currentValue);
+      if (isNullOrEmpty(currentValue)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if a nested property is null or empty at multiple levels.
+   *
+   * <p>This method checks the given path of properties (from root to leaf) and returns {@code true}
+   * if any of the retrieved values is null or empty, and {@code false} otherwise. This version
+   * accepts an arbitrary number of getter functions with potentially different input/output types.
+   * Internally, each getter is cast to a {@code Function<Object, Object>}. Use this method if you
+   * prefer not to restrict the types of the getter functions at compile time.
+   *
+   * @param obj the root object from which the property chain starts
+   * @param getters the series of getter functions used to retrieve nested values; each function
+   *     should be compatible with the output of the previous one
+   * @return {@code true} if any property along the path is null or empty, {@code false} otherwise
+   */
+  static boolean areNullOrEmptyCast(Object obj, Function<?, ?>... getters) {
+    if (isNullOrEmpty(obj)) return true;
+    Object currentValue = obj;
+    for (Function<?, ?> getter : getters) {
+      // Perform an unchecked cast to Function<Object, Object>
+      @SuppressWarnings("unchecked")
+      Function<Object, Object> func = (Function<Object, Object>) getter;
+      currentValue = func.apply(currentValue);
+      if (isNullOrEmpty(currentValue)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if a nested property is null or empty at multiple levels.
+   *
+   * <p>This method checks the given path of properties (from root to leaf) and returns {@code true}
+   * if any of the retrieved values is null or empty, and {@code false} otherwise. Unlike {@code
+   * areNullOrEmptyCast}, this version accepts only getter functions of type {@code Function<Object,
+   * Object>}, thus avoiding unchecked casts.
+   *
+   * @param obj the root object from which the property chain starts
+   * @param getters the series of getter functions (each of type {@code Function<Object, Object>})
+   *     used to retrieve nested values
+   * @return {@code true} if any property along the path is null or empty, {@code false} otherwise
+   */
+  @SafeVarargs
+  static boolean areNullOrEmpty(Object obj, Function<Object, Object>... getters) {
+    if (isNullOrEmpty(obj)) return true;
+    Object currentValue = obj;
+    for (Function<Object, Object> getter : getters) {
+      currentValue = getter.apply(currentValue);
+      if (isNullOrEmpty(currentValue)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Lifts a function with a specific input type to a function that accepts and returns {@code
+   * Object}.
+   *
+   * <p>This helper method converts a function {@code f} that accepts a parameter of type {@code T}
+   * into a function that accepts an {@code Object} and casts it to {@code T} before applying {@code
+   * f}. This is useful for composing functions with different input/output types in a generic way,
+   * without requiring explicit casts at the call site.
+   *
+   * @param <T> the type of the input to the original function
+   * @param f the function to be lifted
+   * @return a new function that accepts an {@code Object}, casts it to {@code T}, and then applies
+   *     {@code f}
+   */
+  @SuppressWarnings("unchecked")
+  static <T> Function<Object, Object> lift(Function<T, ?> f) {
+    return o -> f.apply((T) o);
   }
 }

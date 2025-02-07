@@ -97,7 +97,7 @@ public class UtilsException extends RuntimeException {
     ErrorInfo errorMes = new ErrorInfo();
 
     if (e instanceof UtilsException)
-      if (!ObjectToolkit.isNullOrEmpty(((UtilsException) e).getException().name()))
+      if (!ObjectToolkit.isNullOrEmpty(((UtilsException) e).getException()))
         errorMes.setException(((UtilsException) e).getException().name());
       else errorMes.setException(((UtilsException) e).getExceptionCode().exception());
     else if (!ObjectUtils.isEmpty(e.getClass().getName()))

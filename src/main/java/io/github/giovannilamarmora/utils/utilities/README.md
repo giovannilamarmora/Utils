@@ -310,14 +310,19 @@ navigate and validate nested fields in an object chain.
 #### Example 💡
 
 ```java
+import io.github.giovannilamarmora.utils.generic.Response;
 import io.github.giovannilamarmora.utils.utilities.ObjectToolkit;
+import org.springframework.http.ResponseEntity;
 
 public class Example {
 
     public static void main(String[] args) {
+        boolean isValid = ObjectToolkit.areNotNullOrEmptyCast(responseEntityWallet,
+                (ResponseEntity<Response> re) -> re.getBody(),
+                (Response body) -> body.getData());
         boolean isValid = ObjectToolkit.areNotNullOrEmpty(responseEntityWallet,
-                e -> e.getBody(),
-                b -> b.getData());
+                ObjectToolkit.lift(ResponseEntity::getBody),
+                ObjectToolkit.lift(Response::getData));
         // Result: true if both responseEntityWallet.getBody() and responseEntityWallet.getBody().getData() are not null or empty
     }
 }
