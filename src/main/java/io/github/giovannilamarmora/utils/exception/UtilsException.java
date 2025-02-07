@@ -61,7 +61,7 @@ public class UtilsException extends RuntimeException {
           && !ObjectUtils.isEmpty(e.getStackTrace())
           && e.getStackTrace().length != 0) LOG.debug("Stacktrace error: ", e);
 
-      if (!ObjectToolkit.isNullOrEmpty(e.exception.name()))
+      if (!ObjectToolkit.isNullOrEmpty(e.exception))
         errorMes.setException(e.exceptionCode.exception());
       else if (!ObjectToolkit.isNullOrEmpty(e.exceptionCode.exception()))
         errorMes.setException(e.exceptionCode.exception());
