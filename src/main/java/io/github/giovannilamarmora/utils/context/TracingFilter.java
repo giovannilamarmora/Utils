@@ -6,7 +6,9 @@ import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.logger.MDCUtils;
 import io.github.giovannilamarmora.utils.web.ResponseManager;
 import io.github.giovannilamarmora.utils.web.WebManager;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -32,6 +34,12 @@ public class TracingFilter implements WebFilter {
 
   @Value(value = "${env:Default}")
   private String env;
+
+  @Value(value = "${spring.application.name:no_name_defined}")
+  private String application_name;
+
+  @Value(value = "${app.version:no_version_defined}")
+  private String app_version;
 
   private static final Logger LOG = LoggerFilter.getLogger(TracingFilter.class);
 
@@ -66,20 +74,23 @@ public class TracingFilter implements WebFilter {
               MDCUtils.setDataIntoMDC(SPAN_ID.getValue(), spanId);
               MDCUtils.setDataIntoMDC(PARENT_ID.getValue(), parentId);
               MDCUtils.setDataIntoMDC(ENV.getValue(), env);
+              MDCUtils.setDataIntoMDC(APP_NAME.getValue(), application_name);
+              MDCUtils.setDataIntoMDC(APP_VERSION.getValue(), app_version);
             })
         .then(
             chain
                 .filter(exchange)
                 .contextWrite(
-                    Context.of(
-                        TRACE_ID.getValue(),
-                        traceId,
-                        SPAN_ID.getValue(),
-                        spanId,
-                        PARENT_ID.getValue(),
-                        parentId,
-                        ENV.getValue(),
-                        env)))
+                    context -> {
+                      Map<String, String> contextMap = new HashMap<>();
+                      contextMap.put(TRACE_ID.getValue(), traceId);
+                      contextMap.put(SPAN_ID.getValue(), spanId);
+                      contextMap.put(PARENT_ID.getValue(), parentId);
+                      contextMap.put(ENV.getValue(), env);
+                      contextMap.put(APP_NAME.getValue(), application_name);
+                      contextMap.put(APP_VERSION.getValue(), app_version);
+                      return Context.of(contextMap);
+                    }))
         .doFinally(signalType -> MDC.clear());
   }
 

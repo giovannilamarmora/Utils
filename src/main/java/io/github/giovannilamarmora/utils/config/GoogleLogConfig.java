@@ -8,9 +8,12 @@ import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Payload;
 import com.google.cloud.logging.Severity;
 import com.google.cloud.logging.logback.LoggingEventEnhancer;
+import io.github.giovannilamarmora.utils.context.AppContext;
 import io.github.giovannilamarmora.utils.context.ContextConfig;
 import io.github.giovannilamarmora.utils.context.TraceUtils;
+import io.github.giovannilamarmora.utils.utilities.ObjectToolkit;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GoogleLogConfig implements LoggingEventEnhancer {
 
@@ -25,7 +28,11 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
     map.put("thread", e.getThreadName());
     map.put("context", e.getLoggerContextVO().getName());
     map.put("logger", e.getLoggerName());
-    map.put("mdc", e.getMDCPropertyMap());
+    Map<String, String> mdcValues = new HashMap<>(e.getMDCPropertyMap());
+    mdcValues.remove(ContextConfig.ENV.getValue());
+    mdcValues.remove(ContextConfig.APP_NAME.getValue());
+    mdcValues.remove(ContextConfig.APP_VERSION.getValue());
+    map.put("mdc", mdcValues);
 
     // Add existing payload data
     Payload.JsonPayload payload = logEntry.build().getPayload();
@@ -33,7 +40,7 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
 
     // Check if there's a ThrowableProxy (exception)
     IThrowableProxy throwableProxy = e.getThrowableProxy();
-    if (throwableProxy != null) {
+    if (!ObjectToolkit.isNullOrEmpty(throwableProxy)) {
       // Include exception message and stack trace in the log payload
       map.put("exception_message", throwableProxy.getMessage());
 
@@ -47,6 +54,24 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
             "error_line",
             firstElement.getLineNumber()); // Add the line number where the exception occurred
       }
+    }
+
+    try {
+      map.put(ContextConfig.ENV.getValue(), TraceUtils.getEnvironment());
+    } catch (Exception exception) {
+      // map.put(ContextConfig.ENV.getValue(), exception.getMessage());
+    }
+
+    try {
+      map.put(ContextConfig.APP_NAME.getValue(), AppContext.getApplicationName());
+    } catch (Exception exception) {
+      // map.put(ContextConfig.APP_NAME.getValue(), exception.getMessage());
+    }
+
+    try {
+      map.put(ContextConfig.APP_VERSION.getValue(), AppContext.getApplicationVersion());
+    } catch (Exception exception) {
+      // map.put(ContextConfig.APP_VERSION.getValue(), exception.getMessage());
     }
 
     logEntry.setPayload(Payload.JsonPayload.of(map));
@@ -73,17 +98,12 @@ public class GoogleLogConfig implements LoggingEventEnhancer {
 
   // Utility method to map Logback log level to Google Cloud Logging severity
   private Severity mapSeverity(Level level) {
-    switch (level.toInt()) {
-      case Level.ERROR_INT:
-        return Severity.ERROR;
-      case Level.WARN_INT:
-        return Severity.WARNING;
-      case Level.INFO_INT:
-        return Severity.INFO;
-      case Level.DEBUG_INT, Level.TRACE_INT:
-        return Severity.DEBUG;
-      default:
-        return Severity.DEFAULT;
-    }
+    return switch (level.toInt()) {
+      case Level.ERROR_INT -> Severity.ERROR;
+      case Level.WARN_INT -> Severity.WARNING;
+      case Level.INFO_INT -> Severity.INFO;
+      case Level.DEBUG_INT, Level.TRACE_INT -> Severity.DEBUG;
+      default -> Severity.DEFAULT;
+    };
   }
 }

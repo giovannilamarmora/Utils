@@ -20,5 +20,7 @@ public class ContextRegistry {
     MDCUtils.registerMDC(ContextConfig.SPAN_ID.getValue());
     MDCUtils.registerMDC(ContextConfig.PARENT_ID.getValue());
     MDCUtils.registerMDC(ContextConfig.ENV.getValue());
+    MDCUtils.registerMDC(ContextConfig.APP_VERSION.getValue());
+    MDCUtils.registerMDC(ContextConfig.APP_NAME.getValue());
   }
 }

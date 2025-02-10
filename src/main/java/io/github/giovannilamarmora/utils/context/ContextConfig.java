@@ -9,7 +9,9 @@ public enum ContextConfig {
   TRACE_ID("Trace-ID"),
   SPAN_ID("Span-ID"),
   PARENT_ID("Parent-ID"),
-  ENV("environment");
+  ENV("environment"),
+  APP_NAME("application_name"),
+  APP_VERSION("app_version");
 
   private final String value;
 }
