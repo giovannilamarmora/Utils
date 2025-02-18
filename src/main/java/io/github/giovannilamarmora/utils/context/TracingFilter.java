@@ -50,7 +50,10 @@ public class TracingFilter implements WebFilter {
   private static final Pattern PARENT_ID_PATTERN =
       Pattern.compile(".*parent-id.*", Pattern.CASE_INSENSITIVE);
 
-  private final List<String> shouldNotFilter = List.of("/actuator/health");
+  @Value(value = "${filter.requestResponse.shouldNotFilter}")
+  private List<String> shouldNotFilter;
+
+  // private final List<String> shouldNotFilter = List.of("/actuator/health");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
