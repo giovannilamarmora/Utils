@@ -209,6 +209,23 @@ public interface ObjectToolkit {
   }
 
   /**
+   * Returns the given value if it is not null or empty; otherwise, returns the provided default
+   * value.
+   *
+   * <p>This method checks whether the given value is null or empty using {@link
+   * #isNullOrEmpty(Object)}. If the value is valid, it is returned; otherwise, the default value is
+   * returned.
+   *
+   * @param <R> the type of the value
+   * @param value the value to check
+   * @param defaultValue the default value to return if {@code value} is null or empty
+   * @return {@code value} if it is not null or empty; otherwise, {@code defaultValue}
+   */
+  static <R> R getOrDefault(R value, R defaultValue) {
+    return isNullOrEmpty(value) ? defaultValue : value;
+  }
+
+  /**
    * Checks if a nested property is not null or empty at multiple levels.
    *
    * <p>This method checks the given path of properties (from root to leaf) to ensure that none of

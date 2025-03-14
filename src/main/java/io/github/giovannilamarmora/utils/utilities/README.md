@@ -328,6 +328,20 @@ public class Example {
 }
 ```
 
+### 9. getOrDefault Utility Method
+
+#### 📌 Overview
+
+The `getOrDefault` method is a utility function that returns a given value if it is **not null or empty**; otherwise, it
+returns a provided **default value**.
+
+#### 🛠️ Example
+
+```java
+String result = getOrDefault(null, "default@example.com");
+// Output: "default@example.com"
+```
+
 ## Notes 📝
 
 - These utility methods handle various data types, including `Optional`, `String`, `Collection`, `Map`, and Arrays.
