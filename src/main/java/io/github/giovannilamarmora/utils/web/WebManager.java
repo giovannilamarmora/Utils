@@ -137,6 +137,17 @@ public interface WebManager {
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static boolean shouldFilter(ServerHttpRequest req, List<String> shouldFilter) {
+    String path = req.getPath().value();
+    String method = req.getMethod().name();
+    if (HttpMethod.OPTIONS.name().equals(method)) {
+      return false;
+    }
+    return shouldFilter.stream()
+        .anyMatch(endpoint -> PatternMatchUtils.simpleMatch(endpoint, path));
+  }
+
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static String encodeURLValue(String value) {
     return ObjectUtils.isEmpty(value) ? value : URLEncoder.encode(value, StandardCharsets.UTF_8);
   }
