@@ -1,7 +1,9 @@
 package io.github.giovannilamarmora.utils.config;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import java.util.Arrays;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,20 +21,20 @@ public class CorsConfig implements WebFilter {
 
   private final Logger LOG = LoggerFilter.getLogger(this.getClass());
 
-  // Enable CORS using an environment variable
+  // Enable CORS via environment variable
   @Value("#{new Boolean(${app.cors.enabled:false})}")
   private Boolean isCorsEnabled;
 
-  // List of URL patterns that should not be filtered (e.g., Swagger UI and API docs)
+  // URL patterns that should not be filtered (e.g., Swagger UI and API docs)
   @Value("${app.cors.shouldNotFilter:**/swagger-ui/**,/api-docs,**/api-docs/**}")
   private List<String> shouldNotFilter;
 
-  // Allowed origins (for example:
-  // "https://access.sphere.service.giovannilamarmora.com,https://linkatutto.giovannilamarmora.com")
+  // Comma-separated allowed origins, e.g.,
+  // "https://access.sphere.service.giovannilamarmora.com,https://linkatutto.giovannilamarmora.com,http://localhost:5501"
   @Value("${app.cors.allowedOrigins:*}")
   private String allowedOrigins;
 
-  // Allowed headers (for example: "Content-Type,Authorization")
+  // Allowed headers (e.g., "Content-Type,Authorization")
   @Value("${app.cors.allowedHeaders:*}")
   private String allowedHeaders;
 
@@ -40,24 +42,36 @@ public class CorsConfig implements WebFilter {
   @Value("${app.cors.allowCredentials:true}")
   private Boolean allowCredentials;
 
+  // Parsed list of allowed origins
+  private List<String> allowedOriginsList;
+
+  @PostConstruct
+  public void init() {
+    allowedOriginsList = Arrays.asList(allowedOrigins.split(","));
+  }
+
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     ServerHttpRequest request = exchange.getRequest();
 
-    if (isCorsEnabled && !shouldNotFilter(request)) {
-      // Set the allowed origin header
-      exchange
-          .getResponse()
-          .getHeaders()
-          .set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, allowedOrigins);
-      // Set the allowed HTTP methods
+    if (isCorsEnabled) {
+      // Get the Origin header from the request
+      String requestOrigin = request.getHeaders().getOrigin();
+      if (requestOrigin != null && allowedOriginsList.contains(requestOrigin)) {
+        // Echo back the origin if it's in the allowed list
+        exchange
+            .getResponse()
+            .getHeaders()
+            .set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestOrigin);
+      }
+      // Set allowed methods
       exchange
           .getResponse()
           .getHeaders()
           .set(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, PATCH, PUT, GET, OPTIONS, DELETE");
-      // Set the maximum age for the preflight request caching
+      // Set max age for preflight caching
       exchange.getResponse().getHeaders().set(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
-      // Set the allowed headers
+      // Set allowed headers
       exchange
           .getResponse()
           .getHeaders()
@@ -69,13 +83,13 @@ public class CorsConfig implements WebFilter {
             .getHeaders()
             .set(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
       }
-      // Set the headers that should be exposed to the client
+      // Optionally, expose headers (you can adjust this as needed)
       exchange
           .getResponse()
           .getHeaders()
           .set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, allowedHeaders);
 
-      LOG.info("Setting up CORS policy: {}", exchange.getResponse().getHeaders());
+      LOG.info("CORS policy set for request from Origin: {}", requestOrigin);
     }
     return chain.filter(exchange);
   }
