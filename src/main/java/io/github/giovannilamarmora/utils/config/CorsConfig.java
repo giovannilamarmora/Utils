@@ -106,7 +106,7 @@ public class CorsConfig implements WebFilter {
           .set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, allowedHeaders);
 
       if (request.getMethod().equals(HttpMethod.OPTIONS)) {
-        exchange.getResponse().setStatusCode(HttpStatus.CREATED);
+        exchange.getResponse().setStatusCode(HttpStatus.NO_CONTENT);
       }
 
       LOG.debug(
