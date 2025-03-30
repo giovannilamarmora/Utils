@@ -6,8 +6,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
@@ -17,6 +17,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Component
+@Order(-102)
 public class CorsConfig implements WebFilter {
 
   private final Logger LOG = LoggerFilter.getLogger(this.getClass());
@@ -54,16 +55,25 @@ public class CorsConfig implements WebFilter {
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     ServerHttpRequest request = exchange.getRequest();
 
-    if (isCorsEnabled) {
+    if (isCorsEnabled && !shouldNotFilter(request)) {
       // Get the Origin header from the request
       String requestOrigin = request.getHeaders().getOrigin();
-      if (requestOrigin != null && allowedOriginsList.contains(requestOrigin)) {
-        // Echo back the origin if it's in the allowed list
+
+      if (requestOrigin != null
+          && (allowedOriginsList.contains("*") || allowedOriginsList.contains(requestOrigin))) {
+        exchange
+            .getResponse()
+            .getHeaders()
+            .set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestOrigin);
+      } else {
+        // LOG.debug("CORS: Nessun 'Origin' header presente nella richiesta.");
+        requestOrigin = "*"; // Default se non presente
         exchange
             .getResponse()
             .getHeaders()
             .set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestOrigin);
       }
+
       // Set allowed methods
       exchange
           .getResponse()
@@ -77,7 +87,11 @@ public class CorsConfig implements WebFilter {
           .getHeaders()
           .set(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowedHeaders);
       // If credentials are allowed, set the corresponding header
-      if (allowCredentials) {
+      // Se l'origin è "*" e allowCredentials è true, avvisa perché non è permesso
+      if ("*".equals(requestOrigin) && allowCredentials) {
+        LOG.debug(
+            "CORS: Non è possibile usare 'Access-Control-Allow-Origin: *' con 'Access-Control-Allow-Credentials: true'");
+      } else if (allowCredentials) {
         exchange
             .getResponse()
             .getHeaders()
@@ -89,7 +103,10 @@ public class CorsConfig implements WebFilter {
           .getHeaders()
           .set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, allowedHeaders);
 
-      LOG.info("CORS policy set for request from Origin: {}", requestOrigin);
+      LOG.debug(
+          "CORS policy set for request from Origin: {}, and Method {}",
+          requestOrigin,
+          exchange.getRequest().getMethod());
     }
     return chain.filter(exchange);
   }
@@ -102,9 +119,9 @@ public class CorsConfig implements WebFilter {
     String path = req.getPath().value();
     String method = req.getMethod().name();
     // Exclude OPTIONS requests (commonly used for preflight)
-    if (HttpMethod.OPTIONS.name().equals(method)) {
-      return true;
-    }
+    // if (HttpMethod.OPTIONS.name().equals(method)) {
+    //  return true;
+    // }
     // Check if the request path matches any excluded patterns
     return shouldNotFilter.stream()
         .anyMatch(endpoint -> PatternMatchUtils.simpleMatch(endpoint, path));
