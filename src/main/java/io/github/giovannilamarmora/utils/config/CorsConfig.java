@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
@@ -102,6 +104,10 @@ public class CorsConfig implements WebFilter {
           .getResponse()
           .getHeaders()
           .set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, allowedHeaders);
+
+      if (request.getMethod().equals(HttpMethod.OPTIONS)) {
+        exchange.getResponse().setStatusCode(HttpStatus.CREATED);
+      }
 
       LOG.debug(
           "CORS policy set for request from Origin: {}, and Method {}",
