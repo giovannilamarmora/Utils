@@ -6,6 +6,8 @@ import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
@@ -67,7 +69,14 @@ public interface CookieManager {
     //    (redirectUri != null)
     //        ? redirectUri
     //        : (origin != null && !origin.equals("*") ? origin : (host != null ? host : referer));
-    String domain = WebManager.extractDomain(url);
+    String domain = null;
+    if (url != null) {
+      Pattern pattern = Pattern.compile("([^.]+\\.[^.]+)$");
+      Matcher matcher = pattern.matcher(url);
+      if (matcher.find()) {
+        domain = matcher.group(1);
+      }
+    }
 
     // Create the cookie with security attributes
     ResponseCookie.ResponseCookieBuilder cookieBuilder =
@@ -80,7 +89,7 @@ public interface CookieManager {
 
     // Set domain if available
     if (domain != null) {
-      cookieBuilder.domain(domain);
+      cookieBuilder.domain("." + domain);
     }
 
     // Add cookie to response

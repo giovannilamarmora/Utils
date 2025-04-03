@@ -156,31 +156,4 @@ public interface WebManager {
   static String decodeURLValue(String value) {
     return ObjectUtils.isEmpty(value) ? value : URLDecoder.decode(value, StandardCharsets.UTF_8);
   }
-
-  /**
-   * Extracts the domain from a given URL. If the URL is null or invalid, it returns {@code null}.
-   *
-   * <p>This method parses the URL using {@link java.net.URI} and extracts the hostname.
-   * Additionally, if the domain contains the {@code www.} prefix, it removes it for consistency.
-   *
-   * @param url The URL from which to extract the domain.
-   * @return The extracted domain or {@code null} if the URL is invalid.
-   */
-  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
-  static String extractDomain(String url) {
-    if (url == null) return null;
-    try {
-      URI uri = new java.net.URI(url);
-      String host = uri.getHost();
-      if (ObjectToolkit.isNullOrEmpty(host)) host = uri.getScheme();
-      // Rimuove il prefisso "www." se presente
-      if (host.startsWith("www.")) {
-        host = host.substring(4);
-      }
-      return host;
-    } catch (Exception e) {
-      LOG.error("Failed to extract domain from URL: {}", url, e);
-      return null;
-    }
-  }
 }
