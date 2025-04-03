@@ -57,15 +57,16 @@ public interface CookieManager {
       ServerHttpResponse response,
       ServerHttpRequest request) {
 
-    String redirectUri = request.getQueryParams().getFirst("redirect_uri");
+    // String redirectUri = request.getQueryParams().getFirst("redirect_uri");
     // Extract domain from Referer or Origin (keeping URL handling as before)
     String referer = request.getHeaders().getFirst(HttpHeaders.REFERER);
     String origin = request.getHeaders().getFirst(HttpHeaders.ORIGIN);
     String host = request.getHeaders().getFirst(HttpHeaders.HOST);
-    String url =
-        (redirectUri != null)
-            ? redirectUri
-            : (origin != null && !origin.equals("*") ? origin : (host != null ? host : referer));
+    String url = (origin != null && !origin.equals("*")) ? origin : (host != null ? host : referer);
+    // String url =
+    //    (redirectUri != null)
+    //        ? redirectUri
+    //        : (origin != null && !origin.equals("*") ? origin : (host != null ? host : referer));
     String domain = WebManager.extractDomain(url);
 
     // Create the cookie with security attributes
