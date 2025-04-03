@@ -170,7 +170,9 @@ public interface WebManager {
   static String extractDomain(String url) {
     if (url == null) return null;
     try {
-      String host = new java.net.URI(url).getHost();
+      URI uri = new java.net.URI(url);
+      String host = uri.getHost();
+      if (ObjectToolkit.isNullOrEmpty(host)) host = uri.getScheme();
       // Rimuove il prefisso "www." se presente
       if (host.startsWith("www.")) {
         host = host.substring(4);
