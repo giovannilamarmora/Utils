@@ -22,6 +22,68 @@ public interface CookieManager {
 
   Logger LOG = LoggerFilter.getLogger(CookieManager.class);
 
+  /**
+   * Sets a cookie in the HTTP response with security settings and domain handling.
+   *
+   * <p>This method ensures that cookies are securely stored and accessible only where needed. The
+   * domain for the cookie is determined dynamically based on the request headers.
+   *
+   * <h3>Cookie Attributes:</h3>
+   *
+   * <ul>
+   *   <li><b>Secure:</b> Ensures cookies are sent only over HTTPS.
+   *   <li><b>HttpOnly:</b> Prevents JavaScript from accessing the cookie (XSS protection).
+   *   <li><b>SameSite=None:</b> Allows cross-origin usage (needed for authentication flows).
+   *   <li><b>Path=/:</b> Makes the cookie accessible across the entire subdomain.
+   *   <li><b>Max-Age=360000:</b> Defines the cookie’s expiration time.
+   * </ul>
+   *
+   * <h3>Domain Handling:</h3>
+   *
+   * <ul>
+   *   <li>The domain is extracted from the {@code Referer} or {@code Origin} header.
+   *   <li>If neither is available, the cookie remains bound to the authentication service’s domain.
+   * </ul>
+   *
+   * @param cookieName The name of the cookie.
+   * @param cookieValue The value to store in the cookie.
+   * @param response The {@link ServerHttpResponse} object where the cookie will be set.
+   * @param request The {@link ServerHttpRequest} object used to determine the cookie domain.
+   */
+  @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
+  static void setCookieInResponse(
+      String cookieName,
+      String cookieValue,
+      ServerHttpResponse response,
+      ServerHttpRequest request) {
+
+    // Extract domain from Referer or Origin (keeping URL handling as before)
+    String referer = request.getHeaders().getFirst(HttpHeaders.REFERER);
+    String origin = request.getHeaders().getFirst(HttpHeaders.ORIGIN);
+    String host = request.getHeaders().getFirst(HttpHeaders.HOST);
+    String url = (origin != null && !origin.equals("*")) ? origin : (host != null ? host : referer);
+    String domain = WebManager.extractDomain(url);
+
+    // Create the cookie with security attributes
+    ResponseCookie.ResponseCookieBuilder cookieBuilder =
+        ResponseCookie.from(cookieName, cookieValue)
+            .maxAge(360000)
+            .sameSite("None")
+            .secure(true)
+            .httpOnly(true)
+            .path("/");
+
+    // Set domain if available
+    if (domain != null) {
+      cookieBuilder.domain(domain);
+    }
+
+    // Add cookie to response
+    response.getHeaders().add(HttpHeaders.SET_COOKIE, cookieBuilder.build().toString());
+
+    LOG.debug("Set Cookie {}, with value {}, successfully in Response", cookieName, cookieValue);
+  }
+
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static void setCookieInResponse(
       String cookieName, String cookieValue, ServerHttpResponse response) {

@@ -67,9 +67,9 @@ public class TracingFilter implements WebFilter {
     String spanId = TraceUtils.generateTrace();
     String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
-    ResponseManager.setCookieAndHeaderData(TRACE_ID.getValue(), traceId, response);
-    ResponseManager.setCookieAndHeaderData(SPAN_ID.getValue(), spanId, response);
-    ResponseManager.setCookieAndHeaderData(PARENT_ID.getValue(), parentId, response);
+    ResponseManager.setCookieAndHeaderData(TRACE_ID.getValue(), traceId, response, request);
+    ResponseManager.setCookieAndHeaderData(SPAN_ID.getValue(), spanId, response, request);
+    ResponseManager.setCookieAndHeaderData(PARENT_ID.getValue(), parentId, response, request);
 
     return Mono.fromRunnable(
             () -> {
