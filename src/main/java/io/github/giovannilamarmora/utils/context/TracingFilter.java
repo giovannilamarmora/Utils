@@ -4,6 +4,7 @@ import static io.github.giovannilamarmora.utils.context.ContextConfig.*;
 
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
 import io.github.giovannilamarmora.utils.logger.MDCUtils;
+import io.github.giovannilamarmora.utils.web.CookieManager;
 import io.github.giovannilamarmora.utils.web.ResponseManager;
 import io.github.giovannilamarmora.utils.web.WebManager;
 import java.util.HashMap;
@@ -16,12 +17,10 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -99,15 +98,11 @@ public class TracingFilter implements WebFilter {
 
   private String getOrGenerateId(
       ServerHttpRequest request, Pattern pattern, String defaultHeaderName) {
-    return getCookieValue(request, defaultHeaderName)
+    return getHeaderValue(request.getHeaders(), pattern)
         .orElseGet(
             () ->
-                getHeaderValue(request.getHeaders(), pattern).orElseGet(TraceUtils::generateTrace));
-  }
-
-  private Optional<String> getCookieValue(ServerHttpRequest request, String cookieName) {
-    HttpCookie cookie = request.getCookies().getFirst(cookieName);
-    return !ObjectUtils.isEmpty(cookie) ? Optional.of(cookie.getValue()) : Optional.empty();
+                Optional.ofNullable(CookieManager.getCookie(defaultHeaderName, request))
+                    .orElseGet(TraceUtils::generateTrace));
   }
 
   private Optional<String> getHeaderValue(HttpHeaders headers, Pattern pattern) {
