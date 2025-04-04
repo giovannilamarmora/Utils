@@ -4,6 +4,7 @@ import io.github.giovannilamarmora.utils.interceptors.LogInterceptor;
 import io.github.giovannilamarmora.utils.interceptors.LogTimeTracker;
 import io.github.giovannilamarmora.utils.interceptors.Logged;
 import io.github.giovannilamarmora.utils.logger.LoggerFilter;
+import io.github.giovannilamarmora.utils.utilities.ObjectToolkit;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -116,16 +117,24 @@ public interface CookieManager {
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)
   static void setCookieInResponse(
       String cookieName, String cookieValue, String domain, ServerHttpResponse response) {
-    ResponseCookie cookie =
+    ResponseCookie.ResponseCookieBuilder cookie =
         ResponseCookie.from(cookieName, cookieValue)
-            .domain(domain)
             .maxAge(360000)
             .sameSite("None")
             .secure(true)
             .httpOnly(true)
-            .path("/")
-            .build();
-    response.getHeaders().add(HttpHeaders.SET_COOKIE, cookie.toString());
+            .path("/");
+
+    if (!ObjectToolkit.isNullOrEmpty(domain)) {
+      cookie.domain(domain.startsWith(".") ? domain : "." + domain);
+    }
+
+    response.getHeaders().add(HttpHeaders.SET_COOKIE, cookie.build().toString());
+    // LOG.debug(
+    //    "Set Cookie {}, with value {} and domain {}, successfully in Request",
+    //    cookieName,
+    //    cookieValue,
+    //    !ObjectToolkit.isNullOrEmpty(domain) ? domain : "[No Domain]");
   }
 
   @LogInterceptor(type = LogTimeTracker.ActionType.UTILS_LOGGER)

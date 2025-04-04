@@ -40,6 +40,9 @@ public class TracingFilter implements WebFilter {
   @Value(value = "${app.version:no_version_defined}")
   private String app_version;
 
+  @Value("${cookie-domain:}")
+  private String cookieDomain;
+
   private static final Logger LOG = LoggerFilter.getLogger(TracingFilter.class);
 
   private static final Pattern TRACE_ID_PATTERN =
@@ -66,9 +69,9 @@ public class TracingFilter implements WebFilter {
     String spanId = TraceUtils.generateTrace();
     String parentId = getOrGenerateId(request, SPAN_ID_PATTERN, SPAN_ID.getValue());
 
-    ResponseManager.setCookieAndHeaderData(TRACE_ID.getValue(), traceId, response, request);
-    ResponseManager.setCookieAndHeaderData(SPAN_ID.getValue(), spanId, response, request);
-    ResponseManager.setCookieAndHeaderData(PARENT_ID.getValue(), parentId, response, request);
+    ResponseManager.setCookieAndHeaderData(TRACE_ID.getValue(), traceId, cookieDomain, response);
+    ResponseManager.setCookieAndHeaderData(SPAN_ID.getValue(), spanId, cookieDomain, response);
+    ResponseManager.setCookieAndHeaderData(PARENT_ID.getValue(), parentId, cookieDomain, response);
 
     return Mono.fromRunnable(
             () -> {
