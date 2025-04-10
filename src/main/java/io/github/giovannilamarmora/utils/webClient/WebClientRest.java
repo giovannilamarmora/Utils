@@ -98,7 +98,7 @@ public class WebClientRest {
             .append(method)
             .append(") call with WebClient to the EndPoint: ")
             .append(WebManager.getUrlAsString(url, baseUrl))
-            .append(url.toString())
+            // .append(url.toString())
             .append(END_STRING);
 
     WebClient.RequestHeadersSpec<?> buildCall = buildCall(url, headers, method, body, logBuilder);
