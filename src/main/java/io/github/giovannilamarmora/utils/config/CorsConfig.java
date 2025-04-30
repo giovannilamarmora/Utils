@@ -91,8 +91,9 @@ public class CorsConfig implements WebFilter {
       // If credentials are allowed, set the corresponding header
       // Se l'origin è "*" e allowCredentials è true, avvisa perché non è permesso
       if ("*".equals(requestOrigin) && allowCredentials) {
-        LOG.debug(
-            "CORS: Non è possibile usare 'Access-Control-Allow-Origin: *' con 'Access-Control-Allow-Credentials: true'");
+        /*LOG.debug(
+               "CORS: Non è possibile usare 'Access-Control-Allow-Origin: *' con 'Access-Control-Allow-Credentials: true'");
+        */
       } else if (allowCredentials) {
         exchange
             .getResponse()
@@ -109,10 +110,10 @@ public class CorsConfig implements WebFilter {
         exchange.getResponse().setStatusCode(HttpStatus.NO_CONTENT);
       }
 
-      LOG.debug(
-          "CORS policy set for request from Origin: {}, and Method {}",
-          requestOrigin,
-          exchange.getRequest().getMethod());
+      /* LOG.debug(
+      "CORS policy set for request from Origin: {}, and Method {}",
+      requestOrigin,
+      exchange.getRequest().getMethod());*/
     }
     return chain.filter(exchange);
   }

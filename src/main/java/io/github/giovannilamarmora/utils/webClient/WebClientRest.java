@@ -1,6 +1,5 @@
 package io.github.giovannilamarmora.utils.webClient;
 
-import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.MediaType.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

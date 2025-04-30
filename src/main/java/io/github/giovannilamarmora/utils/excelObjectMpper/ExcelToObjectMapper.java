@@ -70,11 +70,10 @@ public class ExcelToObjectMapper {
       workbook = createWorkBook(fileUrl);
     } catch (InvalidFormatException e) {
       LOG.error("Error on creating workbook for filepath {}", fileUrl);
-      throw new ExcelException(
-          "Error during create workbook for file: " + fileUrl,
-          e.getMessage());
+      throw new ExcelException("Error during create workbook for file: " + fileUrl, e.getMessage());
     }
   }
+
   /**
    * Read data from Excel file and convert each rows into list of given object of Type T.
    *
